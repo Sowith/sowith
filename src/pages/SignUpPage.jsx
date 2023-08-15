@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styled from "styled-components";
-
 import { useSignUpHook } from "../hooks/useSignUp";
 
 export const SignUP = () => {
@@ -27,13 +26,12 @@ export const SignUP = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("formData", signUpFormData);
     signUpHook(signUpFormData);
   };
 
   return (
     <>
-      <h1>회원가입 페이지 hidden처리</h1>
+      <h1 className="a11y-hidden">회원가입 페이지</h1>
       <h2 style={{ textAlign: "center" }}>sowith 로고 이미지</h2>
       <FormWrap onSubmit={handleSubmit}>
         {currentStep === 1 && (
@@ -84,12 +82,12 @@ export const SignUP = () => {
         )}
         <div>
           {currentStep > 1 && (
-            <button onClick={() => setCurrentStep((prevStep) => prevStep - 1)}>
+            <button type="button" onClick={() => setCurrentStep((prevStep) => prevStep - 1)}>
               이전
             </button>
           )}
           {currentStep < 3 && (
-            <button onClick={handleCurrentStep}>다음</button>
+            <button type="button" onClick={handleCurrentStep}>다음</button>
           )}
           {currentStep === 3 && (
             <button type="submit">회원가입하기</button>
