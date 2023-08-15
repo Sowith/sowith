@@ -4,14 +4,18 @@ import styled from "styled-components";
 import { useSignUpHook } from "../hooks/useSignUp";
 
 export const SignUP = () => {
-  const {error, isPending, signUpHook} = useSignUpHook();
+  const { error, isPending, signUpHook } = useSignUpHook();
   const [signUpFormData, setSignUpFormData] = useState({
     email: "",
     password: "",
-    checkPassword: "",
-    accountID: "",
     userName: "",
+    accountID: "",
   });
+  const [currentStep, setCurrentStep] = useState(1);
+
+  const handleCurrentStep = () => {
+    setCurrentStep((prevStep) => prevStep + 1);
+  };
 
   const handleData = (e) => {
     const { id, value } = e.target;
@@ -24,7 +28,7 @@ export const SignUP = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("formData", signUpFormData);
-    signUpHook(signUpFormData)
+    signUpHook(signUpFormData);
   };
 
   return (
@@ -32,8 +36,9 @@ export const SignUP = () => {
       <h1>회원가입 페이지 hidden처리</h1>
       <h2 style={{ textAlign: "center" }}>sowith 로고 이미지</h2>
       <FormWrap onSubmit={handleSubmit}>
-        <fieldset>
-          <label htmlFor="email">이메일</label>
+        {currentStep === 1 && (
+          <fieldset>
+            <label htmlFor="email">이메일</label>
           <input
             type="email"
             id="email"
@@ -51,9 +56,11 @@ export const SignUP = () => {
             required
             placeholder="사용할 비밀번호 입력 (password)"
           ></input>
-        </fieldset>
-        <fieldset>
-          <label htmlFor="userName">이름</label>
+          </fieldset>
+        )}
+        {currentStep === 2 && (
+          <fieldset>
+            <label htmlFor="userName">이름</label>
           <input
             type="text"
             id="userName"
@@ -61,9 +68,11 @@ export const SignUP = () => {
             onChange={handleData}
             placeholder="이름을 입력해주세요"
           ></input>
-        </fieldset>
-        <fieldset>
-          <label htmlFor="accountID">계정ID</label>
+          </fieldset>
+        )}
+        {currentStep === 3 && (
+          <fieldset>
+            <label htmlFor="accountID">계정ID</label>
           <input
             type="text"
             id="accountID"
@@ -71,9 +80,20 @@ export const SignUP = () => {
             onChange={handleData}
             placeholder="계정 ID (언제든지 변경 가능합니다)"
           ></input>
-        </fieldset>
+          </fieldset>
+        )}
         <div>
-          <button type="submit">회원가입하기</button>
+          {currentStep > 1 && (
+            <button onClick={() => setCurrentStep((prevStep) => prevStep - 1)}>
+              이전
+            </button>
+          )}
+          {currentStep < 3 && (
+            <button onClick={handleCurrentStep}>다음</button>
+          )}
+          {currentStep === 3 && (
+            <button type="submit">회원가입하기</button>
+          )}
         </div>
       </FormWrap>
     </>
