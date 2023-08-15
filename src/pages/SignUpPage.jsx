@@ -1,50 +1,97 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useSignUpHook } from "../hooks/useSignUp";
 
 export const SignUP = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [accountID, setAccountID] = useState("");
+  const { error, isPending, signUpHook } = useSignUpHook();
+  const [signUpFormData, setSignUpFormData] = useState({
+    email: "",
+    password: "",
+    userName: "",
+    accountID: "",
+  });
+  const [currentStep, setCurrentStep] = useState(1);
 
-  //회원가입 단에서 들어갈 데이터가 많아서 추후 type 말고 다른 방법으로 수정할 예정
-  const handleData = (e) => {
-    if (e.target.type === "email") {
-      setEmail(e.target.value);
-    } else if (e.target.type === "password") {
-      setPassword(e.target.value);
-    } else if (e.target.type === "text") {
-      setAccountID(e.target.value);
-    }
+  const handleCurrentStep = () => {
+    setCurrentStep((prevStep) => prevStep + 1);
   };
+
+  const handleData = (e) => {
+    const { id, value } = e.target;
+    setSignUpFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    signUpHook(signUpFormData);
+  };
+
   return (
     <>
-      <h1>회원가입 페이지 hidden처리</h1>
+      <h1 className="a11y-hidden">회원가입 페이지</h1>
       <h2 style={{ textAlign: "center" }}>sowith 로고 이미지</h2>
-      <FormWrap>
-        <fieldset>
-          <input type="email" placeholder="사용할 이메일 입력 (email)"></input>
+      <FormWrap onSubmit={handleSubmit}>
+        {currentStep === 1 && (
+          <fieldset>
+            <label htmlFor="email">이메일</label>
+          <input
+            type="email"
+            id="email"
+            value={signUpFormData.email}
+            onChange={handleData}
+            required
+            placeholder="사용할 이메일 입력 (email)"
+          ></input>
+          <label htmlFor="password">비밀번호</label>
           <input
             type="password"
+            id="password"
+            value={signUpFormData.password}
+            onChange={handleData}
+            required
             placeholder="사용할 비밀번호 입력 (password)"
           ></input>
-          <input
-            type="password"
-            placeholder="비밀번호 확인 (check password)"
-          ></input>
-        </fieldset>
-        <fieldset>
-          <input type="text" placeholder="이름 (First name)"></input>
-          <input type="text" placeholder="성 (Last name)"></input>
-        </fieldset>
-        <fieldset>
+          </fieldset>
+        )}
+        {currentStep === 2 && (
+          <fieldset>
+            <label htmlFor="userName">이름</label>
           <input
             type="text"
+            id="userName"
+            value={signUpFormData.userName}
+            onChange={handleData}
+            placeholder="이름을 입력해주세요"
+          ></input>
+          </fieldset>
+        )}
+        {currentStep === 3 && (
+          <fieldset>
+            <label htmlFor="accountID">계정ID</label>
+          <input
+            type="text"
+            id="accountID"
+            value={signUpFormData.accountID}
+            onChange={handleData}
             placeholder="계정 ID (언제든지 변경 가능합니다)"
           ></input>
-          <textarea placeholder="소개 메세지"></textarea>
-        </fieldset>
+          </fieldset>
+        )}
         <div>
-          <button type="submit">회원가입하기</button>
+          {currentStep > 1 && (
+            <button type="button" onClick={() => setCurrentStep((prevStep) => prevStep - 1)}>
+              이전
+            </button>
+          )}
+          {currentStep < 3 && (
+            <button type="button" onClick={handleCurrentStep}>다음</button>
+          )}
+          {currentStep === 3 && (
+            <button type="submit">회원가입하기</button>
+          )}
         </div>
       </FormWrap>
     </>
@@ -75,6 +122,7 @@ const FormWrap = styled.form`
       resize: none;
     }
   }
+
   & > div {
     text-align: center;
     & button {
