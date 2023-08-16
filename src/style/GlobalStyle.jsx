@@ -22,6 +22,7 @@ export const MyGlobalStyle = createGlobalStyle`
 
   button {
     all: unset;
+    font-family: var(--font--Medium);
   }
   
   img {

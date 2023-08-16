@@ -11,7 +11,7 @@ const ButtonDefault = styled.button`
   margin-top: 20px;
   padding: ${(props) => props.padding || "9px 0"};
   border-radius: 10px;
-  color: black;
+  color: white;
   font-size: ${(props) => props.fontSize || "16px"};
   font-family: var(--font--Medium);
   box-sizing: border-box;
@@ -25,5 +25,6 @@ const ButtonDefault = styled.button`
     props.disabled &&
     css`
       background-color: var(--gray100-color);
+      color: black;
     `}
 `;

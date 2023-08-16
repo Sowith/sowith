@@ -4,7 +4,7 @@ import { useSignUpHook } from "../hooks/useSignUp";
 
 import { Button } from "../components/common/Button";
 
-import wideLogo from "../assets/logo/logo1.png";
+import logoWide from "../assets/logo/logo1.png";
 
 export const SignUP = () => {
   const { error, isPending, signUpHook } = useSignUpHook();
@@ -37,14 +37,15 @@ export const SignUP = () => {
   return (
     <>
       <h1 className="a11y-hidden">회원가입 페이지</h1>
-      <h2 style={{ textAlign: "center" }}>
-        <img src={wideLogo} />
+      <h2 style={{ textAlign: "center", margin: "60px 0 20px 0" }}>
+        <img src={logoWide} />
       </h2>
       <FormWrap onSubmit={handleSubmit}>
         {currentStep === 1 && (
           <fieldset>
             <label htmlFor="email">이메일</label>
             <input
+              style={{ margin: "0 0 20px 0" }}
               type="email"
               id="email"
               value={signUpFormData.email}
@@ -96,10 +97,7 @@ export const SignUP = () => {
             />
           )}
           {currentStep < 3 && (
-            <Button 
-              type="button" 
-              text="다음" 
-              onClick={handleCurrentStep} />
+            <Button type="button" text="다음" onClick={handleCurrentStep} />
           )}
           {currentStep === 3 && <Button type="submit" text="회원가입" />}
         </div>
@@ -117,16 +115,34 @@ const FormWrap = styled.form`
     flex-direction: column;
     border: none;
     padding: 0;
-
     &:nth-child(2) {
       flex-direction: row;
     }
-
+    & label {
+      font-size: 0.9rem;
+      font-family: var(--font--Medium);
+      margin-bottom: 7px;
+    }
     & input {
       padding: 15px;
       margin-bottom: 10px;
       border: 1px solid #767676;
       border-radius: 10px;
+      box-sizing: border-box;
+      &::placeholder {
+        color: var(--gray200-color);
+      }
+      &:focus {
+        padding: 15px;
+        border: solid 2px transparent;
+        border-radius: 10px;
+        background-image: linear-gradient(white, white),
+          linear-gradient(to right, #ff547c, #ffc76c);
+        background-origin: border-box;
+        background-clip: padding-box, border-box;
+        outline: none;
+        box-sizing: border-box;
+      }
     }
     & textarea {
       margin: 10px 0;
