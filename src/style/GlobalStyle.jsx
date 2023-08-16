@@ -20,6 +20,10 @@ export const MyGlobalStyle = createGlobalStyle`
     font-family: var(--font--Regular);
   }
 
+  button {
+    all: unset;
+  }
+  
   img {
     vertical-align: top;
   }
