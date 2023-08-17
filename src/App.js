@@ -4,10 +4,12 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { SignUP } from "./pages/SignUpPage";
 import { Login } from "./pages/LoginPage";
 import { PostUpload } from "./pages/PostUpload";
+import { MyGlobalStyle } from "./style/GlobalStyle";
 
 function App() {
   return (
     <BrowserRouter>
+      <MyGlobalStyle />
       <div>
         <Link to="/signup">
           <button>회원가입 페이지</button>
