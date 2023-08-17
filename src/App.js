@@ -10,6 +10,7 @@ import { SearchWithFolder } from './pages/search/SearchWithFolderPage';
 import { SearchWithPost } from './pages/search/SearchWithPostPage';
 import { SearchWithAccount } from './pages/search/SearchWithAccountPage';
 import { SearchWithTag } from './pages/search/SearchWithTagPage';
+import { SearchWithGroup } from './pages/search/SearchWithGroupPage';
 
 function App() {
   return (
@@ -35,6 +36,9 @@ function App() {
         <Link to="/searchwithaccount">
           <button>검색페이지/계정</button>
         </Link>
+        <Link to="/searchwithgroup">
+          <button>검색페이지/그룹</button>
+        </Link>
         <Link to="/searchwithtag">
           <button>검색페이지/태그</button>
         </Link>
@@ -50,6 +54,7 @@ function App() {
           path="/searchwithaccount"
           element={<SearchWithAccount />}
         ></Route>
+        <Route path="/searchwithgroup" element={<SearchWithGroup />}></Route>
         <Route path="/searchwithtag" element={<SearchWithTag />}></Route>
       </Routes>
     </BrowserRouter>
