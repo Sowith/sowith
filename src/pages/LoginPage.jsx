@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import { useLoginHook } from "../hooks/useLogin";
+import { Button } from "../components/common/Button";
+import { Input } from "../components/common/Input"
+
+import logoWide from "../assets/logo/logo1.png";
 
 export const Login = () => {
 
+  const { error, isPending, loginHook } = useLoginHook();
   const [loginFormData, setLoginFormData] = useState({
     email: "",
     password: ""
   });
-  const { error, isPending, loginHook } = useLoginHook();
+  const [emailValid, setEmailValid] = useState();
+  const [passwordValid, setPasswordValid] = useState();
+  const [attemptToLogin, setAttemptToLogin] = useState(0);
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const handleData = (e) => {
     const { id, value } = e.target;
@@ -17,43 +26,60 @@ export const Login = () => {
       ...prevData,
       [id]: value,
     }));
+    if(value !== "" && id === "email" && !emailPattern.test(value)){
+      setEmailValid('유효한 이메일 주소 형식이 아닙니다');
+    } else if (value !== "" && id === "password" && !passwordPattern.test(value)) {
+      setPasswordValid('영문 대소문자, 숫자, 특수문자를 포함한 비밀번호를 입력하세요')
+    } else {
+      setEmailValid('');
+      setPasswordValid('')
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(isPending);
-    console.log(loginFormData);
     loginHook(loginFormData);
+    if(setEmailValid !== "" && setPasswordValid !== ""){
+      setAttemptToLogin(prevData => prevData + 1)
+    } 
+    attemptToLogin >= 1 && setEmailValid("이메일 주소를 다시 확인하거나 특수문자 또는 오타가 있는지 확인해주세요")
   };
+
+  useEffect(()=>{
+    error && setPasswordValid("이메일 또는 비밀번호가 일치하지 않습니다");
+  }, [error])
 
   return (
     <>
-      <h1>로그인 페이지 hidden처리</h1>
-      <h2 style={{ textAlign: "center" }}>sowith 로고 이미지</h2>
-      <FormWrap onSubmit={handleSubmit}>
+      <h1 className="a11y-hidden">로그인 페이지</h1>
+      <h2 style={{ textAlign: "center", margin: "60px 0 20px 0" }}>
+        <img src={logoWide} />
+      </h2>
+      <FormWrap onSubmit={handleSubmit} noValidate>
         <fieldset>
           <label htmlFor="email">이메일</label>
-          <input
+          <Input
             type="email"
             id="email"
             value={loginFormData.email}
             onChange={handleData}
             required
             placeholder="이메일 입력 (email)"
-          ></input>
+            msg={emailValid}
+          ></Input>
           <label htmlFor="password">비밀번호</label>
-          <input
+          <Input
             type="password"
             id="password"
             value={loginFormData.password}
             onChange={handleData}
             required
             placeholder="비밀번호 입력 (password)"
-          ></input>
+            msg={passwordValid}
+          ></Input>
         </fieldset>
         <div>
-          <button type="submit">로그인</button>
-          {error && <strong>{error}</strong>}
+          <Button type="submit" text="로그인"/>
         </div>
       </FormWrap>
     </>
@@ -62,7 +88,6 @@ export const Login = () => {
 
 const FormWrap = styled.form`
   width: 80%;
-  background-color: #756e6e;
   margin: 0 auto;
 
   & fieldset {
@@ -70,15 +95,17 @@ const FormWrap = styled.form`
     flex-direction: column;
     border: none;
     padding: 0;
-
     &:nth-child(2) {
       flex-direction: row;
     }
-
-    & input {
-      margin-top: 10px;
-      padding: 5px;
-      margin-bottom: 10px;
+    & label {
+      font-size: 0.9rem;
+      font-family: var(--font--Medium);
+      margin-bottom: 7px;
+      margin-top: 20px;
+    }
+    & label:first-child {
+      margin-top: 0px;
     }
     & textarea {
       margin: 10px 0;
@@ -88,12 +115,8 @@ const FormWrap = styled.form`
 
   & > div {
     text-align: center;
-    & button {
-      display: inline-block;
-      background-color: white;
-      border: none;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
+    display: flex;
+    justify-content: center;
+    gap: 10px;
   }
 `;
