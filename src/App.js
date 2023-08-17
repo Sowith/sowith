@@ -45,6 +45,9 @@ function App() {
         <Link to="/searchwithpost">
           <button>(검색 / 게시물)</button>
         </Link>
+        <Link to="/searchwithgroup">
+          <button>검색페이지/그룹</button>
+        </Link>
         <Link to="/searchwithtag">
           <button>(검색 / 태그)</button>
         </Link>
