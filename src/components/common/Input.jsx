@@ -1,16 +1,22 @@
-import React from "react";
 import styled from "styled-components";
 
-export const Input = ({ type, id, ...props }) => {
-  return <InputDefault type={type} id={id} {...props} />;
+import warning from "../../assets/icon/icon-warning.svg"
+
+export const Input = ({ type, id, msg = "", ...props }) => {
+  return (
+    <>
+      <InputDefault type={type} id={id} {...props} />
+      {msg && <ValidMsg>{msg}</ValidMsg>}
+    </>
+  );
 };
 
 const InputDefault = styled.input`
   max-width: ${(props) => props.width || "100%"};
   padding: 15px;
-  margin-bottom: 10px;
   border: 2px solid var(--gray300-color);
   border-radius: ${(props) => props.radius || "10px"};
+
   &::placeholder {
     color: var(--gray200-color);
   }
@@ -24,4 +30,21 @@ const InputDefault = styled.input`
     background-clip: padding-box, border-box;
     outline: none;
   }
+`;
+
+const ValidMsg = styled.span`
+    display: flex;
+    align-items: center;
+    padding-top: 10px;
+    color: #FF0000;
+    font-size: 10px;
+
+    &:before { 
+      content: "";
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      padding-right: 5px;
+      background: url(${warning}) no-repeat; 
+    }
 `;
