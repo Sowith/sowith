@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useSignUpHook } from "../hooks/useSignUp";
 
 import { Button } from "../components/common/Button";
+import { Input } from "../components/common/Input"
 
 import logoWide from "../assets/logo/logo1.png";
 
@@ -44,7 +45,7 @@ export const SignUP = () => {
         {currentStep === 1 && (
           <fieldset>
             <label htmlFor="email">이메일</label>
-            <input
+            <Input
               style={{ margin: "0 0 20px 0" }}
               type="email"
               id="email"
@@ -52,40 +53,40 @@ export const SignUP = () => {
               onChange={handleData}
               required
               placeholder="사용할 이메일 입력 (email)"
-            ></input>
+            ></Input>
             <label htmlFor="password">비밀번호</label>
-            <input
+            <Input
               type="password"
               id="password"
               value={signUpFormData.password}
               onChange={handleData}
               required
               placeholder="사용할 비밀번호 입력 (password)"
-            ></input>
+            ></Input>
           </fieldset>
         )}
         {currentStep === 2 && (
           <fieldset>
             <label htmlFor="userName">이름</label>
-            <input
+            <Input
               type="text"
               id="userName"
               value={signUpFormData.userName}
               onChange={handleData}
               placeholder="이름을 입력해주세요"
-            ></input>
+            ></Input>
           </fieldset>
         )}
         {currentStep === 3 && (
           <fieldset>
             <label htmlFor="accountID">계정ID</label>
-            <input
+            <Input
               type="text"
               id="accountID"
               value={signUpFormData.accountID}
               onChange={handleData}
               placeholder="계정 ID (언제든지 변경 가능합니다)"
-            ></input>
+            ></Input>
           </fieldset>
         )}
         <div>
@@ -122,27 +123,6 @@ const FormWrap = styled.form`
       font-size: 0.9rem;
       font-family: var(--font--Medium);
       margin-bottom: 7px;
-    }
-    & input {
-      padding: 15px;
-      margin-bottom: 10px;
-      border: 1px solid #767676;
-      border-radius: 10px;
-      box-sizing: border-box;
-      &::placeholder {
-        color: var(--gray200-color);
-      }
-      &:focus {
-        padding: 15px;
-        border: solid 2px transparent;
-        border-radius: 10px;
-        background-image: linear-gradient(white, white),
-          linear-gradient(to right, #ff547c, #ffc76c);
-        background-origin: border-box;
-        background-clip: padding-box, border-box;
-        outline: none;
-        box-sizing: border-box;
-      }
     }
     & textarea {
       margin: 10px 0;
