@@ -99,7 +99,10 @@ const Container = styled.div`
   button {
     margin-right: 20px;
   }
-  input {
+
+  > * {
+    width: 90%;
+    margin: 0 auto;
   }
 `;
 
