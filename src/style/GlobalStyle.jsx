@@ -6,6 +6,7 @@ export const MyGlobalStyle = createGlobalStyle`
     --main-color: #FC9763;
     --gray100-color: #D9D9D9;
     --gray200-color: #C4C4C4;
+    --gray300-color: #767676;
   }
 
   :root {
@@ -20,6 +21,11 @@ export const MyGlobalStyle = createGlobalStyle`
     font-family: var(--font--Regular);
   }
 
+  button {
+    all: unset;
+    font-family: var(--font--Medium);
+  }
+  
   img {
     vertical-align: top;
   }
