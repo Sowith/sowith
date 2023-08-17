@@ -46,7 +46,6 @@ export const SignUP = () => {
           <fieldset>
             <label htmlFor="email">이메일</label>
             <Input
-              style={{ margin: "0 0 20px 0" }}
               type="email"
               id="email"
               value={signUpFormData.email}
@@ -123,6 +122,10 @@ const FormWrap = styled.form`
       font-size: 0.9rem;
       font-family: var(--font--Medium);
       margin-bottom: 7px;
+      margin-top: 20px;
+    }
+    & label:first-child {
+      margin-top: 0px;
     }
     & textarea {
       margin: 10px 0;
