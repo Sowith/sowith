@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 // pages
-import { SignUP } from './pages/SignUpPage';
-import { Login } from './pages/LoginPage';
-import { PostUpload } from './pages/PostUpload';
-import { MyGlobalStyle } from './style/GlobalStyle';
+import { SignUP } from "./pages/SignUpPage";
+import { Login } from "./pages/LoginPage";
+import { PostUpload } from "./pages/PostUpload";
+import { MyGlobalStyle } from "./style/GlobalStyle";
 import { Search } from './pages/search/SearchPage';
 import { Search2 } from './pages/search/SearchPage2';
 import { SearchWithAccount } from './pages/search/SearchWithAccountPage';
