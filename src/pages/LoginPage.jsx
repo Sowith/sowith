@@ -16,7 +16,7 @@ export const Login = () => {
   });
   const [emailValid, setEmailValid] = useState();
   const [passwordValid, setPasswordValid] = useState();
-  const [attemptToLogin, setAttemptToLogin] = useState(0);
+
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
@@ -26,27 +26,26 @@ export const Login = () => {
       ...prevData,
       [id]: value,
     }));
-    if(value !== "" && id === "email" && !emailPattern.test(value)){
-      setEmailValid('유효한 이메일 주소 형식이 아닙니다');
+
+    if (value !== "" && id === "email" && !emailPattern.test(value)) {
+      setEmailValid("유효한 이메일 주소 형식이 아닙니다");
     } else if (value !== "" && id === "password" && !passwordPattern.test(value)) {
-      setPasswordValid('영문 대소문자, 숫자, 특수문자를 포함한 비밀번호를 입력하세요')
+      setPasswordValid("영문 대소문자, 숫자, 특수문자를 포함한 비밀번호를 입력하세요");
     } else {
-      setEmailValid('');
-      setPasswordValid('')
+      setEmailValid("");
+      setPasswordValid("");
     }
-  };
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
     loginHook(loginFormData);
-    if(setEmailValid !== "" && setPasswordValid !== ""){
-      setAttemptToLogin(prevData => prevData + 1)
-    } 
-    attemptToLogin >= 1 && setEmailValid("이메일 주소를 다시 확인하거나 특수문자 또는 오타가 있는지 확인해주세요")
   };
 
-  useEffect(()=>{
-    error && setPasswordValid("이메일 또는 비밀번호가 일치하지 않습니다");
+  useEffect(() => {
+    console.log(error);
+    error && error.includes("user-not-found") && setEmailValid("가입되어 있지 않은 이메일입니다");
+    error && error.includes("wrong-password") && setPasswordValid("비밀번호가 일치하지 않습니다");
   }, [error])
 
   return (
@@ -79,7 +78,7 @@ export const Login = () => {
           ></Input>
         </fieldset>
         <div>
-          <Button type="submit" text="로그인"/>
+          <Button type="submit" text="로그인" />
         </div>
       </FormWrap>
     </>
