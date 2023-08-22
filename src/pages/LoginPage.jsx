@@ -18,7 +18,7 @@ export const Login = () => {
   const [passwordValid, setPasswordValid] = useState();
 
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const handleData = (e) => {
     const { id, value } = e.target;
@@ -29,9 +29,11 @@ export const Login = () => {
 
     if (value !== "" && id === "email" && !emailPattern.test(value)) {
       setEmailValid("유효한 이메일 주소 형식이 아닙니다");
-    } else if (value !== "" && id === "password" && !passwordPattern.test(value)) {
-      setPasswordValid("영문 대소문자, 숫자, 특수문자를 포함한 비밀번호를 입력하세요");
-    } else {
+    } 
+    // else if (value !== "" && id === "password" && !passwordPattern.test(value)) {
+    //   setPasswordValid("영문 대소문자, 숫자, 특수문자를 포함한 비밀번호를 입력하세요");
+    // }
+    else {
       setEmailValid("");
       setPasswordValid("");
     }
