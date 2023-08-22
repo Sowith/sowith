@@ -1,6 +1,11 @@
-import { useState } from "react";
-import styled from "styled-components";
-import { useSignUpHook } from "../hooks/useSignUp";
+import { useState } from 'react';
+import styled from 'styled-components';
+import { useSignUpHook } from '../hooks/useSignUp';
+
+import { Button } from '../components/common/Button';
+import { Input } from '../components/common/Input';
+
+import logoWide from '../assets/logo/logo1.png';
 
 import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input"
@@ -10,10 +15,10 @@ import logoWide from "../assets/logo/logo1.png";
 export const SignUP = () => {
   const { error, isPending, signUpHook } = useSignUpHook();
   const [signUpFormData, setSignUpFormData] = useState({
-    email: "",
-    password: "",
-    userName: "",
-    accountID: "",
+    email: '',
+    password: '',
+    userName: '',
+    accountID: '',
   });
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -38,7 +43,7 @@ export const SignUP = () => {
   return (
     <>
       <h1 className="a11y-hidden">회원가입 페이지</h1>
-      <h2 style={{ textAlign: "center", margin: "60px 0 20px 0" }}>
+      <h2 style={{ textAlign: 'center', margin: '60px 0 20px 0' }}>
         <img src={logoWide} />
       </h2>
       <FormWrap onSubmit={handleSubmit}>
