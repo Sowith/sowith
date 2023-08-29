@@ -80,7 +80,6 @@ const AlbumStyle = styled.li`
     vertical-align: top;
     object-fit: cover;
   }
-
   & input { 
     position: absolute;
     top: 10px;

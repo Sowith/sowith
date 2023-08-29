@@ -80,7 +80,6 @@ const FolderListStyle = styled.ul`
       object-fit: cover;
       vertical-align: top;
     }
-
   & p {
     background-color: #fff;
     text-align: center;

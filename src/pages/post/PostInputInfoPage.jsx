@@ -114,7 +114,6 @@ const SelectedPictureWrap = styled.li`
     vertical-align: top;
     object-fit: cover;
   }
-
   & ul {
     list-style-type: none;
   }
@@ -130,17 +129,14 @@ const FormWrap = styled.form`
     flex-direction: column;
     border: none;
     padding: 0;
-
     &:nth-child(2) {
       flex-direction: row;
     }
-
     & input {
       margin-top: 10px;
       padding: 5px;
     }
   }
-
   & > div {
     text-align: center;
     & button {

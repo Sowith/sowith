@@ -24,7 +24,7 @@ export function SelectLocation({ setStep }) {
       <LocationItem onClick={()=>setStep(1)}>
         <strong>서울 동작구 상도동</strong>
         <span></span>
-        <p>0.8km</p>
+        <p>0.9km</p>
       </LocationItem>
       <LocationItem onClick={()=>setStep(1)}>
         <strong>숭실대학교</strong>
