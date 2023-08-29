@@ -5,12 +5,47 @@
 
 위치기반 SNS 서비스 쏘윗
 
+<br>
+
 ## 팀원
 |최나경|안동섭|강동훈|
 | :---: | :---: | :---: |
 | <img width="180" alt="최나경 프로필 이미지" src="https://github.com/FRONTENDSCHOOL5/final-10-Goodi/assets/97887376/c429a5b2-80fa-4c92-9898-cfea2faa4eb5"> | <img width="180"  alt="안동섭 프로필 이미지" src="https://avatars.githubusercontent.com/u/96939334?s=400&u=6a4e635ccb574702b10b9464ce61bba61abefc72&v=4"> | <img width="180" alt="강동훈 프로필 이미지" src="https://github.com/starcradle101/starcradle101/assets/113353436/6e446c31-88ac-48b6-b6e4-4760fece3520"> |
 | [nkEllaaa](https://github.com/nkEllaaa) | [DongSup_Ahn](https://github.com/D-Sup) | [Hoon Kang](https://github.com/starcradle101) |
 
+<br>
+
+## 🛠️ 기술 스택
+
+<table>
+<tr>
+ <td align="center">프론트</td>
+ <td>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white">&nbsp 
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=ffffff"/>&nbsp
+   <img src="https://img.shields.io/badge/Recoil-3578E5?style=for-the-badge&logo=aws&logoColor=white"> 
+  <img src="https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white"/>&nbsp 
+ </td>
+</tr>
+<tr>
+  <td align="center">서버</td>
+  <td>
+    <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=Firebase&logoColor=ffffff"/>&nbsp
+  </td>
+</tr>  
+<tr>
+ <td align="center">협업</td>
+ <td>
+    <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white"/>&nbsp
+    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"/>&nbsp 
+    <img src="https://img.shields.io/badge/Notion-5a5d69?style=for-the-badge&logo=Notion&logoColor=white"/>&nbsp
+    <img src="https://img.shields.io/badge/Discord-4263f5?style=for-the-badge&logo=Discord&logoColor=white"/>&nbsp 
+    <img src="https://img.shields.io/badge/Figma-d90f42?style=for-the-badge&logo=Figma&logoColor=white"/>&nbsp  
+ </td>
+</tr>
+</table>
+
+<br>
 
 ## Commit Convention
 > 커밋 메세지의 끝에 <u>띄어쓰기 없이 이슈번호</u>를 함께 작성합니다.<br>
