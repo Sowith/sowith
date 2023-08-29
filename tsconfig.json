@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "ES6",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "paths": {
+      "react-router-dom": ["../node_modules/react-router-dom"]
+    },
+      "jsx": "react-jsx",
+      "strict": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "noImplicitAny": false
+    },
+    "include": ["src"],
+    "typeRoots": ["src/types"]
+}
