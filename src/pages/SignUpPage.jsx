@@ -7,11 +7,6 @@ import { Input } from '../components/common/Input';
 
 import logoWide from '../assets/logo/logo1.png';
 
-import { Button } from "../components/common/Button";
-import { Input } from "../components/common/Input"
-
-import logoWide from "../assets/logo/logo1.png";
-
 export const SignUP = () => {
   const { error, isPending, signUpHook } = useSignUpHook();
   const [signUpFormData, setSignUpFormData] = useState({
