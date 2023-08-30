@@ -1,120 +1,67 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
+import { SearchBar } from '../../components/search/SearchBar';
+import { GroupItem } from '../../components/search/GroupItem';
+import { FolderItem } from '../../components/search/FolderItem';
+import { TagItem } from '../../components/search/TagItem';
 
-export const Search = () => {
+export const SearchMain = () => {
   // 저장할 상태들
+  // FolderItem의 높이 구분을 위한 상태
+  let renderLocation = 'searchMain';
 
   // 로직 구현
   // 인기 폴더, 그룹, 친구 리스트 별
 
   // 컴포넌트
+
   return (
     <>
-      <h1>검색 페이지1 숨김처리</h1>
+      <h1 className="a11y-hidden">검색 메인 페이지 숨김처리 예정</h1>
       <Container>
-        <SearchNavBar>
-          <button>⏪</button>
-          <input type="text" placeholder="검색어를 입력하세요" />
-        </SearchNavBar>
+        <SearchBar />
         <TrendingFolder>
-          <p>인기 폴더</p>
+          <SectionTitle index={1}>
+            <h2>인기 폴더</h2>
+            <a href="#">더보기</a>
+          </SectionTitle>
           <TrendingFolderList>
-            {/* 컴포넌트화 필요 */}
-            <TrendingFolderItem>
-              <div>
-                <img src="" alt="유저 프로필 아이콘" />
-                <p>유저 닉네임</p>
-              </div>
-              <p>빠니보틀의 로드맵</p>
-              <div>
-                <p>여행</p>
-                <p>가상요소 추가 1.8M</p>
-              </div>
-            </TrendingFolderItem>
-            <TrendingFolderItem>
-              <div>
-                <img src="" alt="유저 프로필 아이콘" />
-                <p>유저 닉네임</p>
-              </div>
-              <p>용리단길 맛집 모음</p>
-              <div>
-                <p>여행</p>
-                <p>가상요소 추가 1.8M</p>
-              </div>
-            </TrendingFolderItem>
-            <TrendingFolderItem>
-              <div>
-                <img src="" alt="유저 프로필 아이콘" />
-                <p>유저 닉네임</p>
-              </div>
-              <p>내 2023년 여름</p>
-              <div>
-                <p>여행</p>
-                <p>가상요소 추가 1.8M</p>
-              </div>
-            </TrendingFolderItem>
+            <FolderItem renderLocation={renderLocation} />
+            <FolderItem renderLocation={renderLocation} />
+            <FolderItem renderLocation={renderLocation} />
+            <FolderItem renderLocation={renderLocation} />
+            <FolderItem renderLocation={renderLocation} />
+            <FolderItem renderLocation={renderLocation} />
+            <FolderItem renderLocation={renderLocation} />
+            <FolderItem renderLocation={renderLocation} />
+            <FolderItem renderLocation={renderLocation} />
+            <FolderItem renderLocation={renderLocation} />
           </TrendingFolderList>
         </TrendingFolder>
         <TrendingGroup>
-          <p>인기 그룹</p>
-          {/* 컴포넌트화 필요 */}
-          <TrendingGroupItem>
-            <img src="" alt="그룹 프로필 아이콘" />
-            <div>
-              <p>3반 얼짱 공주들</p>
-              <div>
-                <p>패션</p>
-                <p>패션</p>
-                <p>수험생활</p>
-              </div>
-            </div>
-            <div>
-              <button>팔로우</button>
-              <span>5.6 K</span>
-            </div>
-          </TrendingGroupItem>
-          <TrendingGroupItem>
-            <img src="" alt="그룹 프로필 아이콘" />
-            <div>
-              <p>3반 얼짱 공주들</p>
-              <div>
-                <p>패션</p>
-                <p>패션</p>
-                <p>수험생활</p>
-              </div>
-            </div>
-            <div>
-              <button>팔로우</button>
-              <span>5.6 K</span>
-            </div>
-          </TrendingGroupItem>
+          <SectionTitle index={2}>
+            <h2>인기 그룹</h2>
+            <a href="#">더보기</a>
+          </SectionTitle>
+
+          <TrendingGroupList>
+            <GroupItem />
+            <GroupItem />
+            <GroupItem />
+          </TrendingGroupList>
         </TrendingGroup>
-        <FriendsList>
-          <p>내 친구 리스트 (가나다 순)</p>
+        <TrendingTag>
+          <SectionTitle index={3}>
+            <h2>인기 태그</h2>
+            <a href="#">더보기</a>
+          </SectionTitle>
           {/* 컴포넌트화 필요 */}
-          <FriendsListItem>
-            <img src="" alt="친구 프로필 아이콘" />
-            <div>
-              <p>친구 닉네임</p>
-              <p>한 줄 소개</p>
-            </div>
-            <div>
-              <img src="" alt="메세지 보내기" />
-              <span>메세지 보내기</span>
-            </div>
-          </FriendsListItem>
-          <FriendsListItem>
-            <img src="" alt="친구 프로필 아이콘" />
-            <div>
-              <p>친구 닉네임</p>
-              <p>한 줄 소개</p>
-            </div>
-            <div>
-              <img src="" alt="메세지 보내기" />
-              <span>메세지 보내기</span>
-            </div>
-          </FriendsListItem>
-        </FriendsList>
+          <TrendingTagList>
+            <TagItem />
+            <TagItem />
+            <TagItem />
+          </TrendingTagList>
+        </TrendingTag>
       </Container>
     </>
   );
@@ -122,105 +69,80 @@ export const Search = () => {
 
 const Container = styled.div`
   width: 80%;
-  background-color: #756e6e;
+  background-color: #ffffff;
   margin: 0 auto;
+  padding: 40px 0 10px 0;
 
-  button {
-    margin-right: 20px;
-  }
-  input {
-  }
+  margin-top: 60px;
 
   > * {
     width: 90%;
     margin: 0 auto;
   }
+
+  h2 {
+    margin: 0;
+  }
+
+  section {
+    padding-top: 18px;
+  }
 `;
 
-const SearchNavBar = styled.div`
-  width: 90%;
+const SectionTitle = styled.div`
   display: flex;
-  justify-content: flex-start;
-  margin: 0 auto;
+  padding-bottom: 6px;
+  justify-content: space-between;
 
-  button {
-    margin-right: 20px;
-    flex-shrink: 0;
+  h2 {
+    font-family: var(--font--semibold);
+    font-size: 18px;
   }
-  input {
-    flex-grow: 1;
+
+  a {
+    align-self: flex-end;
+    font-size: 11px;
   }
+
+  ${(props) =>
+    (props.index === 2 || props.index === 3) &&
+    `
+    border-bottom: 2px solid #FFDDCC;
+  `}
 `;
 
 const TrendingFolder = styled.section`
-  background-color: teal;
+  border-bottom: 5px solid #eeeeee;
 `;
 
-const TrendingFolderList = styled.section`
+const TrendingFolderList = styled.div`
   display: flex;
   gap: 10px;
-`;
-
-const TrendingFolderItem = styled.div`
-  padding: 10px 10px;
-  border-radius: 5px;
-  background-color: yellow;
-
-  img {
-    border-radius: 50%;
-    margin-right: 15px;
-  }
-
-  div:first-child,
-  :last-child {
-    display: flex;
-    gap: 10px;
-  }
-
-  div:last-child {
-    justify-content: space-between;
-  }
+  overflow-x: auto;
+  margin-bottom: 15px;
 `;
 
 const TrendingGroup = styled.section`
-  background-color: royalblue;
+  border-bottom: 5px solid #eeeeee;
 `;
 
-const TrendingGroupItem = styled.div`
-  display: flex;
-  background-color: tomato;
-  margin-bottom: 5px;
-  img {
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-
-  p {
-    margin-bottom: 5px;
-  }
-
-  div > div {
-    display: flex;
-  }
-
-  align-items: center;
+const TrendingGroupList = styled.div`
+  padding-top: 10px;
 `;
 
-const FriendsList = styled.section`
-  background-color: salmon;
+const TrendingTag = styled.section``;
+
+const TrendingTagList = styled.div`
+  padding-top: 6px;
+  margin-bottom: 10px;
 `;
 
-const FriendsListItem = styled.div`
-  display: flex;
-  background-color: whitesmoke;
-  margin-bottom: 5px;
-
-  img {
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-
-  div:nth-child(2) {
-    margin-right: 30px;
-  }
-`;
+// const TagItem = styled.p`
+//   border-radius: 5px;
+//   background: linear-gradient(137deg, #ff537c 0%, #ffd66d 100%);
+//   font-size: 10px;
+//   color: #ffffff;
+//   padding: 2px 7px;
+//   text-align: center;
+//   margin: 0;
+// `;
