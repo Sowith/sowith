@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react'; // React와 타입들을 import
 import styled from 'styled-components';
 import { useSignUpHook } from '../hooks/useSignUp';
 
@@ -7,7 +7,7 @@ import { Input } from '../components/common/Input';
 
 import logoWide from '../assets/logo/logo1.png';
 
-export const SignUP = () => {
+export const SignUP: React.FC = () => { // React.FC 타입 사용
   const { error, isPending, signUpHook } = useSignUpHook();
   const [signUpFormData, setSignUpFormData] = useState({
     email: '',
@@ -15,13 +15,13 @@ export const SignUP = () => {
     userName: '',
     accountID: '',
   });
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState<number>(1); // number 타입 명시
 
   const handleCurrentStep = () => {
     setCurrentStep((prevStep) => prevStep + 1);
   };
 
-  const handleData = (e) => {
+  const handleData = (e: ChangeEvent<HTMLInputElement>) => { // ChangeEvent 타입 명시
     const { id, value } = e.target;
     setSignUpFormData((prevData) => ({
       ...prevData,
@@ -29,7 +29,7 @@ export const SignUP = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => { // FormEvent 타입 명시
     e.preventDefault();
     console.log(signUpFormData);
     signUpHook(signUpFormData);
@@ -39,7 +39,7 @@ export const SignUP = () => {
     <>
       <h1 className="a11y-hidden">회원가입 페이지</h1>
       <h2 style={{ textAlign: 'center', margin: '60px 0 20px 0' }}>
-        <img src={logoWide} />
+        <img src={logoWide} alt="로고" />
       </h2>
       <FormWrap onSubmit={handleSubmit}>
         {currentStep === 1 && (
