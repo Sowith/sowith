@@ -5,7 +5,8 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
     "paths": {
-      "react-router-dom": ["../node_modules/react-router-dom"]
+      "react-router-dom": ["../node_modules/react-router-dom"],
+      "*": ["*", "src/*"]
     },
       "jsx": "react-jsx",
       "strict": true,

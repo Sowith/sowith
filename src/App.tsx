@@ -13,6 +13,7 @@ import { SearchWithFolder } from './pages/search/SearchWithFolderPage';
 import { SearchWithGroup } from './pages/search/SearchWithGroupPage';
 import { SearchWithPost } from './pages/search/SearchWithPostPage';
 import { SearchWithTag } from './pages/search/SearchWithTagPage';
+import { ProfilePage } from "pages/profile/ProfilePage";
 
 export function App(): JSX.Element {
   return (
@@ -44,13 +45,16 @@ export function App(): JSX.Element {
           <button>(검색 / 그룹)</button>
         </Link>
         <Link to="/searchwithpost">
-          <button>(검색 / 게시물)</button>
+          <button> | (검색 / 게시물)</button>
         </Link>
         <Link to="/searchwithgroup">
-          <button>검색페이지/그룹</button>
+          <button> | 검색페이지/그룹</button>
         </Link>
         <Link to="/searchwithtag">
-          <button>(검색 / 태그)</button>
+          <button> |(검색 / 태그)</button>
+        </Link>
+        <Link to="/profilePage">
+          <button> | ( 프로필)</button>
         </Link>
 
         <Routes>
@@ -64,6 +68,7 @@ export function App(): JSX.Element {
           <Route path="/searchwithgroup" element={<SearchWithGroup />} />
           <Route path="/searchwithpost" element={<SearchWithPost />} />
           <Route path="/searchwithtag" element={<SearchWithTag />} />
+          <Route path="/profilePage" element={<ProfilePage />} />
         </Routes>
       </div>
     </BrowserRouter>
