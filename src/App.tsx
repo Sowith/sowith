@@ -1,7 +1,8 @@
+import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 // pages
-import { SignUP } from './pages/SignUpPage';
+import { SignUP } from './pages/SignUpTS';
 import { Login } from './pages/LoginPage';
 import { PostUpload } from './pages/PostUpload';
 import { MyGlobalStyle } from './style/GlobalStyle';
@@ -9,7 +10,7 @@ import { SearchMain } from './pages/search/SearchMainPage';
 import { SearchHistory } from './pages/search/SearchHistoryPage';
 import { SearchByCategory } from './pages/search/SearchByCategoryPage';
 
-function App() {
+export function App(): JSX.Element {
   return (
     <BrowserRouter>
       <MyGlobalStyle />
@@ -45,5 +46,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;
