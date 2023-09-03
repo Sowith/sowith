@@ -30,24 +30,6 @@ return(
         <Link to="/searchhistory">
           <TestButton>(검색 결과 기록 페이지)</TestButton>
         </Link>
-        <Link to="/searchwithaccount">
-          <TestButton>(검색 / 계정)</TestButton>
-        </Link>
-        <Link to="/searchwithfolder">
-          <TestButton>(검색 / 폴더)</TestButton>
-        </Link>
-        <Link to="/searchwithgroup">
-          <TestButton>(검색 / 그룹)</TestButton>
-        </Link>
-        <Link to="/searchwithpost">
-          <TestButton>(검색 / 게시물)</TestButton>
-        </Link>
-        <Link to="/searchwithgroup">
-          <TestButton>검색페이지/그룹</TestButton>
-        </Link>
-        <Link to="/searchwithtag">
-          <TestButton>(검색 / 태그)</TestButton>
-        </Link>
         <Link to="/profilePage">
           <TestButton>(프로필) </TestButton>
         </Link>
