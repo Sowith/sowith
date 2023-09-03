@@ -9,5 +9,5 @@ export const ProfileBottomPost = () => {
 }
 
 const ProfileBottomPostWrap = styled.section`
-  
+
 `

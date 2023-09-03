@@ -14,13 +14,12 @@ import iconBookmark from "../../assets/icon/icon-bookmark.svg";
 export const ProfileTabMenu = () => {
   const [currentStep, setCurrentStep] = useState(1);
 
-  const openTabMenu = (currentStep) => {
-    setCurrentStep(currentStep);
+  const openTabMenu = (e) => {
+    setCurrentStep(e);
   };
 
   return (
     <>
-      {" "}
       <ProfileTabMenuWrap>
         <div>
           <button onClick={() => openTabMenu(1)}>
