@@ -70,7 +70,7 @@ export const SearchByCategory = () => {
     <>
       <h1 className="a11y-hidden">검색 페이지/게시글</h1>
       <Container>
-        <SearchBar />
+        <SearchBar className="search-bar" />
         <CategorySwitcher>
           <button
             className="category-post"
@@ -103,7 +103,7 @@ export const SearchByCategory = () => {
             태그
           </button>
           <IndicatorBar width={barWidth} left={barPosition} />
-          {/* <BackgroundBar /> */}
+          <BackgroundBar />
         </CategorySwitcher>
         {renderComponentByCategory()}
       </Container>
@@ -112,40 +112,40 @@ export const SearchByCategory = () => {
 };
 
 const Container = styled.div`
-  width: 80%;
+  width: 100%;
   background-color: #ffffff;
   margin: 0 auto;
 
   margin-top: 60px;
-
-  > * {
-    width: 90%;
-    margin: 0 auto;
-  }
 `;
 
 const CategorySwitcher = styled.div`
   display: flex;
   position: relative;
   justify-content: space-between;
-  gap: 10px;
   width: 80%;
   margin: 20px auto;
-  padding: 0 5%;
 
   button {
     cursor: pointer;
     font-size: 13px;
     font-family: var(--font--Medium);
+    /* padding: 5px 10px; */
+    padding: 0 5%;
+    white-space: nowrap;
+  }
+
+  button:hover {
+    color: #fc9763;
   }
 `;
 
 const IndicatorBar = styled.div`
   position: absolute;
-  top: 16px;
+  top: 20px;
   left: ${(props) => props.left}px;
   width: ${(props) => props.width}px;
-  height: 4px; // stroke-width
+  height: 4px;
   background-color: #fc9763;
   border-radius: 5px;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
@@ -155,8 +155,10 @@ const IndicatorBar = styled.div`
 
 const BackgroundBar = styled.div`
   position: absolute;
-  top: 16px;
+  top: 20px;
   height: 4px;
   background-color: #dddddd;
   border-radius: 5px;
+  width: 100%;
+  left: 0;
 `;
