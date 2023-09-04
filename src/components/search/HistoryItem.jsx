@@ -46,7 +46,7 @@ export const HistoryItem = ({ historyCategory }) => {
 
           {historyCategory === 'user' && (
             <>
-              <img src={userIcon} alt="" />
+              <img className="icon-category" src={userIcon} alt="" />
               <span className="user-name">꼬마유령 캐스퍼</span>
               <img src={dotIcon} alt="spacing dot" />
               <span className="user-state">팔로워 13만명</span>
@@ -55,7 +55,7 @@ export const HistoryItem = ({ historyCategory }) => {
 
           {historyCategory === 'folder' && (
             <>
-              <img src={folderIcon} alt="" />
+              <img className="icon-category" src={folderIcon} alt="" />
               <span className="like-count">좋아요 1.8M</span>
               <img src={dotIcon} alt="spacing dot" />
               <span className="folder-tag">게임</span>
@@ -64,7 +64,7 @@ export const HistoryItem = ({ historyCategory }) => {
 
           {historyCategory === 'group' && (
             <>
-              <img src={groupIcon} alt="" />
+              <img className="icon-category" src={groupIcon} alt="" />
               <span className="like-count">좋아요 5.6k</span>
               <img src={dotIcon} alt="spacing dot" />
               <span className="group-tag">여행</span>
@@ -122,6 +122,12 @@ const Container = styled.div`
       font-size: 10px;
       color: #898888;
     }
+  }
+
+  img.icon-category {
+    width: 8px;
+    height: 8px;
+    align-self: center;
   }
 
   button.icon-delete {
