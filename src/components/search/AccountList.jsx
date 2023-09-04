@@ -1,12 +1,18 @@
+import { styled } from 'styled-components';
 import { AccountItem } from './AccountItem';
 
 export const AccountList = () => {
   return (
-    <div className="account-list">
+    <AccountItemContainer>
       <AccountItem />
       <AccountItem />
       <AccountItem />
       <AccountItem />
-    </div>
+    </AccountItemContainer>
   );
 };
+
+const AccountItemContainer = styled.div`
+  width: 90%;
+  margin: 0 auto;
+`;

@@ -68,7 +68,7 @@ export const SearchMain = () => {
 };
 
 const Container = styled.div`
-  width: 80%;
+  width: 100%;
   background-color: #ffffff;
   margin: 0 auto;
   padding: 40px 0 10px 0;

@@ -42,7 +42,7 @@ export const SearchHistory = () => {
 };
 
 const Container = styled.div`
-  width: 80%;
+  width: 100%;
   background-color: #ffffff;
   margin: 0 auto;
 
