@@ -35,6 +35,16 @@ export const MyGlobalStyle = createGlobalStyle`
     text-decoration: none;
   }
 
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  p {
+    margin : 0;
+  }
+
   .a11y-hidden {
     clip: rect(1px, 1px, 1px, 1px);
     clip-path: inset(50%);
