@@ -6,16 +6,18 @@ export const Button = ({ text, ...props }) => {
 }
 
 const ButtonDefault = styled.button`
-  background-color: #FC9763;
+  background-color: var(--main-color);
   width: ${(props) => props.width || "141px"};
-  margin-top: 20px;
+  height: ${(props) => props.height || ""};
+  margin: ${(props) => props.margin || ""};
   padding: ${(props) => props.padding || "9px 0"};
-  border-radius: 10px;
+  border-radius: ${(props) => props.borderRadius || "10px"};
   color: white;
+  text-align: center;
   font-size: ${(props) => props.fontSize || "16px"};
-  font-family: var(--font--Medium);
+  font-family: ${(props) => props.fontFamily || "var(--font--Medium)"};  
   box-sizing: border-box;
-  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: ${({boxShadow = false}) => boxShadow ? "4px 4px 4px 0 rgba(0, 0, 0, 0.25)" : ""};  ;
 
   &:hover {
     cursor: pointer;
