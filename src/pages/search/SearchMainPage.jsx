@@ -43,7 +43,6 @@ export const SearchMain = () => {
             <h2>인기 그룹</h2>
             <a href="#">더보기</a>
           </SectionTitle>
-
           <TrendingGroupList>
             <GroupItem />
             <GroupItem />

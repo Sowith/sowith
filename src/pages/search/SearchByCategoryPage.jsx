@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
 import { PostList } from '../../components/search/PostList';
@@ -10,40 +10,41 @@ import { TagList } from '../../components/search/TagList';
 export const SearchByCategory = () => {
   // 저장할 상태들
   const [selectedCategory, setSelectedCategory] = useState('post');
-  const [barWidth, setBarWidth] = useState(0); // 막대의 너비
-  const [barPosition, setBarPosition] = useState(0); // 막대의 위치
+  const [barMetrics, setBarMetrics] = useState({ width: 0, left: 0 });
+
   // 로직 구현
   // 인기 폴더, 그룹, 친구 리스트 별
-  const selectedButtonRef = useRef(null);
 
   const handleButtonClick = (category, event) => {
     setSelectedCategory(category);
-    selectedButtonRef.current = event.currentTarget; // 여기서 참조 업데이트
-
     const { width, left } = event.currentTarget.getBoundingClientRect();
     const parentLeft =
       event.currentTarget.parentElement.getBoundingClientRect().left;
 
-    setBarWidth(width);
-    setBarPosition(left - parentLeft);
+    setBarMetrics({
+      width: width,
+      left: left - parentLeft,
+    });
   };
 
   useEffect(() => {
     const handleResize = () => {
-      if (selectedButtonRef.current) {
-        const { width, left } =
-          selectedButtonRef.current.getBoundingClientRect();
+      const postButton = document.querySelector('.category-post');
+      if (postButton) {
+        const { width, left } = postButton.getBoundingClientRect();
         const parentLeft =
-          selectedButtonRef.current.parentElement.getBoundingClientRect().left;
-
-        setBarWidth(width);
-        setBarPosition(left - parentLeft);
+          postButton.parentElement.getBoundingClientRect().left;
+        setBarMetrics({
+          width: width,
+          left: left - parentLeft,
+        });
       }
     };
 
+    handleResize();
+    window.addEventListener('resize', handleResize);
     window.addEventListener('resize', handleResize);
 
-    // 이벤트 리스너 정리
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -102,7 +103,7 @@ export const SearchByCategory = () => {
           >
             태그
           </button>
-          <IndicatorBar width={barWidth} left={barPosition} />
+          <IndicatorBar width={barMetrics.width} left={barMetrics.left} />
           <BackgroundBar />
         </CategorySwitcher>
         {renderComponentByCategory()}
@@ -124,13 +125,12 @@ const CategorySwitcher = styled.div`
   position: relative;
   justify-content: space-between;
   width: 80%;
-  margin: 20px auto;
+  margin: 30px auto;
 
   button {
     cursor: pointer;
     font-size: 13px;
     font-family: var(--font--Medium);
-    /* padding: 5px 10px; */
     padding: 0 5%;
     white-space: nowrap;
   }
