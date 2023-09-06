@@ -13,7 +13,7 @@ export const MyGlobalStyle = createGlobalStyle`
     --font--Thin: 'Pretendard-Thin';
     --font--Regular: 'Pretendard-Regular';
     --font--Medium: 'Pretendard-Medium';
-    --font--semibold: 'Pretendard-semiBold';
+    --font--SemiBold: 'Pretendard-semiBold';
     --font--Bold: 'Pretendard-Bold';
   }
 
@@ -24,6 +24,7 @@ export const MyGlobalStyle = createGlobalStyle`
   button {
     all: unset;
     font-family: var(--font--Medium);
+    cursor: pointer;
   }
   
   img {
@@ -33,6 +34,11 @@ export const MyGlobalStyle = createGlobalStyle`
   a {
     color: black;
     text-decoration: none;
+  }
+
+  ul, li, p, h3 {
+    margin: 0;
+    padding: 0;
   }
 
   .a11y-hidden {
