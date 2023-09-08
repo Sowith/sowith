@@ -4,8 +4,6 @@ import dotIcon from '../../assets/icon/icon-dot.svg';
 import testImg from '../../assets/testImg/testimg-user.png';
 
 export const AccountItem = () => {
-  // 해당 태그가 달린 게시물의 개수에 따라서 대략적인 개수를 정해주는 로직 추가 필요
-
   return (
     <Container>
       <div className="icon-user">
