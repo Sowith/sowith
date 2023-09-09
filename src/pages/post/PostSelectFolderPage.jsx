@@ -1,93 +1,122 @@
-import styled from "styled-components";
+import { useState, useEffect } from "react";
+import { styled } from "styled-components"
 
-export function SelectFolder({ setStep }) {
+import { useModalControl } from "../../hooks/useModalControl";
+import { SearchBar } from "../../components/common/post/SearchBar";
+import { FolderList } from "../../components/common/FolderList";
+import { Button } from "../../components/common/Button";
+
+import { ReactComponent as IconSowithLogo } from "../../assets/icon/icon-sowith-logo.svg";
+import IconFolder from "../../assets/icon/icon-folder.svg";
+
+
+export const PostSelectFolderPage = () => {
+
+  const folderData = [
+    {
+      "folderId": 1,
+      "name": "빠니보틀의 로드맵",
+      "totalpost": 10,
+      "bookmark": true,
+      "src": [
+        "https://picsum.photos/200/191",
+        "https://picsum.photos/200/192",
+        "https://picsum.photos/200/193",
+        "https://picsum.photos/200/194",
+      ]
+    },
+    {
+      "folderId": 2,
+      "name": "용리단길 맛집 모음",
+      "totalpost": 78,
+      "bookmark": true,
+      "src": [
+        "https://picsum.photos/200/195",
+        "https://picsum.photos/200/196",
+        "https://picsum.photos/200/197",
+        "https://picsum.photos/200/198",
+      ]
+    },
+    {
+      "folderId": 3,
+      "name": "내 2023년 여름",
+      "totalpost": 10,
+      "bookmark": false,
+      "src": [
+        "https://picsum.photos/200/199",
+        "https://picsum.photos/200/200",
+        "https://picsum.photos/200/201",
+        "https://picsum.photos/200/202",
+      ]
+    }
+  ];
+
+  const { openModal, closeModal, ModalComponent } = useModalControl();
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [archiveFolderData, setArchiveFolderData] = useState(folderData);
+
+  const handleBookMark = (id) => {
+    const updatedImageData = archiveFolderData.map(item => {
+      if (item.folderId === id) {
+        return { ...item, bookmark: !item.bookmark };
+      }
+      return item;
+    })
+    setArchiveFolderData(updatedImageData)
+  }
+
+  useEffect(() => {
+    openModal();
+  }, [])
+
   return (
     <>
-      <h1>PostUpload</h1>
-      <h2>폴더설정</h2>
-      <SelectFolderWrap>
-        <div>
-          <label htmlFor="searchFolder">폴더명 검색 (hidden처리)</label>
-          <input id="searchFolder" type="text" placeholder="폴더명 검색" />
-          <button>정렬버튼</button>
-        </div>
-        <FolderListStyle>
-          <FolderStyle onClick={() => setStep(1)}>
-            <img src="https://picsum.photos/200/191" alt="" />
-            <p>폴더명</p>
-          </FolderStyle>
-          <FolderStyle onClick={() => setStep(1)}>
-            <img src="https://picsum.photos/200/192" alt="" />
-            <p>폴더명</p>
-          </FolderStyle>
-          <FolderStyle onClick={() => setStep(1)}>
-            <img src="https://picsum.photos/200/193" alt="" />
-            <p>폴더명</p>
-          </FolderStyle>
-          <FolderStyle onClick={() => setStep(1)}>
-            <img src="https://picsum.photos/200/194" alt="" />
-            <p>폴더명</p>
-          </FolderStyle>
-          <FolderStyle onClick={() => setStep(1)}>
-            <img src="https://picsum.photos/200/195" alt="" />
-            <p>폴더명</p>
-          </FolderStyle>
-          <FolderStyle onClick={() => setStep(1)}>
-            <img src="https://picsum.photos/200/196" alt="" />
-            <p>폴더명</p>
-          </FolderStyle>
-        </FolderListStyle>
-        <button type="button">폴더생성하기</button>
-      </SelectFolderWrap>
-    </>
+      <ModalComponent>
+        <SearchBar
+          id={'folderSearch'}
+          icon={IconFolder}
+          placeholder={'폴더 검색...'}
+          searchKeyword={searchKeyword}
+          setSearchKeyword={setSearchKeyword}
+        />
 
+        <FolderList archiveFolderData={archiveFolderData} handleBookMark={handleBookMark} />
+
+        {/* 폴더가 존재하지 않을경우
+        <NonFolderContainer>
+          <IconSowithLogo/>
+          <p className="alert-msg">폴더가 존재하지 않습니다</p>
+          <Button type="button" text={"폴더생성하기"} width={'112px'} height={'41px'} fontSize={'12px'} fontFamily={'var(--font--Bold)'} borderRadius={'30px'}/>
+        </NonFolderContainer> 
+        */}
+
+        <Button
+          type="button"
+          text={"완료"}
+          width={'90%'}
+          height={'41px'}
+          fontSize={'12px'}
+          margin={'auto 0 12px'}
+          fontFamily={'var(--font--Bold)'}
+          onClick={closeModal}
+        />
+      </ModalComponent>
+    </>
   )
 }
 
-const SelectFolderWrap = styled.div`
-  position: relative;
-  width: 600px;
-  padding: 30px;
-  box-sizing: border-box;
-
-  margin: auto;
+const NonFolderContainer = styled.div`
+  width: 90%;
+  height: calc(100% - 170px);
   display: flex;
   flex-direction: column;
-  background-color: #756e6e;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
 
-  & input {
-    width: 460px;
-    margin-top: 10px;
-    padding: 5px;
-  }
-  & button {
-    position: absolute;
-    bottom: 30px;
-    right: 50%;
-    transform: translateX(50%);
+  .alert-msg {
+    font-size: 16px;
+    color: var(--gray200-color);
   }
 `;
 
-const FolderListStyle = styled.ul`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  padding: 0;
-
-  & img {
-      width: 174px;
-      height: 174px;
-      object-fit: cover;
-      vertical-align: top;
-    }
-  & p {
-    background-color: #fff;
-    text-align: center;
-    margin: 0;
-  }
-`;
-
-const FolderStyle = styled.div`
-  position: relative;
-  cursor: pointer;
-`;

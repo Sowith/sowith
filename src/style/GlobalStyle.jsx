@@ -36,6 +36,10 @@ export const MyGlobalStyle = createGlobalStyle`
     text-decoration: none;
   }
 
+  ul {
+    list-style-type: none;
+  }
+
   ul, li, p, h3 {
     margin: 0;
     padding: 0;
