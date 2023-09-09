@@ -44,7 +44,9 @@ export const AccountItem: React.FC<AccountItemProps> = ({
 const Container = styled.div`
   background-color: #ffffff;
   display: flex;
-  margin-bottom: 5px;
+  margin: 0 auto;
+  padding: 10px 0;
+  width: 88%;
 
   div.icon-user {
     border-radius: 50%;

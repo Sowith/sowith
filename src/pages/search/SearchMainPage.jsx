@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
-import { GroupItem } from '../../components/search/GroupItem';
+import { GroupUI } from '../../components/common/GroupUI';
 import { FolderItem } from '../../components/search/FolderItem';
 import { TagItem } from '../../components/search/TagItem';
 
@@ -45,9 +45,9 @@ export const SearchMain = () => {
           </SectionTitle>
 
           <TrendingGroupList>
-            <GroupItem />
-            <GroupItem />
-            <GroupItem />
+            <GroupUI />
+            <GroupUI />
+            <GroupUI />
           </TrendingGroupList>
         </TrendingGroup>
         <TrendingTag>

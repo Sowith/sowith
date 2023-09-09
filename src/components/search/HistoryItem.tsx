@@ -103,7 +103,8 @@ const Container = styled.div<{ historyCategory: HistoryCategory }>`
   background-color: #ffffff;
   display: flex;
   min-height: 50px;
-  margin-bottom: 5px;
+  margin: 10px auto 10px auto;
+  width: 88%;
 
   div.icon-history {
     border-radius: 50%;

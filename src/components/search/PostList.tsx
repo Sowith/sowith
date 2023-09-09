@@ -47,7 +47,8 @@ const Container = styled.section`
   padding: 0 auto;
   gap: 5px;
   box-sizing: border-box;
-  margin: 0 auto;
+  margin: 20px auto;
   border-radius: 10px;
   overflow: hidden;
+  width: 88%;
 `;

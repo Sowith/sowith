@@ -25,7 +25,7 @@ export const SearchBar: React.FC = () => {
 
 const SearchBarContainer = styled.div`
   display: flex;
-  margin: 0 auto;
+  margin: 0 auto 20px auto;
   width: 90%;
   align-items: center;
 `;

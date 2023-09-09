@@ -1,18 +1,18 @@
 import { styled } from 'styled-components';
-import { GroupItem } from './GroupItem';
+import { GroupUI } from 'components/common/GroupUI';
 
 export const GroupList = () => {
   return (
     <GroupItemContainer>
-      <GroupItem />
-      <GroupItem />
-      <GroupItem />
-      <GroupItem />
+      <GroupUI />
+      <GroupUI />
+      <GroupUI />
+      <GroupUI />
     </GroupItemContainer>
   );
 };
 
 const GroupItemContainer = styled.div`
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
 `;

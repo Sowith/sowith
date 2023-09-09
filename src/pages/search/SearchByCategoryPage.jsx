@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
+import { StepBar } from '../../components/common/StepBar';
 import { PostList } from '../../components/search/PostList';
 import { FolderList } from '../../components/search/FolderList';
 import { GroupList } from '../../components/search/GroupList';
@@ -8,64 +9,29 @@ import { AccountList } from '../../components/search/AccountList';
 import { TagList } from '../../components/search/TagList';
 
 export const SearchByCategory = () => {
-  // 저장할 상태들
-  const [selectedCategory, setSelectedCategory] = useState('post');
-  const [barWidth, setBarWidth] = useState(0); // 막대의 너비
-  const [barPosition, setBarPosition] = useState(0); // 막대의 위치
-  // 로직 구현
-  // 인기 폴더, 그룹, 친구 리스트 별
-  const selectedButtonRef = useRef(null);
+  const [currentStep, setCurrentStep] = useState(1);
 
-  const handleButtonClick = (category, event) => {
-    setSelectedCategory(category);
-    selectedButtonRef.current = event.currentTarget; // 여기서 참조 업데이트
-
-    const { width, left } = event.currentTarget.getBoundingClientRect();
-    const parentLeft =
-      event.currentTarget.parentElement.getBoundingClientRect().left;
-
-    setBarWidth(width);
-    setBarPosition(left - parentLeft);
+  const handleButtonClick = (step) => {
+    setCurrentStep(step);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (selectedButtonRef.current) {
-        const { width, left } =
-          selectedButtonRef.current.getBoundingClientRect();
-        const parentLeft =
-          selectedButtonRef.current.parentElement.getBoundingClientRect().left;
-
-        setBarWidth(width);
-        setBarPosition(left - parentLeft);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    // 이벤트 리스너 정리
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
   const renderComponentByCategory = () => {
-    switch (selectedCategory) {
-      case 'post':
+    switch (currentStep) {
+      case 1:
         return <PostList />;
-      case 'folder':
+      case 2:
         return <FolderList />;
-      case 'account':
+      case 3:
         return <AccountList />;
-      case 'group':
+      case 4:
         return <GroupList />;
-      case 'tag':
+      case 5:
         return <TagList />;
       default:
         return <PostList />;
     }
   };
-  // 컴포넌트
+
   return (
     <>
       <h1 className="a11y-hidden">검색 페이지/게시글</h1>
@@ -74,37 +40,33 @@ export const SearchByCategory = () => {
         <CategorySwitcher>
           <button
             className="category-post"
-            onClick={(e) => handleButtonClick('post', e)}
+            onClick={() => handleButtonClick(1)}
           >
             게시글
           </button>
           <button
             className="category-folder"
-            onClick={(e) => handleButtonClick('folder', e)}
+            onClick={() => handleButtonClick(2)}
           >
             폴더
           </button>
           <button
             className="category-account"
-            onClick={(e) => handleButtonClick('account', e)}
+            onClick={() => handleButtonClick(3)}
           >
             계정
           </button>
           <button
             className="category-group"
-            onClick={(e) => handleButtonClick('group', e)}
+            onClick={() => handleButtonClick(4)}
           >
             그룹
           </button>
-          <button
-            className="category-tag"
-            onClick={(e) => handleButtonClick('tag', e)}
-          >
+          <button className="category-tag" onClick={() => handleButtonClick(5)}>
             태그
           </button>
-          <IndicatorBar width={barWidth} left={barPosition} />
-          {/* <BackgroundBar /> */}
         </CategorySwitcher>
+        <StepBar currentStep={currentStep} howManyTab={5} />
         {renderComponentByCategory()}
       </Container>
     </>
@@ -112,51 +74,26 @@ export const SearchByCategory = () => {
 };
 
 const Container = styled.div`
-  width: 80%;
+  width: 100%;
   background-color: #ffffff;
   margin: 0 auto;
 
   margin-top: 60px;
-
-  > * {
-    width: 90%;
-    margin: 0 auto;
-  }
 `;
 
 const CategorySwitcher = styled.div`
   display: flex;
-  position: relative;
-  justify-content: space-between;
-  gap: 10px;
-  width: 80%;
-  margin: 20px auto;
-  padding: 0 5%;
+  justify-content: space-evenly;
+  width: 88%;
+  margin: 0 auto 5px auto;
 
   button {
+    flex: 1;
     cursor: pointer;
     font-size: 13px;
     font-family: var(--font--Medium);
+    text-align: center;
+    // 추가적으로 설정할 것
+    /* min-width: 80px; */
   }
-`;
-
-const IndicatorBar = styled.div`
-  position: absolute;
-  top: 16px;
-  left: ${(props) => props.left}px;
-  width: ${(props) => props.width}px;
-  height: 4px; // stroke-width
-  background-color: #fc9763;
-  border-radius: 5px;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-  transition: left 0.3s, width 0.3s;
-  z-index: 1;
-`;
-
-const BackgroundBar = styled.div`
-  position: absolute;
-  top: 16px;
-  height: 4px;
-  background-color: #dddddd;
-  border-radius: 5px;
 `;

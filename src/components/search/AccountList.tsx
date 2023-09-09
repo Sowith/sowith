@@ -50,6 +50,6 @@ export const AccountList: React.FC<AccountListProps> = ({
 };
 
 const AccountItemContainer = styled.div`
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
 `;

@@ -47,7 +47,6 @@ export const SearchHistory: React.FC = () => {
       <h1 className="a11y-hidden">검색 페이지 숨김처리</h1>
       <Container>
         <SearchBar />
-
         {userSearchHistory && (
           <YesSearchHistory>
             <p>최근 검색 기록</p>
@@ -74,22 +73,14 @@ const Container = styled.div`
   width: 100%;
   background-color: #ffffff;
   margin: 0 auto;
-
   margin-top: 60px;
-
-  > * {
-    width: 90%;
-    margin: 0 auto;
-  }
-
-  > p {
-    font-size: 13px;
-  }
 `;
 
 const YesSearchHistory = styled.div`
   > p {
     font-size: 13px;
+    width: 88%;
+    margin: 0 auto;
   }
 `;
 
