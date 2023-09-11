@@ -1,21 +1,21 @@
-import { useState, useEffect } from "react";
-import { styled } from "styled-components"
+import React, { useState, useEffect } from "react";
+import { styled } from "styled-components";
 
 import { useModalControl } from "../../hooks/useModalControl";
-import { SearchBar } from "../../components/common/post/SearchBar";
+import { SearchBar } from "../../components/post/PostSearchBar";
 import { Button } from "../../components/common/Button";
 
 import IconLocation from "../../assets/icon/icon-location.svg";
 import dotIcon from "../../assets/icon/icon-dot.svg";
 
-export const PostSelectLocationPage = () => {
-
+export const PostSelectLocationPage: React.FC = () => {
+  
   const { openModal, closeModal, ModalComponent } = useModalControl();
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   useEffect(() => {
     openModal();
-  }, [])
+  }, []);
 
   return (
     <>
@@ -71,8 +71,8 @@ export const PostSelectLocationPage = () => {
         />
       </ModalComponent>
     </>
-  )
-}
+  );
+};
 
 const Container = styled.ul`
   width: 90%;
@@ -81,7 +81,7 @@ const Container = styled.ul`
   margin-right: -5px;
   overflow-y: scroll;
 
-  &::-webkit-scrollbar-corner{
+  &::-webkit-scrollbar-corner {
     display: none;
   }
   &::-webkit-scrollbar {
@@ -90,14 +90,14 @@ const Container = styled.ul`
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 50px;
-    background: var(--main-color);;
+    background: var(--main-color);
   }
 `;
 
 const LocationItem = styled.li`
   cursor: pointer;
   padding: 10px 5px;
-  border-radius: 5px;;
+  border-radius: 5px;
 
   &:hover {
     background-color: var(--main-color);
@@ -113,13 +113,13 @@ const LocationItem = styled.li`
   }
   .location-categories {
     font-size: 12px;
-    color : #898888
+    color: #898888;
   }
-  .location-distance, 
+  .location-distance,
   .location-address {
     display: block;
     font-size: 14px;
-    color : #898888
+    color: #898888;
   }
 `;
 

@@ -1,26 +1,26 @@
-import { useEffect, useState } from "react";
-import { styled } from "styled-components"
+import React, { useState, useEffect } from "react";
+import { styled } from "styled-components";
 
 import { useModalControl } from "../../hooks/useModalControl";
-import { SearchBar } from "../../components/common/post/SearchBar";
+import { SearchBar } from "../../components/post/PostSearchBar";
 import { Button } from "../../components/common/Button";
 
 import IconHashTag from "../../assets/icon/icon-hash-tag.svg";
 
-export const PostSelectHashTagPage = () => {
-
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [selectTag, setSelectTag] = useState([]);
+export const PostSelectHashTagPage: React.FC = () => {
+  
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [selectTag, setSelectTag] = useState<string[]>([]);
   const { openModal, closeModal, ModalComponent } = useModalControl();
 
-  const handleTag = (event) => {
+  const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.currentTarget.dataset.id;
     targetElement && setSelectTag([...selectTag, targetElement]);
   };
 
   useEffect(() => {
     openModal();
-  }, [])
+  }, []);
 
   return (
     <>
@@ -78,7 +78,7 @@ export const PostSelectHashTagPage = () => {
             <span>23</span>
           </Tag>
         </TagList>
-        
+
         <Button
           type="button"
           text={"완료"}
@@ -91,8 +91,8 @@ export const PostSelectHashTagPage = () => {
         />
       </ModalComponent>
     </>
-  )
-}
+  );
+};
 
 const TagList = styled.ul`
   width: 90%;
@@ -102,7 +102,7 @@ const TagList = styled.ul`
   margin-right: -5px;
   overflow-y: scroll;
 
-  &::-webkit-scrollbar-corner{
+  &::-webkit-scrollbar-corner {
     display: none;
   }
   &::-webkit-scrollbar {
@@ -124,11 +124,11 @@ const Tag = styled.li`
   border-radius: 30px;
   border: 1px solid #767676;
   font-family: var(--font--Regular);
-  
+
   &:hover {
     border: solid 1px transparent;
     background-image: linear-gradient(white, white),
-    linear-gradient(to right, #ff547c, #ffc76c);
+      linear-gradient(to right, #ff547c, #ffc76c);
     background-origin: border-box;
     background-clip: padding-box, border-box;
     outline: none;
@@ -156,7 +156,7 @@ const Tag = styled.li`
     background-color: #C4C4C4;
   }
   span {
-    padding-left: 20px; 
+    padding-left: 20px;
     font-size: 8px;
     color: #C4C4C4;
   }
@@ -164,5 +164,3 @@ const Tag = styled.li`
     content: "게시물 ";
   }
 `;
-
-
