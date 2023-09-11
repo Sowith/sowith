@@ -10,7 +10,7 @@
 ## 팀원
 |최나경|안동섭|강동훈|
 | :---: | :---: | :---: |
-| <img width="180" alt="최나경 프로필 이미지" src="https://github.com/FRONTENDSCHOOL5/final-10-Goodi/assets/97887376/c429a5b2-80fa-4c92-9898-cfea2faa4eb5"> | <img width="180"  alt="안동섭 프로필 이미지" src="https://avatars.githubusercontent.com/u/96939334?s=400&u=6a4e635ccb574702b10b9464ce61bba61abefc72&v=4"> | <img width="180" alt="강동훈 프로필 이미지" src="https://github.com/starcradle101/starcradle101/assets/113353436/6e446c31-88ac-48b6-b6e4-4760fece3520"> |
+| <img width="180" alt="최나경 프로필 이미지" src="https://github.com/FRONTENDSCHOOL5/final-10-Goodi/assets/97887376/c429a5b2-80fa-4c92-9898-cfea2faa4eb5"> | <img width="180"  alt="안동섭 프로필 이미지" src="https://avatars.githubusercontent.com/u/96939334?s=400&u=6a4e635ccb574702b10b9464ce61bba61abefc72&v=4"> | <img width="180" alt="강동훈 프로필 이미지" src="https://github.com/Sowith/sowith/assets/113353436/65edd243-0cc2-4bfe-b7a0-e3cfa29d83b9"> |
 | [nkEllaaa](https://github.com/nkEllaaa) | [DongSup_Ahn](https://github.com/D-Sup) | [Hoon Kang](https://github.com/starcradle101) |
 
 <br>
