@@ -4,7 +4,7 @@ import { SearchBar } from '../../components/search/SearchBar';
 import {
   HistoryItem,
   HistoryItemProps,
-} from '../../components/search/HistoryItem';
+} from '../../components/search/SearchHistoryItem';
 
 import soWithLogo from '../../assets/icon/icon-sowith.svg';
 

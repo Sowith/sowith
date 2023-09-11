@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
 import { StepBar } from '../../components/common/StepBar';
-import { PostList } from '../../components/search/PostList';
-import { FolderList } from '../../components/search/FolderList';
-import { GroupList } from '../../components/search/GroupList';
-import { AccountList } from '../../components/search/AccountList';
-import { TagList } from '../../components/search/TagList';
+import { PostList } from '../../components/search/SearchPostList';
+import { FolderList } from '../../components/search/SearchFolderList';
+import { GroupList } from '../../components/search/SearchGroupList';
+import { AccountList } from '../../components/search/SearchAccountList';
+import { TagList } from '../../components/search/SearchTagList';
 
 export const SearchByCategory = () => {
   const [currentStep, setCurrentStep] = useState(1);

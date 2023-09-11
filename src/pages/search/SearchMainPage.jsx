@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
 import { GroupUI } from '../../components/common/GroupUI';
-import { FolderItem } from '../../components/search/FolderItem';
-import { TagItem } from '../../components/search/TagItem';
+import { FolderItem } from '../../components/search/SearchFolderItem';
+import { TagItem } from '../../components/search/SearchTagItem';
 
 export const SearchMain = () => {
   // 저장할 상태들
