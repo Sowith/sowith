@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 export const useModalControl = () => {
-  const [modalState, setModalState] = useState(false);
-  const [initialMount, setInitialMount] = useState(true);
-  const [animationState, setAnimationState] = useState(true);
-  const [accessAllow, setAccessAllow] = useState(true);
+  const [modalState, setModalState] = useState<boolean>(false);
+  const [initialMount, setInitialMount] = useState<boolean>(true);
+  const [animationState, setAnimationState] = useState<boolean>(true);
+  const [accessAllow, setAccessAllow] = useState<boolean>(true);
 
   const openModal = () => {
     setModalState(true);
@@ -18,29 +18,31 @@ export const useModalControl = () => {
 
   useEffect(() => {
     if (modalState) {
-      setAccessAllow(false)
+      setAccessAllow(false);
       const timer = setTimeout(() => {
-        setAnimationState(false)
-        setAccessAllow(true)
-      }, 1000)
+        setAnimationState(false);
+        setAccessAllow(true);
+      }, 1000);
       return () => clearTimeout(timer);
-    }
-
-    else if (!modalState) {
-      setAccessAllow(false)
+    } else if (!modalState) {
+      setAccessAllow(false);
       const timer = setTimeout(() => {
         setAnimationState(true);
-        setInitialMount(true)
-        setAccessAllow(true)
-      }, 1000)
+        setInitialMount(true);
+        setAccessAllow(true);
+      }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [modalState])
+  }, [modalState]);
 
-  const ModalComponent = ({ children }) => {
+  type ModalComponentProps = {
+    children: React.ReactNode;
+  };
+
+  const ModalComponent: React.FC<ModalComponentProps> = ({ children }) => {
     return (
       <WrapStyle accessAllow={accessAllow}>
-        {!initialMount &&
+        {!initialMount && (
           <>
             <ModalBlur onClick={closeModal} modalState={modalState} animationState={animationState}></ModalBlur>
             <ModalContainer modalState={modalState} animationState={animationState}>
@@ -50,13 +52,13 @@ export const useModalControl = () => {
               </ModalContent>
             </ModalContainer>
           </>
-        }
+        )}
       </WrapStyle>
     );
   };
 
   return { openModal, closeModal, ModalComponent };
-}
+};
 
 const fadePause = keyframes`
   from {
@@ -112,11 +114,11 @@ const moveDown = keyframes`
   }
 `;
 
-const WrapStyle = styled.div`
+const WrapStyle = styled.div<{ accessAllow: boolean }>`
   pointer-events: ${({ accessAllow }) => accessAllow ? 'auto' : 'none'};
 `;
 
-const ModalContainer = styled.div`
+const ModalContainer = styled.div<{ modalState: boolean, animationState: boolean }>`
   position: absolute;
   left: 0;
   top: 54px;
@@ -152,7 +154,7 @@ const ModalContent = styled.div`
   }
 `;
 
-const ModalBlur = styled.div`
+const ModalBlur = styled.div<{ modalState: boolean, animationState: boolean }>`
   position: absolute;
   cursor: pointer;
   width: 100%;

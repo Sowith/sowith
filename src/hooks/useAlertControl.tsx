@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 export const useAlertControl = () => {
@@ -12,7 +12,11 @@ export const useAlertControl = () => {
     setAlertState(false);
   };
 
-  const AlertComponent = ({ children }) => {
+  interface AlertComponentProps {
+    children: React.ReactNode;
+  }
+  
+  const AlertComponent: React.FC<AlertComponentProps> = ({ children }) => {
     return (
       <>
         {alertState && (
@@ -25,7 +29,7 @@ export const useAlertControl = () => {
   };
 
   return { openAlert, AlertComponent };
-}
+};
 
 const fadeIn = keyframes`
   from {
