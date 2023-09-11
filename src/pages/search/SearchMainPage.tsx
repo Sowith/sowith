@@ -1,19 +1,18 @@
-import { useState } from 'react';
+import { FC } from 'react';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
 import { GroupUI } from '../../components/common/GroupUI';
-import { FolderItem } from '../../components/search/SearchFolderItem';
+import { FolderList } from '../../components/common/FolderList';
 import { TagItem } from '../../components/search/SearchTagItem';
 
-export const SearchMain = () => {
-  // 저장할 상태들
-  // FolderItem의 높이 구분을 위한 상태
-  let renderLocation = 'searchMain';
+interface SectionTitleProps {
+  index: number;
+}
 
-  // 로직 구현
-  // 인기 폴더, 그룹, 친구 리스트 별
-
-  // 컴포넌트
+export const SearchMain: FC = () => {
+  const renderLocation = 'searchMain';
+  const trendingGroups = [1, 2, 3];
+  const trendingTags = [1, 2, 3];
 
   return (
     <>
@@ -25,29 +24,17 @@ export const SearchMain = () => {
             <h2>인기 폴더</h2>
             <a href="#">더보기</a>
           </SectionTitle>
-          <TrendingFolderList>
-            <FolderItem renderLocation={renderLocation} />
-            <FolderItem renderLocation={renderLocation} />
-            <FolderItem renderLocation={renderLocation} />
-            <FolderItem renderLocation={renderLocation} />
-            <FolderItem renderLocation={renderLocation} />
-            <FolderItem renderLocation={renderLocation} />
-            <FolderItem renderLocation={renderLocation} />
-            <FolderItem renderLocation={renderLocation} />
-            <FolderItem renderLocation={renderLocation} />
-            <FolderItem renderLocation={renderLocation} />
-          </TrendingFolderList>
+          <TrendingFolderList></TrendingFolderList>
         </TrendingFolder>
         <TrendingGroup>
           <SectionTitle index={2}>
             <h2>인기 그룹</h2>
             <a href="#">더보기</a>
           </SectionTitle>
-
           <TrendingGroupList>
-            <GroupUI />
-            <GroupUI />
-            <GroupUI />
+            {trendingGroups.map((_, idx) => (
+              <GroupUI key={idx} />
+            ))}
           </TrendingGroupList>
         </TrendingGroup>
         <TrendingTag>
@@ -57,9 +44,9 @@ export const SearchMain = () => {
           </SectionTitle>
           {/* 컴포넌트화 필요 */}
           <TrendingTagList>
-            <TagItem />
-            <TagItem />
-            <TagItem />
+            {trendingTags.map((tag, idx) => (
+              <TagItem key={idx} />
+            ))}
           </TrendingTagList>
         </TrendingTag>
       </Container>
@@ -68,17 +55,12 @@ export const SearchMain = () => {
 };
 
 const Container = styled.div`
-  width: 80%;
+  width: 100%;
   background-color: #ffffff;
   margin: 0 auto;
   padding: 40px 0 10px 0;
 
   margin-top: 60px;
-
-  > * {
-    width: 90%;
-    margin: 0 auto;
-  }
 
   h2 {
     margin: 0;
@@ -89,10 +71,12 @@ const Container = styled.div`
   }
 `;
 
-const SectionTitle = styled.div`
+const SectionTitle = styled.div<SectionTitleProps>`
   display: flex;
   padding-bottom: 6px;
   justify-content: space-between;
+  width: 88%;
+  margin: 0 auto;
 
   h2 {
     font-family: var(--font--semibold);
@@ -112,7 +96,8 @@ const SectionTitle = styled.div`
 `;
 
 const TrendingFolder = styled.section`
-  border-bottom: 5px solid #eeeeee;
+  width: 100%;
+  margin: 0 auto;
 `;
 
 const TrendingFolderList = styled.div`
@@ -123,26 +108,20 @@ const TrendingFolderList = styled.div`
 `;
 
 const TrendingGroup = styled.section`
-  border-bottom: 5px solid #eeeeee;
+  width: 100%;
+  margin: 0 auto;
 `;
 
 const TrendingGroupList = styled.div`
   padding-top: 10px;
 `;
 
-const TrendingTag = styled.section``;
+const TrendingTag = styled.section`
+  width: 100%;
+  margin: 0 auto;
+`;
 
 const TrendingTagList = styled.div`
   padding-top: 6px;
   margin-bottom: 10px;
 `;
-
-// const TagItem = styled.p`
-//   border-radius: 5px;
-//   background: linear-gradient(137deg, #ff537c 0%, #ffd66d 100%);
-//   font-size: 10px;
-//   color: #ffffff;
-//   padding: 2px 7px;
-//   text-align: center;
-//   margin: 0;
-// `;

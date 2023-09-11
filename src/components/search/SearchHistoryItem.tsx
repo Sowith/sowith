@@ -26,6 +26,7 @@ export interface HistoryItemProps {
   likes?: number;
   folderTag?: string;
   groupTag?: string;
+  isFollowing?: boolean;
 }
 
 export const HistoryItem: React.FC<HistoryItemProps> = ({
@@ -36,6 +37,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
   likes,
   folderTag,
   groupTag,
+  isFollowing,
 }) => {
   const handleDeleteHistory = () => {
     console.log('History delete button clicked!');
@@ -69,7 +71,11 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
               <img className="icon-category" src={userIcon} alt="" />
               <span className="user-name">{title}</span>
               <img src={dotIcon} alt="spacing dot" />
-              <span className="user-state">팔로워 {followers}명</span>
+              {isFollowing ? (
+                <span className="user-state">팔로잉</span>
+              ) : (
+                <span className="user-state">팔로워 {followers}명</span>
+              )}
             </>
           )}
 

@@ -27,14 +27,11 @@ export const AccountItem: React.FC<AccountItemProps> = ({
         <div className="user-description">
           <span className="user-nickname">꼬마유령 캐스퍼{userName}</span>
           <img src={dotIcon} alt="spacing dot" />
-          {
-            // isFollowing 값에 따라 조건부 렌더링
-            isFollowing ? (
-              <span className="user-state">팔로잉</span>
-            ) : (
-              <span className="user-state">팔로워 {follower} 명</span>
-            )
-          }
+          {isFollowing ? (
+            <span className="user-state">팔로잉</span>
+          ) : (
+            <span className="user-state">팔로워 {follower} 명</span>
+          )}
         </div>
       </div>
     </Container>

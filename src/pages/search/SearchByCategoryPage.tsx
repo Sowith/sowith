@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FC } from 'react';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
 import { StepBar } from '../../components/common/StepBar';
@@ -8,10 +8,23 @@ import { GroupList } from '../../components/search/SearchGroupList';
 import { AccountList } from '../../components/search/SearchAccountList';
 import { TagList } from '../../components/search/SearchTagList';
 
-export const SearchByCategory = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+interface Category {
+  id: number;
+  name: string;
+  className: string;
+}
 
-  const handleButtonClick = (step) => {
+export const SearchByCategory: FC = () => {
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const CATEGORIES: Category[] = [
+    { id: 1, name: '게시글', className: 'category-post' },
+    { id: 2, name: '폴더', className: 'category-folder' },
+    { id: 3, name: '계정', className: 'category-account' },
+    { id: 4, name: '그룹', className: 'category-group' },
+    { id: 5, name: '태그', className: 'category-tag' },
+  ];
+
+  const handleButtonClick = (step: number) => {
     setCurrentStep(step);
   };
 
@@ -20,7 +33,7 @@ export const SearchByCategory = () => {
       case 1:
         return <PostList />;
       case 2:
-        return <FolderList />;
+        return <></>;
       case 3:
         return <AccountList />;
       case 4:
@@ -38,33 +51,15 @@ export const SearchByCategory = () => {
       <Container>
         <SearchBar />
         <CategorySwitcher>
-          <button
-            className="category-post"
-            onClick={() => handleButtonClick(1)}
-          >
-            게시글
-          </button>
-          <button
-            className="category-folder"
-            onClick={() => handleButtonClick(2)}
-          >
-            폴더
-          </button>
-          <button
-            className="category-account"
-            onClick={() => handleButtonClick(3)}
-          >
-            계정
-          </button>
-          <button
-            className="category-group"
-            onClick={() => handleButtonClick(4)}
-          >
-            그룹
-          </button>
-          <button className="category-tag" onClick={() => handleButtonClick(5)}>
-            태그
-          </button>
+          {CATEGORIES.map((category) => (
+            <button
+              key={category.id}
+              className={category.className}
+              onClick={() => handleButtonClick(category.id)}
+            >
+              {category.name}
+            </button>
+          ))}
         </CategorySwitcher>
         <StepBar currentStep={currentStep} howManyTab={5} />
         {renderComponentByCategory()}
@@ -93,7 +88,5 @@ const CategorySwitcher = styled.div`
     font-size: 13px;
     font-family: var(--font--Medium);
     text-align: center;
-    // 추가적으로 설정할 것
-    /* min-width: 80px; */
   }
 `;

@@ -2,19 +2,24 @@ import { styled } from 'styled-components';
 import tagIcon from '../../assets/icon/icon-tag.svg';
 
 export interface TagItemProps {
-  tagTitle: string;
-  tagNumber: number;
+  tagTitle?: string;
+  tagNumber?: number;
 }
 
-export const TagItem: React.FC<TagItemProps> = ({ tagTitle, tagNumber }) => {
+export const TagItem: React.FC<TagItemProps> = ({
+  tagTitle,
+  tagNumber = 0,
+}) => {
   return (
     <Container>
       <div className="icon-tag">
         <img src={tagIcon} alt="" />
       </div>
       <div className="tag-info">
-        <span className="tag-title">{tagTitle}</span>
-        <span className="tag-number">{`게시물 ${tagNumber}+개`}</span>
+        <span className="tag-title">당근 케이크{tagTitle}</span>
+        <span className="tag-number">
+          게시물 3000+개{`게시물 ${tagNumber}+개`}
+        </span>
       </div>
     </Container>
   );
