@@ -1,69 +1,129 @@
-import styled from "styled-components"
+import { useState, useEffect } from "react";
+import { styled } from "styled-components"
 
-export function SelectLocation({ setStep }) {
+import { useModalControl } from "../../hooks/useModalControl";
+import { SearchBar } from "../../components/common/post/SearchBar";
+import { Button } from "../../components/common/Button";
+
+import IconLocation from "../../assets/icon/icon-location.svg";
+import dotIcon from "../../assets/icon/icon-dot.svg";
+
+export const PostSelectLocationPage = () => {
+
+  const { openModal, closeModal, ModalComponent } = useModalControl();
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  useEffect(() => {
+    openModal();
+  }, [])
 
   return (
     <>
-    <h1>PostUpload</h1>
-    <h2>위치설정</h2>
-    <SelectLocationWrap>
-    <label htmlFor="searchLocation">위치검색 (hidden처리)</label>
-    <input id="searchLocation" type="text" placeholder="위치 검색"/>
-    
-    <LocationList>
-      <LocationItem onClick={()=>setStep(1)}>
-        <strong>상도 당근 마켓</strong>
-        <span>마트</span>
-        <p>0.1km</p>
-      </LocationItem>
-      <LocationItem onClick={()=>setStep(1)}>
-        <strong>서울</strong>
-        <span></span>
-        <p>6.3km</p>
-      </LocationItem>
-      <LocationItem onClick={()=>setStep(1)}>
-        <strong>서울 동작구 상도동</strong>
-        <span></span>
-        <p>0.9km</p>
-      </LocationItem>
-      <LocationItem onClick={()=>setStep(1)}>
-        <strong>숭실대학교</strong>
-        <span>학교</span>
-        <p>1.3km 서울시 동작구 상도로 369 숭실대학교</p>
-      </LocationItem>
-    </LocationList>
-    </SelectLocationWrap>
+      <ModalComponent>
+        <SearchBar
+          id={'locationSearch'}
+          icon={IconLocation}
+          tagname={'hashtag'}
+          placeholder={'위치 검색...'}
+          searchKeyword={searchKeyword}
+          setSearchKeyword={setSearchKeyword}
+        />
+
+        <Container>
+          <LocationItem>
+            <p className="location-name">상도 당근 마켓</p>
+            <span className="location-categories">마트</span>
+            <LocationDetail>
+              <span className="location-distance">0.1km</span>
+            </LocationDetail>
+          </LocationItem>
+          <LocationItem>
+            <p className="location-name">서울</p>
+            <span className="location-distance">6.3km</span>
+          </LocationItem>
+          <LocationItem>
+            <p className="location-name">서울 동작구 상도동</p>
+            <span className="location-categories">마트</span>
+            <LocationDetail>
+              <span className="location-distance">0.9km</span>
+            </LocationDetail>
+          </LocationItem>
+          <LocationItem>
+            <p className="location-name">숭실대학교</p>
+            <span className="location-categories">학교</span>
+            <LocationDetail>
+              <span className="location-distance">1.3km</span>
+              <img src={dotIcon} alt="spacing dot" />
+              <span className="location-address">서울시 동작구 상도로 369 숭실대학교</span>
+            </LocationDetail>
+          </LocationItem>
+        </Container>
+
+        <Button
+          type="button"
+          text={"완료"}
+          width={'90%'}
+          height={'41px'}
+          fontSize={'12px'}
+          margin={'auto 0 12px'}
+          fontFamily={'var(--font--Bold)'}
+          onClick={closeModal}
+        />
+      </ModalComponent>
     </>
   )
 }
 
-const SelectLocationWrap = styled.div`
-    width: 600px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    background-color: #756e6e;
+const Container = styled.ul`
+  width: 90%;
+  padding: 16px 13px 0;
+  height: calc(100% - 170px);
+  margin-right: -5px;
+  overflow-y: scroll;
 
-    & input {
-      margin-top: 10px;
-      padding: 5px;
-    }
-`;
-
-const LocationList = styled.ul`
-  list-style-type: none;
-  padding: 0;
+  &::-webkit-scrollbar-corner{
+    display: none;
+  }
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: var(--main-color);;
+  }
 `;
 
 const LocationItem = styled.li`
-  box-shadow: 0px 1px #000;
   cursor: pointer;
+  padding: 10px 5px;
+  border-radius: 5px;;
 
-  & strong {
+  &:hover {
+    background-color: var(--main-color);
+    color: #FFF;
+    span {
+      color: #FFF;
+    }
+  }
+  .location-name {
     display: inline;
+    font-size: 16px;
     padding-right: 10px;
   }
-  & span {
-    color : #c4c4c4
+  .location-categories {
+    font-size: 12px;
+    color : #898888
   }
+  .location-distance, 
+  .location-address {
+    display: block;
+    font-size: 14px;
+    color : #898888
+  }
+`;
+
+const LocationDetail = styled.div`
+  display: flex;
+  gap: 5px;
 `;
