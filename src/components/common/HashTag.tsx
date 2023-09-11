@@ -1,19 +1,23 @@
-import React from 'react'
-import { styled } from "styled-components"
+import { styled } from 'styled-components';
 
-import { ReactComponent as IconCancelHashTag } from "../../assets/icon/icon-cancel-hashtag.svg";
+import { ReactComponent as IconCancelHashTag } from '../../assets/icon/icon-cancel-hashtag.svg';
 
-export const HashTag = ({ index, tag, handleDeleteTag }) => {
+interface HashTagProps {
+  index: number;
+  tag: string;
+  handleDeleteTag: (index: number) => void;
+}
 
+export const HashTag: React.FC<HashTagProps> = ({ index, tag, handleDeleteTag }) => {
   return (
     <TagStyle key={index}>
-    <span>{tag}</span>
-    <IconCancelPosition>
-      <IconCancelHashTag onClick={()=>handleDeleteTag(index)}/>
-    </IconCancelPosition>
+      <span>{tag}</span>
+      <IconCancelPosition onClick={() => handleDeleteTag(index)}>
+        <IconCancelHashTag />
+      </IconCancelPosition>
     </TagStyle>
-  )
-}
+  );
+};
 
 const TagStyle = styled.div`
   position: relative;

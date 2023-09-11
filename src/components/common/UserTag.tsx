@@ -1,23 +1,28 @@
-import { styled } from "styled-components"
+import { styled } from "styled-components";
 
 import IconCancelHumanTag from "../../assets/icon/icon-cancel-humantag.svg";
 
-export const UserTag = ({ index, tag, handleDeleteTag }) => {
+interface UserTagProps {
+  index: number;
+  tag: string;
+  handleDeleteTag: (index: number) => void;
+}
 
+export const UserTag: React.FC<UserTagProps> = ({ index, tag, handleDeleteTag }) => {
   return (
     <TagStyle key={index}>
-    <span>{`@${tag}`}</span>
-    <IconCancelPosition IconCancelHumanTag={IconCancelHumanTag} onClick={()=>handleDeleteTag(index)}>
-    </IconCancelPosition>
+      <span>{`@ ${tag}`}</span>
+      <IconCancelPosition onClick={() => handleDeleteTag(index)}>
+      </IconCancelPosition>
     </TagStyle>
-  )
-}
+  );
+};
 
 const TagStyle = styled.div`
   position: relative;
   display: inline-block;
   margin: 4px;
-  padding: 1px 25px 1px 7px;
+  padding: 1px 28px 1px 7px;
   box-sizing: border-box;
   border-radius: 30px;
   height: 25px;
@@ -34,11 +39,11 @@ const TagStyle = styled.div`
 const IconCancelPosition = styled.div`
   position: absolute;
   cursor: pointer;
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
   background: no-repeat url(${IconCancelHumanTag}) center #FFF;
   border-radius: 50%;
   top: 50%;
   transform: translateY(-50%);
-  right: 9px;
+  right: 6px;
 `;

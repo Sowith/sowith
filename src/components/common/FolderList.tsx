@@ -1,14 +1,39 @@
-import { styled } from "styled-components"
+import { useState } from "react";
+import { styled } from 'styled-components';
 
-import { ReactComponent as IconBookmark } from "../../assets/icon/icon-bookmark.svg";
-import { ReactComponent as IconFolderPlus } from "../../assets/icon/icon-folder-plus.svg";
+import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark.svg';
+import { ReactComponent as IconFolderPlus } from '../../assets/icon/icon-folder-plus.svg';
 
-export const FolderList = ({ archiveFolderData, handleBookMark }) => {
+interface FolderDataItem {
+  folderId: number;
+  src: string[];
+  name: string;
+  totalpost: number;
+  bookmark: boolean;
+}
+
+interface FolderListProps {
+  archiveFolderData: FolderDataItem[];
+  setArchiveFolderData: React.Dispatch<React.SetStateAction<FolderDataItem[]>>;
+}
+
+export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setArchiveFolderData }) => {
+
+  const handleBookMark = (id: number) => {
+    const updatedImageData = archiveFolderData.map((item) => {
+      if (item.folderId === id) {
+        return { ...item, bookmark: !item.bookmark };
+      }
+      return item;
+    });
+    setArchiveFolderData(updatedImageData);
+  };
+
   return (
     <Container>
       {archiveFolderData?.map((items, index) => (
-        <FolderContainer>
-          <FolderCover key={index}>
+        <FolderContainer key={index}>
+          <FolderCover>
             {items.src.map((item, itemIndex) => (
               <img key={itemIndex} src={item} alt="" />
             ))}
@@ -18,9 +43,9 @@ export const FolderList = ({ archiveFolderData, handleBookMark }) => {
             <span className="folder-totalpost">{`게시물 ${items.totalpost}개`}</span>
           </FolderContent>
           <BookmarkBtnPosition onClick={() => handleBookMark(items.folderId)}>
-            <IconBookmark 
-              fill={items.bookmark ? "#FFDF44" : "#C4C4C4"} 
-              stroke={items.bookmark ? "#FFDF44" : "#none"} 
+            <IconBookmark
+              fill={items.bookmark ? '#FFDF44' : '#C4C4C4'}
+              stroke={items.bookmark ? '#FFDF44' : 'none'}
             />
           </BookmarkBtnPosition>
         </FolderContainer>
@@ -29,8 +54,8 @@ export const FolderList = ({ archiveFolderData, handleBookMark }) => {
         <IconFolderPlus />
       </AddFolder>
     </Container>
-  )
-}
+  );
+};
 
 const Container = styled.div`
   width: 90%;
@@ -42,7 +67,7 @@ const Container = styled.div`
   gap: 10px;
   overflow-y: scroll;
 
-  &::-webkit-scrollbar-corner{
+  &::-webkit-scrollbar-corner {
     display: none;
   }
   &::-webkit-scrollbar {
@@ -51,7 +76,7 @@ const Container = styled.div`
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 50px;
-    background: var(--main-color);;
+    background: var(--main-color);
   }
 `;
 
@@ -59,20 +84,20 @@ const FolderContainer = styled.a`
   position: relative;
   height: auto;
   padding: 10px;
-  border-radius: 20px;  
-  
+  border-radius: 20px;
+
   &:hover {
     outline: 2px solid var(--main-color);
   }
 `;
 
 const FolderCover = styled.div`
-  border-radius: 20px;  
-  overflow: hidden; 
+  border-radius: 20px;
+  overflow: hidden;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
-    
+
   img {
     width: 100%;
     height: 100%;
@@ -83,7 +108,7 @@ const FolderCover = styled.div`
 const AddFolder = styled.div`
   margin: 10px;
   height: calc(100% - 66px);
-  border-radius: 20px;  
+  border-radius: 20px;
   background-color: var(--gray200-color);
   display: flex;
   align-items: center;
@@ -92,7 +117,7 @@ const AddFolder = styled.div`
 
 const FolderContent = styled.div`
   padding: 10px 0 0;
-  
+
   .folder-name {
     font-size: 14px;
   }
@@ -106,7 +131,7 @@ const BookmarkBtnPosition = styled.div`
   cursor: pointer;
   position: absolute;
   top: 20px;
-  right: 20px; 
+  right: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,4 +140,3 @@ const BookmarkBtnPosition = styled.div`
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.6);
 `;
-

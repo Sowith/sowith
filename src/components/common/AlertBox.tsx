@@ -1,15 +1,21 @@
 import styled from 'styled-components';
 
-export const AlertBox = ({ alertMsg, choice, handleFunc }) => {
+interface AlertBoxProps {
+  alertMsg: string;
+  choice: [string, string?];
+  handleFunc?: () => void;
+}
+
+export const AlertBox: React.FC<AlertBoxProps> = ({ alertMsg, choice, handleFunc }) => {
   return (
     <div>
-    <AlertStyle>
-      <p>{alertMsg}</p>
-      <ButtonStyle>
-      <button className='cancel' onClick={handleFunc}>{choice[0]}</button>
-      {choice[1] && <button className='delete' onClick={handleFunc}>{choice[1]}</button>}
-      </ButtonStyle>
-    </AlertStyle>
+      <AlertStyle>
+        <p>{alertMsg}</p>
+        <ButtonStyle>
+          <button className='cancel' onClick={handleFunc}>{choice[0]}</button>
+          {choice[1] && <button className='delete' onClick={handleFunc}>{choice[1]}</button>}
+        </ButtonStyle>
+      </AlertStyle>
     </div>
   );
 }
