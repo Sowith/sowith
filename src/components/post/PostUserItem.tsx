@@ -1,7 +1,16 @@
+import React from 'react';
 import { styled } from 'styled-components';
-import dotIcon from '../../../assets/icon/icon-dot.svg';
+import dotIcon from '../../assets/icon/icon-dot.svg';
 
-export const UserItem = ({ handleFunc, profile, userId, userName, isFollow }) => {
+interface UserItemProps {
+  handleFunc: (userId: string) => void;
+  profile: string;
+  userId: string;
+  userName: string;
+  isFollow?: boolean;
+}
+
+export const UserItem: React.FC<UserItemProps> = ({ handleFunc, profile, userId, userName, isFollow }) => {
   return (
     <Container onClick={() => handleFunc(userId)}>
       <img className="icon-user" src={profile} alt="" />
@@ -9,17 +18,17 @@ export const UserItem = ({ handleFunc, profile, userId, userName, isFollow }) =>
         <span className="user-id">{userId}</span>
         <div className="user-description">
           <span className="user-name">{userName}</span>
-          {isFollow &&
+          {isFollow && (
             <>
               <img src={dotIcon} alt="spacing dot" />
               <span>팔로잉</span>
             </>
-          }
+          )}
         </div>
       </div>
     </Container>
-  )
-}
+  );
+};
 
 const Container = styled.div`
   width: 90%;

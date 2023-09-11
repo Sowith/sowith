@@ -1,43 +1,68 @@
 import { useState, useRef, useEffect } from "react";
-import { styled } from "styled-components"
+import { styled } from "styled-components";
 
-import { HashTag } from "../HashTag";
-import { UserTag } from "../UserTag";
+import { HashTag } from "../common/HashTag";
+import { UserTag } from "../common/UserTag";
 
-import IconCurrentLocation from "../../../assets/icon/icon-current-location-.svg";
+import IconCurrentLocation from "../../assets/icon/icon-current-location-.svg";
 
-export const SearchBar = ({ id, icon, tagname, placeholder, selectTag, setSelectTag, searchKeyword, setSearchKeyword }) => {
+interface SearchBarProps {
+  id: string;
+  icon: string;
+  tagname?: string;
+  placeholder: string;
+  selectTag?: string[];
+  setSelectTag?: React.Dispatch<React.SetStateAction<string[]>>;
+  searchKeyword?: string;
+  setSearchKeyword?: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const SearchBar: React.FC<SearchBarProps> = ({
+  id,
+  icon,
+  tagname,
+  placeholder,
+  selectTag,
+  setSelectTag,
+  searchKeyword,
+  setSearchKeyword,
+}) => {
+
   const [inputValue, setInputValue] = useState("");
-  const wrapRef = useRef(null);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
 
   const handleInputBlur = () => {
-    wrapRef.current.scrollTop = wrapRef.current.scrollHeight;
+    if (wrapRef.current) {
+      wrapRef.current.scrollTop = wrapRef.current.scrollHeight;
+    }
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
 
   const handleOnBlur = () => {
-    setSearchKeyword(inputValue)
-  }
+    setSearchKeyword && setSearchKeyword(inputValue);
+  };
 
-  const handleDeleteTag = (index) => {
-    setSelectTag(prevData => prevData.filter(item => item !== selectTag[index]));
-  }
+  const handleDeleteTag = (index: number) => {
+    setSelectTag && setSelectTag((prevData) => prevData.filter((item, i) => i !== index));
+  };
 
   useEffect(() => {
-    handleInputBlur()
+    handleInputBlur();
     console.log(selectTag);
-  }, [selectTag])
+  }, [selectTag]);
 
   return (
     <WrapStyle onBlur={handleInputBlur} ref={wrapRef}>
-      {selectTag?.map((tag, index) => (
-        tagname === "hashtag" ?
-          <HashTag index={index} tag={tag} handleDeleteTag={handleDeleteTag} /> :
-          <UserTag index={index} tag={tag} handleDeleteTag={handleDeleteTag} />
-      ))}
+      {selectTag?.map((tag, index) =>
+        tagname === "hashtag" ? (
+          <HashTag key={index} index={index} tag={tag} handleDeleteTag={handleDeleteTag} />
+        ) : (
+          <UserTag key={index} index={index} tag={tag} handleDeleteTag={handleDeleteTag} />
+        )
+      )}
       <InputStyle>
         <label htmlFor={id}></label>
         <input
@@ -52,14 +77,14 @@ export const SearchBar = ({ id, icon, tagname, placeholder, selectTag, setSelect
           <img src={icon} alt="Icon" />
         </IconHashTagPosition>
       </InputStyle>
-      {id === "locationSearch" &&
+      {id === "locationSearch" && (
         <IconCurrentLocationPosition>
           <img src={IconCurrentLocation} alt="Icon" />
         </IconCurrentLocationPosition>
-      }
+      )}
     </WrapStyle>
-  )
-}
+  );
+};
 
 const WrapStyle = styled.div`
   position: relative;
@@ -90,7 +115,7 @@ const InputStyle = styled.div`
     border: none;
     outline: none;
     background-color: unset;
-}
+  }
 `;
 
 const IconHashTagPosition = styled.div`
@@ -105,4 +130,3 @@ const IconCurrentLocationPosition = styled.div`
   top: 50%;
   transform: translateY(-50%);
 `;
-

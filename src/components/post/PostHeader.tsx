@@ -1,11 +1,16 @@
-import { styled } from "styled-components"
+import styled from "styled-components";
 
-import { Button } from "../Button";
+import { Button } from "../common/Button";
 
-import { ReactComponent as IconArrow } from "../../../assets/icon/icon-back-arrow.svg";
-import { ReactComponent as IconCamera } from "../../../assets/icon/icon-camera.svg";
+import { ReactComponent as IconArrow } from "../../assets/icon/icon-back-arrow.svg";
+import { ReactComponent as IconCamera } from "../../assets/icon/icon-camera.svg";
 
-export const Header = (props) => {
+interface HeaderProps {
+  handleFunc: () => void;
+  content: string;
+}
+
+export const Header: React.FC<HeaderProps> = (props) => {
   return (
     <WrapStyle>
       <IconArrow width={30} />
@@ -20,10 +25,11 @@ export const Header = (props) => {
         height={'30px'}
         fontSize={'12px'}
         fontFamily={'var(--font--Bold)'}
+        margin={'0px'}
       />
     </WrapStyle>
-  )
-}
+  );
+};
 
 const WrapStyle = styled.div`
   width: 90%;

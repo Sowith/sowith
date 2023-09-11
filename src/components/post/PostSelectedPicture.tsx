@@ -1,27 +1,26 @@
-import { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { styled } from "styled-components";
+import { ReactComponent as IconPictureCount } from "../../assets/icon/icon-picture-count.svg";
 
-import { ReactComponent as IconPictureCount } from "../../../assets/icon/icon-picture-count.svg";
-
-export const SelectedPicture = () => {
-
-    const scrollContainerRef = useRef(null);
+export const SelectedPicture: React.FC = () => {
   
-    const handleMouseWheel = (e) => {
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollLeft += e.deltaY;
-      }
-    };
-  
-    useEffect(() => {
-      const container = scrollContainerRef.current;
-      if (container) {
-        container.addEventListener("wheel", handleMouseWheel);
-        return () => {
-          container.removeEventListener("wheel", handleMouseWheel);
-        };
-      }
-    }, []);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const handleMouseWheel = (event) => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollLeft += event.deltaY;
+    }
+  };
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener("wheel", handleMouseWheel);
+      return () => {
+        container.removeEventListener("wheel", handleMouseWheel);
+      };
+    }
+  }, []);
 
   const imageData = [
     { src: "https://picsum.photos/200/191" },
@@ -38,14 +37,16 @@ export const SelectedPicture = () => {
 
   return (
     <WrapStyle ref={scrollContainerRef}>
-      {imageData.map((item, index) => <img key={index} src={item.src} alt="" />)}
+      {imageData.map((item, index) => (
+        <img key={index} src={item.src} alt="" />
+      ))}
       <PictureCountStyle>
         <IconPictureCount />
         <span>{imageData.length}</span>
       </PictureCountStyle>
     </WrapStyle>
   );
-}
+};
 
 const WrapStyle = styled.div`
   overflow-x: auto;
@@ -70,7 +71,6 @@ const WrapStyle = styled.div`
     object-fit: cover;
   }
 `;
-
 
 const PictureCountStyle = styled.div`
   position: absolute;

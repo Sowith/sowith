@@ -1,9 +1,17 @@
+// CheckBox.tsx
+
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-export const CheckBox = ({ index, checkedBox, setCheckedBox }) => {
+interface CheckBoxProps {
+  index: number;
+  checkedBox: number[];
+  setCheckedBox: React.Dispatch<React.SetStateAction<number[]>>;
+}
 
-  const [isChecked, setIsChecked] = useState(false);
+export const CheckBox: React.FC<CheckBoxProps> = ({ index, checkedBox, setCheckedBox }) => {
+  
+  const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const handleCheckBox = () => {
     setIsChecked(prevData => !prevData);
@@ -19,17 +27,21 @@ export const CheckBox = ({ index, checkedBox, setCheckedBox }) => {
 
   return (
     <WrapStyle>
-      <label htmlFor={index} className="container">
-        <input id={index}
+      <label htmlFor={String(index)} className="container">
+        <input
+          id={String(index)}
           type="checkbox"
           onChange={handleCheckBox}
           checked={isChecked}
         />
-        <div className="checkmark" checkboxnumber={checkedBox.indexOf(index) + 1}></div>
+        <div
+          className="checkmark"
+          data-checkboxnumber={checkedBox.indexOf(index) + 1}
+        ></div>
       </label>
     </WrapStyle>
-  )
-}
+  );
+};
 
 const WrapStyle = styled.div`
 
@@ -46,7 +58,7 @@ const WrapStyle = styled.div`
     cursor: pointer;
     font-size: 7px;
     font-weight: bold;
-    color: #FFF;
+    color: #fff;
     user-select: none;
     box-shadow: 0 0 0 2px #fff;
     border-radius: 50%;
@@ -55,17 +67,17 @@ const WrapStyle = styled.div`
     position: relative;
     height: 17px;
     width: 17px;
-    background: #DDDDDD;
-    opacity: .5;
+    background: #dddddd;
+    opacity: 0.5;
     border-radius: 50%;
-    transition: .1s;
+    transition: 0.1s;
   }
   .container input:checked ~ .checkmark {
-    background-color: #068FFF;
+    background-color: #068fff;
     opacity: 1;
   }
   .checkmark:after {
-    content: attr(checkboxnumber);
+    content: attr(data-checkboxnumber);
     position: absolute;
     top: 50%;
     right: 50%;
@@ -76,5 +88,3 @@ const WrapStyle = styled.div`
     display: block;
   }
 `;
-
-
