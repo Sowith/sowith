@@ -11,6 +11,7 @@ import { SearchHistory } from "./pages/search/SearchHistoryPage";
 import { SearchByCategory } from "./pages/search/SearchByCategoryPage";
 import { ProfilePage } from "./pages/profile/ProfilePage";
 import { Test } from "./pages/Test"
+import { PostTS } from "./pages/PostTS";
 
 export function App(): JSX.Element {
   return (
@@ -25,6 +26,7 @@ export function App(): JSX.Element {
           <Route path="/searchmain" element={<SearchMain />} />
           <Route path="/searchhistory" element={<SearchHistory />} />
           <Route path="/searchbycategory" element={<SearchByCategory />} />
+          <Route path="/post" element={<PostTS />} />
         </Routes>
     </BrowserRouter>
   );
