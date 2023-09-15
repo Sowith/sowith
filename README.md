@@ -57,7 +57,7 @@
 |이모티콘|커밋 메세지|의미|
 |:---:|:---:|---|
 |🌱|`:seedling: Init: `|프로젝트 초기 생성|
-|📚|`:books: Docs: `|리드미 수정|
+|📚|`:books: Docs: `|리드미 수정 및 파일 추가|
 |🛠️|`:hammer_and_wrench: Feat `|새로운 기능 추가|
 |🎨|`:art: Design: `|CSS등 사용자 UI 변경|
 |🐞|`:lady_beetle: Fix: `|버그 수정|
