@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
 import { HistoryItem } from '../../components/search/HistoryItem';
 
-import soWithLogo from '../../assets/icon/icon-sowith.svg';
+import soWithLogo from '../../assets/icon/icon-sowith-heart.svg';
 
 export const SearchHistory = () => {
   // 저장할 상태들
