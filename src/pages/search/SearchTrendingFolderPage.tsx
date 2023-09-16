@@ -54,28 +54,10 @@ export const SearchTrendingFolder: FC = () => {
 
   const [archiveFolderData, setArchiveFolderData] =
     useState<FolderData[]>(folderData);
-  const [isInputClicked, setInputClicked] = useState(false);
-
-  const handleInputClick = () => {
-    setInputClicked(true);
-  };
-
-  const handleCancel = () => {
-    setInputClicked(false);
-  };
 
   return (
     <>
       <h1 className="a11y-hidden">인기 폴더 페이지</h1>
-      <SearchBar onInputClick={handleInputClick} />
-      {isInputClicked ? (
-        <SearchHistory onCancel={handleCancel} />
-      ) : (
-        <FolderList
-          archiveFolderData={archiveFolderData}
-          setArchiveFolderData={setArchiveFolderData}
-        />
-      )}
     </>
   );
 };
