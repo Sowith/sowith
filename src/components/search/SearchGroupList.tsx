@@ -1,7 +1,7 @@
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import { GroupUI } from 'components/common/GroupUI';
 
-export const GroupList = () => {
+export const GroupList: React.FC = () => {
   return (
     <GroupItemContainer>
       <GroupUI />
