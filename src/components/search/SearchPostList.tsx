@@ -5,18 +5,21 @@ import { PostItem } from './SearchPostItem';
 const samplePosts = [
   {
     title: '게시글1',
-    imageUrl: ['path/to/image1_1.jpg', 'path/to/image1_2.jpg'],
+    imageUrl: [
+      'https://picsum.photos/200/191',
+      'https://picsum.photos/200/192',
+    ],
   },
   {
     title: '게시글2',
-    imageUrl: ['path/to/image2_1.jpg'],
+    imageUrl: ['https://picsum.photos/200/193'],
   },
   {
     title: '게시글3',
     imageUrl: [
-      'path/to/image3_1.jpg',
-      'path/to/image3_2.jpg',
-      'path/to/image3_3.jpg',
+      'https://picsum.photos/200/194',
+      'https://picsum.photos/200/195',
+      'https://picsum.photos/200/196',
     ],
   },
 ];
@@ -43,12 +46,10 @@ export const PostList: React.FC = () => {
 const Container = styled.section`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 100px));
-  justify-content: center;
   padding: 0 auto;
   gap: 5px;
   box-sizing: border-box;
   margin: 20px auto;
-  border-radius: 10px;
   overflow: hidden;
-  width: 88%;
+  width: 100%;
 `;

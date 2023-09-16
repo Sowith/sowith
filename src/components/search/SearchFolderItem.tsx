@@ -1,71 +1,95 @@
+import { useState } from 'react';
 import { styled } from 'styled-components';
 
-import testImg from '../../assets/testImg/testimg-folder.png';
-import testImgCreator from '../../assets/testImg/testimg-folder_creator.png';
 import heartFilled from '../../assets/icon/icon-heart_filled.svg';
 import heartUnfilled from '../../assets/icon/icon-heart_unfilled.svg';
 
-type RenderLocation = 'searchMain' | 'folderList' | 'other';
-
-interface FolderItemProps {
-  renderLocation: RenderLocation;
+interface FolderDataItem {
+  folderId: number;
+  src: string[];
+  name: string;
+  totalpost: number;
+  like: boolean;
 }
 
-export const FolderItem: React.FC<FolderItemProps> = ({ renderLocation }) => {
+interface FolderItemProps {
+  data: FolderDataItem;
+}
+
+const folderData: FolderDataItem[] = [
+  {
+    folderId: 1,
+    name: '빠니보틀의 로드맵',
+    totalpost: 10,
+    like: true,
+    src: [
+      'https://picsum.photos/200/191',
+      'https://picsum.photos/200/192',
+      'https://picsum.photos/200/193',
+      'https://picsum.photos/200/194',
+    ],
+  },
+  {
+    folderId: 2,
+    name: '용리단길 맛집 모음',
+    totalpost: 78,
+    like: true,
+    src: [
+      'https://picsum.photos/200/195',
+      'https://picsum.photos/200/196',
+      'https://picsum.photos/200/197',
+      'https://picsum.photos/200/198',
+    ],
+  },
+  {
+    folderId: 3,
+    name: '내 2023년 여름',
+    totalpost: 10,
+    like: false,
+    src: [
+      'https://picsum.photos/200/199',
+      'https://picsum.photos/200/200',
+      'https://picsum.photos/200/201',
+      'https://picsum.photos/200/202',
+    ],
+  },
+];
+
+export const FolderItem: React.FC<FolderItemProps> = ({ data }) => {
+  const [liked, setLiked] = useState(data.like);
+
   return (
-    <Container renderLocation={renderLocation}>
-      <BlackOverlay />
-      <p>빠니보틀의 로드맵 하이하이</p>
-      <FolderTagList>
-        <FolderTagItem>여행</FolderTagItem>
-        <FolderTagItem>유럽여행</FolderTagItem>
-        <FolderTagItem>제주도</FolderTagItem>
-        <FolderTagItem>브이로그</FolderTagItem>
-      </FolderTagList>
-      <FolderInfo>
-        <FolderCreator>
-          <img src={testImgCreator} alt="" />
-          <span>nkella</span>
-        </FolderCreator>
-        <FolderLike>
-          <img src={heartFilled} alt="" />
-          <span>1.8M</span>
-        </FolderLike>
-      </FolderInfo>
+    <Container>
+      {/* <BlackOverlay />
+      <FolderContainer key={index}>
+        <FolderCover>
+          {items.src.map((item, itemIndex) => (
+            <img key={itemIndex} src={item} alt="" />
+          ))}
+        </FolderCover>
+        <FolderContent>
+          <p className="folder-name">{items.name}</p>
+          <span className="folder-totalpost">{`게시물 ${items.totalpost}개`}</span>
+        </FolderContent>
+      </FolderContainer> */}
     </Container>
   );
 };
 
-const Container = styled.div<{ renderLocation: RenderLocation }>`
+const Container = styled.div`
   position: relative;
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
   justify-content: space-between;
-  width: 100px;
-  height: ${(props) =>
-    props.renderLocation === 'searchMain'
-      ? '120px'
-      : props.renderLocation === 'folderList'
-      ? '100px'
-      : '120px'};
+  width: 120px;
+  height: 120px;
   padding: 9px 7px;
   box-sizing: border-box;
   border-radius: 5px;
 
   > * {
     z-index: 1;
-  }
-
-  &::before {
-    content: '';
-    background-image: url(${testImg});
-    border-radius: 5px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
   }
 
   > p {
@@ -88,44 +112,9 @@ const BlackOverlay = styled.div`
   opacity: 0.7;
 `;
 
-const FolderTagList = styled.div`
-  display: flex;
-  gap: 2px;
-  flex-wrap: wrap;
-  justify-content: space-between;
-`;
-
-const FolderTagItem = styled.p`
-  border-radius: 3px;
-  font-family: var(--font--Regular);
-  background: #000000;
-  font-size: 5.5px;
-  color: #ffffff;
-  padding: 2px 6px;
-  text-align: center;
-  margin: 0;
-`;
-
 const FolderInfo = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-
-const FolderCreator = styled.div`
-  display: flex;
-  gap: 4px;
-
-  img {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-
-  span {
-    font-size: 8px;
-    font-family: var(--font--Regular);
-    color: #ffffff;
-  }
 `;
 
 const FolderLike = styled.div`

@@ -1,20 +1,65 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import { FolderItem } from './SearchFolderItem';
+import { FolderList } from 'components/common/FolderList';
 
-type RenderLocation = 'searchMain' | 'folderList' | 'other';
-
-interface FolderListProps {
-  items: RenderLocation[];
+interface FolderData {
+  folderId: number;
+  name: string;
+  totalpost: number;
+  bookmark: boolean;
+  src: string[];
 }
 
-export const FolderList: React.FC<FolderListProps> = ({ items }) => {
+export const SearchFolderList: React.FC = () => {
+  const folderData: FolderData[] = [
+    {
+      folderId: 1,
+      name: '빠니보틀의 로드맵',
+      totalpost: 10,
+      bookmark: true,
+      src: [
+        'https://picsum.photos/200/191',
+        'https://picsum.photos/200/192',
+        'https://picsum.photos/200/193',
+        'https://picsum.photos/200/194',
+      ],
+    },
+    {
+      folderId: 2,
+      name: '용리단길 맛집 모음',
+      totalpost: 78,
+      bookmark: true,
+      src: [
+        'https://picsum.photos/200/195',
+        'https://picsum.photos/200/196',
+        'https://picsum.photos/200/197',
+        'https://picsum.photos/200/198',
+      ],
+    },
+    {
+      folderId: 3,
+      name: '내 2023년 여름',
+      totalpost: 10,
+      bookmark: false,
+      src: [
+        'https://picsum.photos/200/199',
+        'https://picsum.photos/200/200',
+        'https://picsum.photos/200/201',
+        'https://picsum.photos/200/202',
+      ],
+    },
+  ];
+
+  const [archiveFolderData, setArchiveFolderData] =
+    useState<FolderData[]>(folderData);
+
   return (
-    <Container>
-      {items.map((item, index) => (
-        <FolderItem key={index} renderLocation={item} />
-      ))}
-    </Container>
+    // <Container>
+    <FolderList
+      archiveFolderData={archiveFolderData}
+      setArchiveFolderData={setArchiveFolderData}
+    />
+    // </Container>
   );
 };
 
