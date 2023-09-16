@@ -36,10 +36,9 @@ const Container = styled.div`
   cursor: pointer;
   position: relative;
   object-fit: cover;
-  border-radius: 5px;
 
   img.post-item {
-    border-radius: 5px;
+    width: 100%;
   }
 
   img.icon-multiple_photos {
