@@ -2,9 +2,11 @@ import { styled } from "styled-components";
 import { useState } from "react";
 
 import { ProfileBottomPost } from "./profileBottom/ProfileBottomPost";
-import { ProfileBottomFolder } from "./profileBottom/ProfileBottomFolder";
+// import { ProfileBottomFolder } from "./profileBottom/ProfileBottomFolder";
 import { ProfileBottomGroup } from "./profileBottom/profileBottomGroup";
-import { ProfileBottomBookMark } from "./profileBottom/ProfileBottomBookMark";
+// import { ProfileBottomBookMark } from "./profileBottom/ProfileBottomBookMark";
+import { StepBar } from "components/common/StepBar";
+import { FolderList } from "../common/FolderList"
 
 import iconPost from "../../assets/icon/icon-post.svg";
 import iconFolder from "../../assets/icon/icon-folder.svg";
@@ -37,31 +39,33 @@ export const ProfileTabMenu = () => {
         </div>
       </ProfileTabMenuWrap>
       <ProfileBottom>
+        <StepBar currentStep={currentStep} howManyTabs={4} />
         {currentStep === 1 && <ProfileBottomPost />}
-        {currentStep === 2 && <ProfileBottomFolder />}
+        {currentStep === 2 && <FolderList />}
         {currentStep === 3 && <ProfileBottomGroup />}
-        {currentStep === 4 && <ProfileBottomBookMark />}
+        {currentStep === 4 && <FolderList />}
       </ProfileBottom>
     </>
   );
 };
 
 const ProfileTabMenuWrap = styled.div`
-  width: 100%;
-  background-color: skyblue;
+  width: 88%;
+  margin: 0 auto;
 
   & > div {
     display: flex;
-    justify-content: space-evenly;
     button {
-      padding: 5px 10px;
-      box-shadow: inset 1px 1px 10px red;
       box-sizing: border-box;
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      flex: 1;
     }
   }
 `;
 
 const ProfileBottom = styled.section`
   width: 100%;
-  background-color: #76895a;
 `;
+

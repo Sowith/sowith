@@ -10,6 +10,8 @@ import { SearchMain } from "./pages/search/SearchMainPage";
 import { SearchHistory } from "./pages/search/SearchHistoryPage";
 import { SearchByCategory } from "./pages/search/SearchByCategoryPage";
 import { ProfilePage } from "./pages/profile/ProfilePage";
+import { ProfileUpdatePage } from "pages/profile/ProfileUpdatePage";
+import { ProfileGroupDetailPage } from "./pages/profile/ProfileGroupDetailPage"
 import { Test } from "./pages/Test"
 
 export function App(): JSX.Element {
@@ -25,6 +27,8 @@ export function App(): JSX.Element {
           <Route path="/searchmain" element={<SearchMain />} />
           <Route path="/searchhistory" element={<SearchHistory />} />
           <Route path="/searchbycategory" element={<SearchByCategory />} />
+          <Route path="/profileUpdatePage" element={<ProfileUpdatePage />} />
+          <Route path="/profiledetailPage/:currentStep" element={<ProfileGroupDetailPage />} />
         </Routes>
     </BrowserRouter>
   );

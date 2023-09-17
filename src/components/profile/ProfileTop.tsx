@@ -1,8 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import firebase from "firebase/app";
 import { auth } from "../../firebase/config";
 
 import profileimg from "../../assets/profiletest.jpeg";
@@ -42,20 +42,29 @@ export const ProfileTop: React.FC<ProfileTopProps> = ({
     }
   }, []);
 
+  const navigate = useNavigate()
+const goToProfileUpdatePage = () => {
+  navigate("/profileUpdatePage")
+}
+
   return (
     <ProfileTopContainer>
+      <div className="profileTopLeft">
       <ProfileImage src={profileimg} alt="프로필 이미지"></ProfileImage>
+      <button onClick={goToProfileUpdatePage}>프로필 수정</button>
+      </div>
       <ProfileTopInfo>
         <div className="ID-button-wrap">
           <span className="accountID">{userData?.name}</span>
+          <div>
           <button>팔로우</button>
           <button>메세지</button>
+          </div>
         </div>
         <span>게시물(23){postCount}개</span>
         {isProfilemessage === true ? (
           <p>
-            프로필 메세지 총 스무 글자입니다하하프로필 메세지 총 스무
-            글자입니다하하프로필 메세지 총 스무 글자입니다하하자입니다하하프로필 메세지 총 스무 글자입니다하하자입니다하하프로필 메세지 총 스무 글자입니다하하 {profileMessage}
+            나랑 도토리 한사발 할텨? 나랑 도토리 한사발 할텨? 나랑 도토리 한사발 할텨? 나랑 도토리 한사발 할텨? 나랑 도토리 한사발 할텨? 나랑 도토리 한사발 할텨?{profileMessage}
           </p>
         ) : (
           ""
@@ -74,16 +83,33 @@ const ProfileTopContainer = styled.section`
   margin: 0 auto;
   gap: 3%;
   display: flex;
+  align-items: center;
+
+  .profileTopLeft {
+    display: flex;
+    flex-direction: column;
+    min-width: 100px;
+    align-items: center;
+    margin-left: 3%;
+    button {
+      width: 80px;
+      border: 1px solid black;
+      padding: 2px;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 20px;
+      font-family: var(--font--Regular);
+      border-radius: 5px;
+    }
+  }
+  
 `;
 
 const ProfileImage = styled.img`
-  width: 25%;
+  width: 100%;
   max-width: 180px;
-  height: 25%;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  margin: auto 0 auto 6%;
-  vertical-align: bottom;
 `;
 
 const ProfileTopInfo = styled.div`
@@ -92,12 +118,12 @@ const ProfileTopInfo = styled.div`
   position: relative;
   & > p {
     width: 95%;
-    font-size: 0.9rem;
+    font-size: 14px;
     margin-top: 2%;
   }
   & > span {
     margin-top: 5px;
-    font-size: 0.9rem;
+    font-size: 14px;
     color: var(--gray300-color);
   }
   & .accountID {
@@ -107,19 +133,25 @@ const ProfileTopInfo = styled.div`
 
   & .ID-button-wrap {
     margin-top: 10px;
-    & button {
-      font-size: 0.8rem;
-      text-align: center;
-      border-radius: 15px;
-      box-sizing: border-box;
-      padding: 7px 12px;
-    }
-    & button:nth-child(2) {
-      background-color: var(--main-color);
-      margin: 0 10px;
-    }
-    & button:nth-child(3) {
-      border: 1px solid var(--main-color);
+    display: flex;
+    position: relative;
+    & > div {
+      position: absolute;
+      right: 5%;
+      & button {
+        font-size: 0.8rem;
+        text-align: center;
+        border-radius: 15px;
+        box-sizing: border-box;
+        padding: 7px 12px;
+      }
+      & button:nth-child(1) {
+        background-color: var(--main-color);
+        margin: 0 10px;
+      }
+      & button:nth-child(2) {
+        border: 1px solid var(--main-color);
+      }
     }
   }
 
