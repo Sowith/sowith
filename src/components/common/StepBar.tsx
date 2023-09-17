@@ -1,4 +1,7 @@
-import styled, { css } from "styled-components";
+import React from 'react';
+import { useState } from 'react';
+import styled, { css } from 'styled-components';
+
 
 export const StepBar = ({ currentStep, howManyTabs }) => {
   const marginLeft = `calc((100% / ${howManyTabs}) * ${currentStep - 1})`;
