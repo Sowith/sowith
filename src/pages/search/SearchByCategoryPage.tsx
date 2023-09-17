@@ -75,7 +75,7 @@ export const SearchByCategory: FC = () => {
               </button>
             ))}
           </CategorySwitcher>
-          <StepBar currentStep={currentStep} howManyTab={5} />
+          <StepBar currentStep={currentStep} howManyTabs={5} />
           {renderComponentByCategory()}
         </Container>
       )}
