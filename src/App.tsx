@@ -9,7 +9,6 @@ import { MyGlobalStyle } from './style/GlobalStyle';
 import { SearchMain } from './pages/search/SearchMainPage';
 import { SearchByCategory } from './pages/search/SearchByCategoryPage';
 import { SearchTrendingGroup } from 'pages/search/SearchTrendingGroupPage';
-import { SearchTrendingTag } from 'pages/search/SearchTrendingTagPage';
 import { SearchTrendingFolder } from 'pages/search/SearchTrendingFolderPage';
 import { ProfilePage } from './pages/profile/ProfilePage';
 import { Test } from './pages/Test';
@@ -27,7 +26,6 @@ export function App(): JSX.Element {
         <Route path="/searchmain" element={<SearchMain />} />
         <Route path="/searchbycategory" element={<SearchByCategory />} />
         <Route path="/trendinggroup" element={<SearchTrendingGroup />} />
-        <Route path="/trendingtag" element={<SearchTrendingTag />} />
         <Route path="/trendingfolder" element={<SearchTrendingFolder />} />
       </Routes>
     </BrowserRouter>
