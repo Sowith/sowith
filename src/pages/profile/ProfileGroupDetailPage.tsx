@@ -19,7 +19,7 @@ export const ProfileGroupDetailPage = () => {
   return (
     <ProfileGroupDetailPageWrap>
       <div style={{marginTop: "20px", marginBottom: "20px"}}>
-        <SearchBar />
+        
       </div>
       {detailPage === 1 ? (
         <>
