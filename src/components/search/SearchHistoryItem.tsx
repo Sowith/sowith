@@ -27,6 +27,7 @@ export interface HistoryItemProps {
   folderTag?: string;
   groupTag?: string;
   isFollowing?: boolean;
+  onDelete?: () => void;
 }
 
 export const HistoryItem: React.FC<HistoryItemProps> = ({
@@ -38,9 +39,10 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
   folderTag,
   groupTag,
   isFollowing,
+  onDelete,
 }) => {
   const handleDeleteHistory = () => {
-    console.log('History delete button clicked!');
+    if (onDelete) onDelete();
   };
 
   return (

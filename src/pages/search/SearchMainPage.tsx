@@ -1,6 +1,7 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
+import { SearchHistory } from 'components/search/SearchHistory';
 import { GroupUI } from '../../components/common/GroupUI';
 import { FolderList } from '../../components/common/FolderList';
 import { TagItem } from '../../components/search/SearchTagItem';
@@ -10,46 +11,59 @@ interface SectionTitleProps {
 }
 
 export const SearchMain: FC = () => {
-  const renderLocation = 'searchMain';
+  const [isInputClicked, setInputClicked] = useState(false);
+
+  const handleInputClick = () => {
+    setInputClicked(true);
+  };
+
+  const handleCancel = () => {
+    setInputClicked(false);
+  };
+
   const trendingGroups = [1, 2, 3];
   const trendingTags = [1, 2, 3];
 
   return (
     <>
-      <h1 className="a11y-hidden">검색 메인 페이지 숨김처리 예정</h1>
-      <Container>
-        <SearchBar />
-        <TrendingFolder>
-          <SectionTitle index={1}>
-            <h2>인기 폴더</h2>
-            <a href="#">더보기</a>
-          </SectionTitle>
-          <TrendingFolderList></TrendingFolderList>
-        </TrendingFolder>
-        <TrendingGroup>
-          <SectionTitle index={2}>
-            <h2>인기 그룹</h2>
-            <a href="#">더보기</a>
-          </SectionTitle>
-          <TrendingGroupList>
-            {trendingGroups.map((_, idx) => (
-              <GroupUI key={idx} />
-            ))}
-          </TrendingGroupList>
-        </TrendingGroup>
-        <TrendingTag>
-          <SectionTitle index={3}>
-            <h2>인기 태그</h2>
-            <a href="#">더보기</a>
-          </SectionTitle>
-          {/* 컴포넌트화 필요 */}
-          <TrendingTagList>
-            {trendingTags.map((tag, idx) => (
-              <TagItem key={idx} />
-            ))}
-          </TrendingTagList>
-        </TrendingTag>
-      </Container>
+      <h1 className="a11y-hidden">검색 메인 페이지</h1>
+      <SearchBar onInputClick={handleInputClick} />
+      {isInputClicked ? (
+        <SearchHistory onCancel={handleCancel} />
+      ) : (
+        <Container>
+          <TrendingFolder>
+            <SectionTitle index={1}>
+              <h2>인기 폴더</h2>
+              <a href="#">더보기</a>
+            </SectionTitle>
+            <TrendingFolderList></TrendingFolderList>
+          </TrendingFolder>
+          <TrendingGroup>
+            <SectionTitle index={2}>
+              <h2>인기 그룹</h2>
+              <a href="#">더보기</a>
+            </SectionTitle>
+            <TrendingGroupList>
+              {trendingGroups.map((_, idx) => (
+                <GroupUI key={idx} />
+              ))}
+            </TrendingGroupList>
+          </TrendingGroup>
+          <TrendingTag>
+            <SectionTitle index={3}>
+              <h2>인기 태그</h2>
+              <a href="#">더보기</a>
+            </SectionTitle>
+            {/* 컴포넌트화 필요 */}
+            <TrendingTagList>
+              {trendingTags.map((tag, idx) => (
+                <TagItem key={idx} />
+              ))}
+            </TrendingTagList>
+          </TrendingTag>
+        </Container>
+      )}
     </>
   );
 };
@@ -58,9 +72,7 @@ const Container = styled.div`
   width: 100%;
   background-color: #ffffff;
   margin: 0 auto;
-  padding: 40px 0 10px 0;
-
-  margin-top: 60px;
+  padding-bottom: 10px;
 
   h2 {
     margin: 0;
