@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { styled } from "styled-components";
 
 import { useModalControl } from "../../hooks/useModalControl";
@@ -7,11 +7,48 @@ import { Button } from "../../components/common/Button";
 
 import IconHashTag from "../../assets/icon/icon-hash-tag.svg";
 
+
+interface TagData {
+  tagName: string;
+  postCount?: number;
+}
+
 export const PostSelectHashTagPage: React.FC = () => {
+
+  const tagData: TagData[] = [
+    {
+      tagName: '당근노맛'
+    },
+    {
+      tagName: '당근',
+      postCount: 4300
+    },
+    {
+      tagName: '당근케이크',
+      postCount: 2100
+    },
+    {
+      tagName: '당근마켓',
+      postCount: 1000
+    },
+    {
+      tagName: '당근라페',
+      postCount: 938
+    },
+    {
+      tagName: '당근김밥',
+      postCount: 500
+    },
+    {
+      tagName: '당근요리',
+      postCount: 416
+    },
+  ];
   
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [selectTag, setSelectTag] = useState<string[]>([]);
   const { openModal, closeModal, ModalComponent } = useModalControl();
+  const [archiveTagData, setArchiveTagData] = useState<TagData[]>(tagData);
 
   const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.currentTarget.dataset.id;
@@ -37,46 +74,14 @@ export const PostSelectHashTagPage: React.FC = () => {
         />
 
         <TagList>
-          <Tag onClick={handleTag} data-id={'당근노맛'}>
-            <p>당근노맛</p>
-            <span>없음</span>
-          </Tag>
-          <Tag onClick={handleTag} data-id={'당근'}>
-            <p>당근</p>
-            <span>4.3k</span>
-          </Tag>
-          <Tag onClick={handleTag} data-id={'당근케이크'}>
-            <p>당근케이크</p>
-            <span>2.1k</span>
-          </Tag>
-          <Tag onClick={handleTag} data-id={'당근마켓'}>
-            <p>당근마켓</p>
-            <span>1k</span>
-          </Tag>
-          <Tag onClick={handleTag} data-id={'당근라페'}>
-            <p>당근라페</p>
-            <span>938</span>
-          </Tag>
-          <Tag onClick={handleTag} data-id={'당근김밥'}>
-            <p>당근김밥</p>
-            <span>500</span>
-          </Tag>
-          <Tag onClick={handleTag} data-id={'당근요리'}>
-            <p>당근요리</p>
-            <span>416</span>
-          </Tag>
-          <Tag onClick={handleTag} data-id={'당근존맛'}>
-            <p>당근존맛</p>
-            <span>23</span>
-          </Tag>
-          <Tag onClick={handleTag} data-id={'당근존맛'}>
-            <p>당근존맛</p>
-            <span>23</span>
-          </Tag>
-          <Tag onClick={handleTag} data-id={'당근존맛'}>
-            <p>당근존맛</p>
-            <span>23</span>
-          </Tag>
+          <>
+          {archiveTagData.map((item, index) => 
+            <Tag onClick={handleTag} key={index} data-id={item.tagName}>
+              <p>{item.tagName}</p>
+              <span>{item.postCount}</span>
+            </Tag>
+          )}
+          </>
         </TagList>
 
         <Button

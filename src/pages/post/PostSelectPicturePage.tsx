@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { CheckBox } from "../../components/post/PostCheckBox";
+import { CountCheckBox } from "components/common/CheckBox";
 
 interface ImageData {
   src: string;
@@ -39,7 +39,7 @@ export const PostSelectPicturePage: React.FC = () => {
             <AlbumStyle key={index}>
               <img src={image.src} alt={`Album ${index}`} />
               <CheckBoxStyle>
-                <CheckBox
+                <CountCheckBox
                   index={index}
                   checkedBox={checkedBox}
                   setCheckedBox={setCheckedBox}
