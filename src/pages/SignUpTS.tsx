@@ -5,9 +5,9 @@ import { useSignUpHook } from '../hooks/useSignUp';
 import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
 
-import logoWide from '../assets/logo/logo1.png';
+import logoWide from '../assets/logo/logo-sowith-wide.png';
 
-export const SignUP: React.FC = () => { // React.FC 타입 사용
+export const SignUP: React.FC = () => { 
   const { error, isPending, signUpHook } = useSignUpHook();
   const [signUpFormData, setSignUpFormData] = useState({
     email: '',

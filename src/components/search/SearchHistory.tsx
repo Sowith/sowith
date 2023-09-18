@@ -6,7 +6,7 @@ import {
   HistoryItemProps,
 } from '../../components/search/SearchHistoryItem';
 
-import soWithLogo from '../../assets/icon/icon-sowith.svg';
+import soWithLogo from '../../assets/icon/icon-sowith-heart.svg';
 
 interface SearchHistoryProps {
   onCancel: () => void;
