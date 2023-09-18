@@ -15,9 +15,10 @@ interface FolderDataItem {
 interface FolderListProps {
   archiveFolderData: FolderDataItem[];
   setArchiveFolderData: React.Dispatch<React.SetStateAction<FolderDataItem[]>>;
+  isAddButton?: boolean;
 }
 
-export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setArchiveFolderData }) => {
+export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setArchiveFolderData, isAddButton=false }) => {
 
   const handleBookMark = (id: number) => {
     const updatedImageData = archiveFolderData.map((item) => {
@@ -50,9 +51,13 @@ export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setAr
           </BookmarkBtnPosition>
         </FolderContainer>
       ))}
-      <AddFolder>
-        <IconFolderPlus />
-      </AddFolder>
+
+      {isAddButton &&
+        <AddFolder>
+          <IconFolderPlus/>
+        </AddFolder>
+      }
+        
     </Container>
   );
 };
