@@ -4,7 +4,6 @@ import { styled } from 'styled-components';
 
 import { SignUP } from './SignUpTS';
 import { Login } from './LoginPage';
-import { PostUpload } from './PostUpload';
 import { MyGlobalStyle } from '../style/GlobalStyle';
 import { SearchMain } from './search/SearchMainPage';
 import { SearchByCategory } from './search/SearchByCategoryPage';

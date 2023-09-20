@@ -12,17 +12,62 @@ import profile_2 from "../../assets/testImg/profile_2.jpg";
 import profile_3 from "../../assets/testImg/profile_3.jpg";
 import profile_4 from "../../assets/testImg/profile_4.jpg";
 import profile_5 from "../../assets/testImg/profile_5.jpg";
+import { CircleCheckBox } from "components/common/CheckBox";
 
 export const PostSelectUserTagPage: React.FC = () => {
-  
+
+  interface TagData {
+    userId: string;
+    userName: string;
+    isFollow?: boolean;
+    profile: string;
+  }
+
+  const tagData: TagData[] = [
+    {
+      userId: 'starseeker_h00n',
+      userName: '강동훈',
+      isFollow: true,
+      profile: profile_1
+    },
+    {
+      userId: '__hoon__99',
+      userName: '이정훈',
+      isFollow: true,
+      profile: profile_2
+    },
+    {
+      userId: 'kang_hoon',
+      userName: '한승훈',
+      isFollow: true,
+      profile: profile_3
+    },
+    {
+      userId: 'kang_hoon',
+      userName: '이강훈',
+      isFollow: true,
+      profile: profile_4
+    },
+    {
+      userId: 'hoon_1297319',
+      userName: '미스터훈',
+      isFollow: true,
+      profile: profile_5
+    },
+  ];
+
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [selectId, setSelectId] = useState<string[]>([]);
   const { openModal, closeModal, ModalComponent } = useModalControl();
+  const [checkedBox, setCheckedBox] = useState<number[]>([]);
+  const [tagItem, setTagItem] = useState<TagData[]>(tagData);
 
-  const handleTag = (userId: string) => {
-    setSelectId([...selectId, userId]);
-  };
-
+  // useEffect(() => {
+  //   const priorityElements = tagItem.filter((_, item) => checkedBox.includes(item));
+  //   const remainingElements = tagItem.filter((_, item) => !checkedBox.includes(item));
+  //   const result = [...priorityElements, ...remainingElements];
+  //   setTagItem(result);
+  // }, [checkedBox]);
+  
   useEffect(() => {
     openModal();
   }, []);
@@ -30,49 +75,42 @@ export const PostSelectUserTagPage: React.FC = () => {
   return (
     <>
       <ModalComponent>
+        {/* <SearchBar
+        id={'UserTagSearch'}
+        icon={IconUserTag}
+        tagname={'humantag'}
+        placeholder={'유저 검색...'}
+        selectTag={selectId}
+        setSelectTag={setSelectId}
+        searchKeyword={searchKeyword}
+        setSearchKeyword={setSearchKeyword}
+        /> */}
+
         <SearchBar
           id={'UserTagSearch'}
           icon={IconUserTag}
-          tagname={'humantag'}
           placeholder={'유저 검색...'}
-          selectTag={selectId}
-          setSelectTag={setSelectId}
           searchKeyword={searchKeyword}
           setSearchKeyword={setSearchKeyword}
         />
 
         <Container>
-          <UserItem
-            handleFunc={handleTag}
-            profile={profile_1}
-            userId={'starseeker_h00n'}
-            userName={'강동훈'}
-            isFollow={true}
-          />
-          <UserItem
-            handleFunc={handleTag}
-            profile={profile_2}
-            userId={'__hoon__99'}
-            userName={'이정훈'}
-          />
-          <UserItem
-            handleFunc={handleTag}
-            profile={profile_3}
-            userId={'hoonie_hoon_'}
-            userName={'한승훈'}
-          />
-          <UserItem
-            handleFunc={handleTag}
-            profile={profile_4}
-            userId={'kang_hoon'}
-            userName={'이강훈'}
-          />
-          <UserItem
-            handleFunc={handleTag}
-            profile={profile_5}
-            userId={'hoon_1297319'}
-            userName={'미스터훈'}
-          />
+          {tagItem.map((item, index) => (
+            <div >
+              <UserItem
+                // key={index}
+                // handleFunc={handleTag}
+                profile={item.profile}
+                userId={item.userId}
+                userName={item.userName}
+                isFollow={item.isFollow}
+                index={index}
+                checkedBox={checkedBox}
+                setCheckedBox={setCheckedBox}
+              />
+            </div>
+          )
+          )}
         </Container>
 
         <Button

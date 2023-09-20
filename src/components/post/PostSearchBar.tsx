@@ -51,7 +51,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   useEffect(() => {
     handleInputBlur();
-    console.log(selectTag);
   }, [selectTag]);
 
   return (
