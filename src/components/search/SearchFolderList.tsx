@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import { FolderList } from 'components/common/FolderList';
+import { SearchFolderItem } from './SearchFolderItem';
 
 interface FolderData {
   folderId: number;
+  src: string[];
   name: string;
   totalpost: number;
-  bookmark: boolean;
-  src: string[];
+  like: boolean;
 }
 
 export const SearchFolderList: React.FC = () => {
@@ -16,7 +16,7 @@ export const SearchFolderList: React.FC = () => {
       folderId: 1,
       name: '빠니보틀의 로드맵',
       totalpost: 10,
-      bookmark: true,
+      like: false,
       src: [
         'https://picsum.photos/200/191',
         'https://picsum.photos/200/192',
@@ -28,7 +28,7 @@ export const SearchFolderList: React.FC = () => {
       folderId: 2,
       name: '용리단길 맛집 모음',
       totalpost: 78,
-      bookmark: true,
+      like: true,
       src: [
         'https://picsum.photos/200/195',
         'https://picsum.photos/200/196',
@@ -40,7 +40,7 @@ export const SearchFolderList: React.FC = () => {
       folderId: 3,
       name: '내 2023년 여름',
       totalpost: 10,
-      bookmark: false,
+      like: false,
       src: [
         'https://picsum.photos/200/199',
         'https://picsum.photos/200/200',
@@ -54,18 +54,17 @@ export const SearchFolderList: React.FC = () => {
     useState<FolderData[]>(folderData);
 
   return (
-    // <Container>
-    <FolderList
-      archiveFolderData={archiveFolderData}
-      setArchiveFolderData={setArchiveFolderData}
-    />
-    // </Container>
+    <Container>
+      {archiveFolderData.map((folderItem) => (
+        <SearchFolderItem key={folderItem.folderId} data={folderItem} />
+      ))}
+    </Container>
   );
 };
 
 const Container = styled.section`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 100px));
+  grid-template-columns: repeat(auto-fill, minmax(144px, 144px));
   justify-content: center;
   padding: 0 auto;
   gap: 5px;

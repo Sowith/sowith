@@ -28,8 +28,7 @@ export const TagItem: React.FC<TagItemProps> = ({
 const Container = styled.div`
   background-color: #ffffff;
   display: flex;
-  margin: 0 auto;
-  padding: 10px 0;
+  margin: 10px auto;
   width: 88%;
 
   div.icon-tag {
@@ -44,7 +43,10 @@ const Container = styled.div`
   }
 
   div.tag-info {
-    padding: 10px 15px;
+    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
 
   div.tag-info span {
