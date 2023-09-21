@@ -1,19 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { styled } from "styled-components";
 
 import { useModalControl } from "../../hooks/useModalControl";
-import { SearchBar } from "../../components/post/PostSearchBar";
 import { Button } from "../../components/common/Button";
+import { SquareCheckBox } from "components/common/CheckBox";
+import { SearchBar } from "../../components/post/PostSearchBar";
 
+import { ReactComponent as IconCreateFolder } from "../../assets/icon/icon-create-folder.svg";
 import IconHashTag from "../../assets/icon/icon-hash-tag.svg";
-
 
 interface TagData {
   tagName: string;
   postCount?: number;
 }
 
-export const PostSelectHashTagPage: React.FC = () => {
+export const PostCreateFolderPage: React.FC = () => {
 
   const tagData: TagData[] = [
     {
@@ -44,10 +45,10 @@ export const PostSelectHashTagPage: React.FC = () => {
       postCount: 416
     },
   ];
-  
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [selectTag, setSelectTag] = useState<string[]>([]);
+
   const { openModal, closeModal, ModalComponent } = useModalControl();
+  const [selectTag, setSelectTag] = useState<string[]>([]);
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [archiveTagData, setArchiveTagData] = useState<TagData[]>(tagData);
 
   const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
@@ -55,13 +56,32 @@ export const PostSelectHashTagPage: React.FC = () => {
     targetElement && setSelectTag([...selectTag, targetElement]);
   };
 
-  useEffect(() => {
-    openModal();
-  }, []);
-
   return (
     <>
+      <button onClick={openModal}>모달열기</button>
       <ModalComponent>
+        <FolderWrap>
+          <IconCreateFolderPosition>
+            <IconCreateFolder width={80} height={80} />
+          </IconCreateFolderPosition>
+
+          <FolderInfo>
+            <InputStyle>
+              <label htmlFor={""}></label>
+              <input
+                id={""}
+                type="text"
+                placeholder={"폴더명"}
+              />
+            </InputStyle>
+
+            <CheckPoint>
+              {/* <SquareCheckBox id={"public"} /> */}
+              <p>비밀 폴더로 유지</p>
+            </CheckPoint>
+          </FolderInfo>
+        </FolderWrap>
+
         <SearchBar
           id={'hashTagSearch'}
           icon={IconHashTag}
@@ -86,7 +106,7 @@ export const PostSelectHashTagPage: React.FC = () => {
 
         <Button
           type="button"
-          text={"완료"}
+          text={"생성"}
           width={'90%'}
           height={'41px'}
           fontSize={'12px'}
@@ -94,10 +114,59 @@ export const PostSelectHashTagPage: React.FC = () => {
           fontFamily={'var(--font--Bold)'}
           onClick={closeModal}
         />
+
       </ModalComponent>
     </>
   );
 };
+
+
+const FolderWrap = styled.div`
+  margin: 50px 0 30px;
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const FolderInfo = styled.div`
+  width: 100%;
+`;
+
+const IconCreateFolderPosition = styled.div`
+  padding: 33px 30px 33px 40px;
+  box-sizing: border-box;
+  border-radius: 40px;
+  background-color: rgba(231, 231, 231, 1);
+  /* margin-top: 65px; */
+  margin-right: 30px;
+`;
+
+const InputStyle = styled.div`
+  box-shadow: 0px 2px 0 0px var(--main-color);
+  margin-bottom: 32px;
+  max-height: 76px;
+  padding: 8px 0;
+  min-height: 50px;
+  box-sizing: border-box;
+
+  input {
+    font-size: 16px;
+    padding: 0 0 0 2px;
+    /* width: 70px; */
+    height: 25px;
+    margin: 6px;
+    border: none;
+    outline: none;
+    background-color: unset;
+  }
+`;
+
+const CheckPoint = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--gray300-color);
+`;
 
 const TagList = styled.ul`
   width: 90%;
@@ -169,3 +238,4 @@ const Tag = styled.li`
     content: "게시물 ";
   }
 `;
+

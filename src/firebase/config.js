@@ -1,3 +1,9 @@
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import "firebase/compat/database";
+import "firebase/compat/storage";
+
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth } from 'firebase/auth';
@@ -13,8 +19,12 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
+firebase.initializeApp(firebaseConfig);
+
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const appAuth = getAuth();
 const appFireStore = getFirestore(app);
-export { appAuth, appFireStore };
+const auth = firebase.auth();
+
+export { appAuth, appFireStore, auth };

@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { styled } from 'styled-components';
 
 import { SignUP } from './SignUpTS';
 import { Login } from './LoginPage';
-import { PostUpload } from './PostUpload';
 import { MyGlobalStyle } from '../style/GlobalStyle';
 import { SearchMain } from './search/SearchMainPage';
 import { SearchByCategory } from './search/SearchByCategoryPage';
 import { ProfilePage } from 'pages/profile/ProfilePage';
-import { styled } from 'styled-components';
+import { ProfileUpdatePage } from "pages/profile/ProfileUpdatePage"
 
 export const Test = () => {
   return (
@@ -31,6 +31,9 @@ export const Test = () => {
       <Link to="/searchbycategory">
         <TestButton>(상세 검색 페이지)</TestButton>
       </Link>
+      <Link to="/profileUpdatePage">
+          <TestButton>(프로필 수정 페이지)</TestButton>
+        </Link>
     </div>
   );
 };

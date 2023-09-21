@@ -19,7 +19,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ setStep })
     <WrapStyle>
       <SelectedPicture />
       <Input
-        text="text"
+        type="text"
         id="addPhraseWrite"
         label={'문구 입력'}
         placeholder="문구 입력..."
@@ -28,7 +28,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ setStep })
         isTextarea={true}
       />
       <Input
-        text="text"
+        type="text"
         id="addLocation"
         label={'위치 추가'}
         height={"50px"}
@@ -37,7 +37,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ setStep })
         onClick={() => setStep(1)}
       />
       <Input
-        text="text"
+        type="text"
         id="addFolder"
         label={'폴더 지정'}
         placeholder="폴더 지정"
@@ -45,7 +45,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ setStep })
         onClick={() => setStep(2)}
       />
       <Input
-        text="text"
+        type="text"
         id="addHashTag"
         label={'해쉬 태그'}
         placeholder="해쉬 태그"
@@ -53,7 +53,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ setStep })
         onClick={() => setStep(3)}
       />
       <Input
-        text="text"
+        type="text"
         id="addHumanTag"
         label={'사람 태그'}
         placeholder="사람 태그"

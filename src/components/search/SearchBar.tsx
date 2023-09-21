@@ -3,7 +3,11 @@ import styled from 'styled-components';
 import { BackButton } from 'components/common/BackButton';
 import search from '../../assets/icon/icon-search.svg';
 
-export const SearchBar: React.FC = () => {
+interface SearchBarProps {
+  onInputClick: () => void;
+}
+
+export const SearchBar: React.FC<SearchBarProps> = ({ onInputClick }) => {
   const handleSearchButtonClick = (): void => {
     console.log('SearchButton has been clicked!');
   };
@@ -12,7 +16,11 @@ export const SearchBar: React.FC = () => {
     <SearchBarContainer>
       <BackButton />
       <SearchArea>
-        <SearchInput type="text" placeholder="검색어를 입력하세요" />
+        <SearchInput
+          type="text"
+          placeholder="검색어를 입력하세요"
+          onClick={onInputClick}
+        />
         <SearchButton onClick={handleSearchButtonClick} />
       </SearchArea>
     </SearchBarContainer>

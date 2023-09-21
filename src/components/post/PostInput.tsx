@@ -6,7 +6,7 @@ interface InputProps {
   id: string;
   label: string;
   icon: string;
-  text: string;
+  type: string;
   placeholder: string;
   isTextarea?: boolean;
   height?: string;

@@ -1,9 +1,10 @@
-import { useState, useEffect, FC } from 'react';
+import { useState, FC } from 'react';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
+import { SearchHistory } from 'components/search/SearchHistory';
 import { StepBar } from '../../components/common/StepBar';
 import { PostList } from '../../components/search/SearchPostList';
-import { FolderList } from '../../components/search/SearchFolderList';
+import { SearchFolderList } from 'components/search/SearchFolderList';
 import { GroupList } from '../../components/search/SearchGroupList';
 import { AccountList } from '../../components/search/SearchAccountList';
 import { TagList } from '../../components/search/SearchTagList';
@@ -15,6 +16,16 @@ interface Category {
 }
 
 export const SearchByCategory: FC = () => {
+  const [isInputClicked, setInputClicked] = useState(false);
+
+  const handleInputClick = () => {
+    setInputClicked(true);
+  };
+
+  const handleCancel = () => {
+    setInputClicked(false);
+  };
+
   const [currentStep, setCurrentStep] = useState<number>(1);
   const CATEGORIES: Category[] = [
     { id: 1, name: '게시글', className: 'category-post' },
@@ -33,7 +44,7 @@ export const SearchByCategory: FC = () => {
       case 1:
         return <PostList />;
       case 2:
-        return <></>;
+        return <SearchFolderList />;
       case 3:
         return <AccountList />;
       case 4:
@@ -48,22 +59,26 @@ export const SearchByCategory: FC = () => {
   return (
     <>
       <h1 className="a11y-hidden">검색 페이지/게시글</h1>
-      <Container>
-        <SearchBar />
-        <CategorySwitcher>
-          {CATEGORIES.map((category) => (
-            <button
-              key={category.id}
-              className={category.className}
-              onClick={() => handleButtonClick(category.id)}
-            >
-              {category.name}
-            </button>
-          ))}
-        </CategorySwitcher>
-        <StepBar currentStep={currentStep} howManyTab={5} />
-        {renderComponentByCategory()}
-      </Container>
+      <SearchBar onInputClick={handleInputClick} />
+      {isInputClicked ? (
+        <SearchHistory onCancel={handleCancel} />
+      ) : (
+        <Container>
+          <CategorySwitcher>
+            {CATEGORIES.map((category) => (
+              <button
+                key={category.id}
+                className={category.className}
+                onClick={() => handleButtonClick(category.id)}
+              >
+                {category.name}
+              </button>
+            ))}
+          </CategorySwitcher>
+          <StepBar currentStep={currentStep} howManyTabs={5} />
+          {renderComponentByCategory()}
+        </Container>
+      )}
     </>
   );
 };
@@ -83,6 +98,7 @@ const CategorySwitcher = styled.div`
   margin: 0 auto 5px auto;
 
   button {
+    display: block;
     flex: 1;
     cursor: pointer;
     font-size: 13px;

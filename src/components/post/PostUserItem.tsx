@@ -1,18 +1,26 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
+
+import { CircleCheckBox } from 'components/common/CheckBox';
+
 import dotIcon from '../../assets/icon/icon-dot.svg';
 
 interface UserItemProps {
-  handleFunc: (userId: string) => void;
   profile: string;
   userId: string;
   userName: string;
   isFollow?: boolean;
+  index: number;
+  checkedBox: number[];
+  setCheckedBox: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export const UserItem: React.FC<UserItemProps> = ({ handleFunc, profile, userId, userName, isFollow }) => {
+export const UserItem: React.FC<UserItemProps> = ({profile, userId, userName, isFollow, index, checkedBox, setCheckedBox}) => {
+
+
   return (
-    <Container onClick={() => handleFunc(userId)}>
+    <>
+    <Container>
       <img className="icon-user" src={profile} alt="" />
       <div className="user-info">
         <span className="user-id">{userId}</span>
@@ -26,12 +34,24 @@ export const UserItem: React.FC<UserItemProps> = ({ handleFunc, profile, userId,
           )}
         </div>
       </div>
+      <CheckBoxPosition>
+        <CircleCheckBox index={index} checkedBox={checkedBox} setCheckedBox={setCheckedBox}/>
+      </CheckBoxPosition>
     </Container>
+    </>
   );
 };
 
+const CheckBoxPosition = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+`;
+
 const Container = styled.div`
-  width: 90%;
+  position: relative;
+  width: 100%;
   margin-top: 2px;
   margin-right: -5px;
   background-color: #FFF;

@@ -77,7 +77,7 @@ export const PostSelectFolderPage: React.FC = () => {
           setSearchKeyword={setSearchKeyword}
         />
 
-        <FolderList archiveFolderData={archiveFolderData} setArchiveFolderData={setArchiveFolderData} />
+        <FolderList archiveFolderData={archiveFolderData} setArchiveFolderData={setArchiveFolderData} isAddButton={true}/>
 
         {/* 폴더가 존재하지 않을경우
         <NonFolderContainer>

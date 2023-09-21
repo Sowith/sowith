@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useLoginHook } from "../hooks/useLogin";
 import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input";
-import logoWide from "../assets/logo/logo1.png";
+import logoWide from "../assets/logo/logo-sowith-wide.png";
 
 export const Login: React.FC = () => {
   const { error, isPending, loginHook } = useLoginHook();
