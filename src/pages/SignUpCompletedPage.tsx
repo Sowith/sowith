@@ -1,21 +1,39 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 import logoHeart from "../assets/logo/logo-heart.svg";
 import logoGround from "../assets/logo/logo-ground.svg";
 import logoSowithText from "../assets/logo/logo-sowith-only-text.svg";
 
+//후에 page 상태는 프롭스로 받을 예정입니다
+
 export const SignUpCompletedPage = () => {
+  const [page, setPage] = useState(2);
+
   return (
     <>
-      <LogoWrap>
-        <img src={logoHeart} />
-        <img src={logoGround} />
-        <img src={logoSowithText} />
-        <p>SOWITH에 오신 걸 환영해요!</p>
-      </LogoWrap>
-      <ButtonWrap>
-        <button>SOWITH 시작하기</button>
-      </ButtonWrap>
+      {page === 1 ? (
+        <>
+          <LogoWrap>
+            <img src={logoHeart} />
+            <img src={logoGround} />
+            <img src={logoSowithText} />
+            <p>SOWITH에 오신 걸 환영해요!</p>
+          </LogoWrap>
+          <ButtonWrap>
+            <button>SOWITH 시작하기</button>
+          </ButtonWrap>
+        </>
+      ) : (
+        <SplashWrap>
+          <p>공간을 넘어 감성을 나누다</p>
+          <LogoWrap>
+            <img src={logoHeart} />
+            <img src={logoGround} />
+            <img src={logoSowithText} />
+          </LogoWrap>
+        </SplashWrap>
+      )}
     </>
   );
 };
@@ -33,15 +51,12 @@ const LogoWrap = styled.div`
   & img:first-child {
     margin-bottom: -15px;
     z-index: 1;
-    animation: heartAnimation 3s ease-in-out 0.5s infinite;
+    animation: heartAnimation 2.5s ease-in-out 0.5s infinite;
   }
 
   & img:nth-child(2) {
     margin-bottom: 20px;
-    animation: groundAnimation 3s ease-in-out 0.5s infinite;
-  }
-
-  & img:nth-child(3) {
+    animation: groundAnimation 2.5s ease-in-out 0.5s infinite;
   }
 
   & p {
@@ -59,10 +74,10 @@ const LogoWrap = styled.div`
       transform: translate(0, 5px);
     }
     50% {
-      transform: translate(0, -30px) ;
+      transform: translate(0, -25px);
     }
     100% {
-      transform: translate(0, 0) ;
+      transform: translate(0, 0);
     }
   }
 
@@ -99,3 +114,16 @@ const ButtonWrap = styled.div`
     letter-spacing: 2px;
   }
 `;
+
+const SplashWrap = styled.div`
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, 0);
+
+  & p {
+    color: var(--gray300-color);
+    letter-spacing: 1px;
+    margin-top: -50px;
+  }
+`

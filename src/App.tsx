@@ -12,8 +12,9 @@ import { SearchTrendingFolder } from 'pages/search/SearchTrendingFolderPage';
 import { ProfilePage } from './pages/profile/ProfilePage';
 import { ProfileUpdatePage } from "pages/profile/ProfileUpdatePage";
 import { ProfileGroupDetailPage } from "./pages/profile/ProfileGroupDetailPage"
-import { Test } from './pages/Test';
 import { PostTS } from 'pages/PostTS';
+import { SignUpCompletedPage } from 'pages/SignUpCompletedPage';
+import { Test } from './pages/Test';
 
 export function App(): JSX.Element {
   return (
@@ -30,7 +31,8 @@ export function App(): JSX.Element {
         <Route path="/trendinggroup" element={<SearchTrendingGroup />} />
         <Route path="/trendingfolder" element={<SearchTrendingFolder />} />
         <Route path="/profileUpdatePage" element={<ProfileUpdatePage />} />
-          <Route path="/profiledetailPage/:currentStep" element={<ProfileGroupDetailPage />} />
+        <Route path="/profiledetailPage/:currentStep" element={<ProfileGroupDetailPage />} />
+        <Route path="/com" element={<SignUpCompletedPage />} />
       </Routes>
     </BrowserRouter>
   );
