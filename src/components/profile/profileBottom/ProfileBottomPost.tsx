@@ -48,11 +48,11 @@ const PostItemList = styled.ul`
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;
+  margin-left: -3px;
   `
 const PostItem = styled.li`
-  width: calc((100% / 3) - 4px);
-  margin-left: 1.5px;
+  width: calc(100% / 3);
+  
   & img {
     width: 100%;
     aspect-ratio: 1 / 1;

@@ -88,7 +88,7 @@ const ProfileTopContainer = styled.section`
   .profileTopLeft {
     display: flex;
     flex-direction: column;
-    min-width: 100px;
+    min-width: 90px;
     align-items: center;
     margin-left: 3%;
     button {
@@ -107,7 +107,7 @@ const ProfileTopContainer = styled.section`
 
 const ProfileImage = styled.img`
   width: 100%;
-  max-width: 180px;
+  max-width: 160px;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
 `;

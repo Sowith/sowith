@@ -28,6 +28,7 @@ export const ProfileBottomGroup = () => {
           <GroupUI />
           <GroupUI />
           <GroupUI />
+          <div className="line"></div>
           <div className="follow group-tab" onClick={() => openDetail(2)}>
             <span>팔로우 한 그룹</span>
             <button>
@@ -67,5 +68,12 @@ const ProfileBottomGroupWrap = styled.section`
     position: absolute;
     top: 250%;
     left: 50%;
+  }
+
+  & .line {
+    width: 100%;
+    height: 10px;
+    background-color: #eaeaea;
+    margin: 10px 0;
   }
 `;

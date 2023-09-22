@@ -111,6 +111,7 @@ export const ProfileTabMenu = () => {
 const ProfileTabMenuWrap = styled.div`
   width: 88%;
   margin: 0 auto;
+  overflow: hidden;
 
   & > div {
     display: flex;
@@ -126,4 +127,5 @@ const ProfileTabMenuWrap = styled.div`
 
 const ProfileBottom = styled.section`
   width: 100%;
+  overflow-y: auto;
 `;

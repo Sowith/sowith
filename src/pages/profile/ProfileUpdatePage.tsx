@@ -1,59 +1,104 @@
 import { styled } from "styled-components";
 import { useState } from "react";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { useAlertControl } from "hooks/useAlertControl";
+import { AlertBox } from "components/common/AlertBox";
 
 import profileimg from "../../assets/profiletest.jpeg";
-import profileImgUpdate from "../../assets/icon/icon-profile-update-img.svg";
 import updateCancel from "../../assets/icon/icon-profile-update-cancel.svg";
 import updateSave from "../../assets/icon/icon-profile-update-save.svg";
 
 export const ProfileUpdatePage = () => {
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const navigate = useNavigate();
+
+  const [profileSelectedImage, setProfileSelectedImage] = useState<
+    string | null
+  >(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertChoices, setAlertChoices] = useState<[string, string?]>([
+    "",
+    undefined,
+  ]);
+  const { openAlert, AlertComponent } = useAlertControl();
+
+  const handleUpdateImg = (fileBlob: File | null) => {
+    if (fileBlob) {
+      const reader = new FileReader();
+      reader.readAsDataURL(fileBlob);
+      reader.onload = () => {
+        setProfileSelectedImage(reader.result as string);
+      };
+    }
+  };
+
+  const handleSave = () => {
+    navigate("/profilePage")
+  }
+
   return (
+    <>
     <ProfileUpdateForm>
       <ProfileUpdateTop>
         <input
           id="fileInput"
           type="file"
           style={{ display: "none" }}
-          accept="image/jpeg, image/png, image/svg"
+          accept="image/*"
+          onChange={(e) => {
+            handleUpdateImg(e.target.files ? e.target.files[0] : null);
+          }}
         />
         <label htmlFor="fileInput">
           <ProfileUpdateImgWrap>
-            <img src={profileimg} alt="Upload" className="profile-img" />
+            <img
+              src={profileSelectedImage ? profileSelectedImage : profileimg}
+              alt="Upload"
+              className="profile-img"
+              ref={(ref) => (imgRef.current = ref)}
+            />
+            <span>프로필 이미지 수정하기</span>
           </ProfileUpdateImgWrap>
-
-          <img
-            className="profile-img-update"
-            src={profileImgUpdate}
-            alt="Upload"
-          />
         </label>
       </ProfileUpdateTop>
       <ProfileUpdateInputWrap>
         <fieldset>
-          <input id="accountID"></input>
+          <input id="accountID" />
           <label htmlFor="accountID">계정 닉네임</label>
         </fieldset>
         <fieldset>
-          <input id="userName" className="input"></input>
+          <input id="userName" />
           <label htmlFor="userName">이름</label>
         </fieldset>
         <fieldset>
-          <textarea className="input" id="profileMessage"></textarea>
+          <textarea id="profileMessage" />
           <label htmlFor="profileMessage">프로필 메세지</label>
         </fieldset>
       </ProfileUpdateInputWrap>
-      <button className="update-cancel">
+
+      <button className="update-cancel" onClick={openAlert}>
         <img src={updateCancel} alt="프로필 수정 취소하기 버튼" />
       </button>
-      <button className="update-save">
+
+      <button className="update-save" onClick={handleSave}>
         <img src={updateSave} alt="수정한 프로필 내용 저장하기 버튼" />
       </button>
     </ProfileUpdateForm>
+    <AlertComponent>
+        <AlertBox
+          alertMsg={"프로필 수정을 취소하시겠습니까?"}
+          choice={["취소", "확인"]}
+        />
+      </AlertComponent>
+    </>
   );
 };
-const ProfileUpdateForm = styled.form`
+const ProfileUpdateForm = styled.div`
   position: relative;
-  & > button {
+  .update-cancel,
+  .update-save {
     padding: 10px;
     position: absolute;
     top: 10px;
@@ -68,35 +113,40 @@ const ProfileUpdateForm = styled.form`
 
 const ProfileUpdateTop = styled.div`
   position: relative;
+  cursor: pointer;
   .profile-img-update {
     position: absolute;
     width: 40px;
     bottom: 0;
-    right: 35vw;
+    right: 40%;
     z-index: 1;
   }
 `;
 const ProfileUpdateImgWrap = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   padding-top: 40px;
-  position: relative;
-  & > div {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+
+  & span {
+    color: var(--gray200-color);
+    font-family: var(--font--Medium);
+    cursor: pointer;
   }
   .profile-img {
-    width: 30%;
+    cursor: pointer;
     border-radius: 50%;
-    max-width: 180px;
+    width: 30%;
+    max-width: 200px;
     aspect-ratio: 1/1;
     position: relative;
     z-index: 1;
+    margin-bottom: 15px;
   }
 `;
 
-const ProfileUpdateInputWrap = styled.section`
+const ProfileUpdateInputWrap = styled.form`
   & fieldset {
     display: flex;
     flex-direction: column-reverse;
@@ -108,10 +158,11 @@ const ProfileUpdateInputWrap = styled.section`
     margin-top: 20px;
     font-weight: 700;
   }
+
   input:focus + label,
   textarea:focus + label {
     color: var(--main-color);
-}
+  }
 
   & input {
     border: none;
@@ -146,9 +197,3 @@ const ProfileUpdateInputWrap = styled.section`
     border-radius: 10px;
   }
 `;
-
-// const Label = styled.label<ProfileUpdatePageProps>`
-//   color: ${(props) =>
-//     props.focusCheck ? "var(--main-color)" : "var(--gray300-color)"};
-//   font-weight: ${(props) => (props.focusCheck ? 700 : "normal")};
-// `;
