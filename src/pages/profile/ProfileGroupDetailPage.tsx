@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import { GroupUI } from "components/common/GroupUI";
 import { SearchBar } from "../../components/search/SearchBar";
-import arrowNext from "../../assets/icon/icon-arrow-next.svg";
+
 
 export const ProfileGroupDetailPage = () => {
   const { currentStep } = useParams();
@@ -16,18 +16,25 @@ export const ProfileGroupDetailPage = () => {
     setDetailPage(e);
   };
 
+  // const [isInputClicked, setInputClicked] = useState(false);
+
+  const handleInputClick = () => {
+    // setInputClicked(true);
+  };
+
+  const handleCancel = () => {
+    // setInputClicked(false);
+  };
+
   return (
     <ProfileGroupDetailPageWrap>
       <div style={{marginTop: "20px", marginBottom: "20px"}}>
-        
+        <SearchBar onInputClick={handleInputClick}/>
       </div>
       {detailPage === 1 ? (
         <>
           <div className="participated group-tab">
             <span>참여한 그룹</span>
-            <button>
-              <img src={arrowNext}></img>
-            </button>
           </div>
           <GroupUI></GroupUI>
           <GroupUI></GroupUI>
@@ -37,9 +44,6 @@ export const ProfileGroupDetailPage = () => {
         <>
           <div className="follow group-tab">
             <span>팔로우한 그룹</span>
-            <button>
-              <img src={arrowNext}></img>
-            </button>
           </div>
           <GroupUI></GroupUI>
           <GroupUI></GroupUI>

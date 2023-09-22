@@ -1,44 +1,74 @@
 import { styled } from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import testImg from "../../assets/testImg/testimg-post.svg";
-import groupParticipatedUserImg from "../../assets/testImg/testimg-user.png";
+import iconYellowStar from "../../assets/icon/icon-star-yellow.svg"
 
 interface GroupUIProps {
   groupTitle?: string;
   groupTag?: string;
-  groupParticipatedUser?: number;
-  groupFriendsWith?: string;
+  groupMember?: number;
 }
 
 export const GroupUI: React.FC<GroupUIProps> = ({
   groupTitle,
   groupTag,
-  groupParticipatedUser,
-  groupFriendsWith,
+  groupMember,
 }) => {
-  const [isWith, setIsWith] = useState(false);
+  const [postTime, setPostTime] = useState(0);
+
+  const TimeAgo = ({ postTime }) => {
+    const [timeAgo, setTimeAgo] = useState("");
+
+    useEffect(() => {
+      const calculateTimeAgo = () => {
+        const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+        const timeDifference = 36000 - 3000;
+        // const timeDifference = currentTime - postTime;
+
+        if (timeDifference < 60) {
+          setTimeAgo("방금 전");
+        } else if (timeDifference < 3600) {
+          const minutesAgo = Math.floor(timeDifference / 60);
+          setTimeAgo(`${minutesAgo}분`);
+        } else if (timeDifference < 86400) {
+          const hoursAgo = Math.floor(timeDifference / 3600);
+          setTimeAgo(`${hoursAgo}시간`);
+        } else {
+          const daysAgo = Math.floor(timeDifference / 86400);
+          setTimeAgo(`${daysAgo}일`);
+        }
+      };
+
+      calculateTimeAgo();
+    }, [postTime]);
+
+    return <span>{timeAgo} 전</span>;
+  };
 
   return (
     <GroupUIWrap>
-      <img src={testImg} />
+      <ImageWrap>
+        <img className="group-profile-img" src={testImg} />
+        <div className="group-star">
+          <img src={iconYellowStar}></img>
+          <span>1.9</span>
+          <span>K</span>
+        </div>
+      </ImageWrap>
+
       <ContentsWrap>
         <h3>다람쥐 도토리 주기 모임 {groupTitle}</h3>
-        <span># 당근 노맛 {groupTag}</span>
-        <span># 당근 짱맛 {groupTag}</span>
+        <span className="tag-style">#</span> <span>당근 노맛 {groupTag}</span>
+        <span className="tag-style">#</span> <span>당근 짱맛 {groupTag}</span>
         <div style={{ display: "flex" }}>
           <UserImgWrap>
-            <div>
-              <img src={groupParticipatedUserImg}></img>
-              <img src={groupParticipatedUserImg}></img>
-              <img src={groupParticipatedUserImg}></img>
-              {isWith === true ? (
-                <span>
-                  lucy{groupFriendsWith}외 {groupParticipatedUser}3 명
-                </span>
-              ) : (
-                <span>외 {groupParticipatedUser}2 명</span>
-              )}
+            <div className="span-wrap">
+              <span>그룹 멤버{groupMember} 23명</span>
+              <span>|</span>
+              <span>
+                <TimeAgo postTime={postTime} />
+              </span>
             </div>
           </UserImgWrap>
         </div>
@@ -50,28 +80,56 @@ const GroupUIWrap = styled.article`
   width: 88%;
   margin: 0 auto;
   padding: 10px 0;
-  border-bottom: 1px solid var(--gray100-color);
   box-sizing: border-box;
   display: flex;
+`;
 
-  & > img {
-    display: inline-block;
-    width: 25%;
-    max-width: 100px;
+const ImageWrap = styled.div`
+position: relative;
+  & .group-profile-img {
+    max-width: 90px;
     border-radius: 10px;
+  }
+
+  & .group-star {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 2px 5px;
+    border-radius: 10px;
+    color: white;
+    font-family: var(--font--Regular);
+
+    position:absolute;
+    bottom: 5px;
+    left: 5px;
+
+    & > img {
+      width: 15px;
+      margin-right: 3px;
+      margin-top: 1.5px;
+    }
   }
 `;
 
 const ContentsWrap = styled.div`
   padding-left: 15px;
   position: relative;
+  width: 100%;
 
   & h3 {
     font-size: 1rem;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
   }
 
-  & > span {
+  & span {
     font-size: 0.8rem;
+    margin-right: 5px;
+  }
+
+  & .tag-style {
+    color: var(--main-color);
+    font-family: var(--font--Bold);
+    margin-right: 0;
   }
 `;
 
@@ -80,25 +138,12 @@ const UserImgWrap = styled.div`
   position: absolute;
   bottom: 0;
 
-  & div {
-    position: relative;
-    & img {
-      width: 30px;
-    }
-    & img:nth-child(2) {
-      position: absolute;
-      left: 10%;
-    }
-    & img:nth-child(3) {
-      position: absolute;
-      left: 20%;
-    }
+  .span-wrap {
+    display: inline-block;
+    font-size: 0.8rem;
     & span {
-      position: absolute;
-      left: 40%;
-      display: inline-block;
-      font-size: 0.8rem;
-      line-height: 40px;
+      margin-right: 10px;
+      color: var(--gray300-color);
     }
   }
 `;
