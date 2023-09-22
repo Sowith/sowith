@@ -2,14 +2,14 @@ import { styled } from "styled-components";
 
 import { ProfileTop } from "components/profile/ProfileTop";
 import { ProfileTabMenu } from "components/profile/ProfileTapMenu";
+import { BackButton } from "components/common/BackButton";
 
-import arrowBack from "../../assets/icon/icon-arrow.svg";
 import setting from "../../assets/icon/icon-setting.svg";
 
 export const ProfilePage = () => {
   return (
     <>
-      <h1 className="a11y-hidden">회원가입 페이지</h1>
+      <h1 className="a11y-hidden">프로필 페이지</h1>
       <SettingButton>
         <img src={setting} />
       </SettingButton>
@@ -18,7 +18,7 @@ export const ProfilePage = () => {
         <ProfileTabMenu />
       </ProfilePageWrap>
       <ArrowBackButton>
-        <img src={arrowBack} />
+        <BackButton />
       </ArrowBackButton>
     </>
   );
@@ -33,7 +33,7 @@ const ProfilePageWrap = styled.div`
 const SettingButton = styled.button`
   cursor: pointer;
   position: absolute;
-  top: 25px;
+  top: 15px;
   right: 15px;
   padding: 10px;
 `;
@@ -41,7 +41,7 @@ const SettingButton = styled.button`
 const ArrowBackButton = styled.button`
   cursor: pointer;
   position: absolute;
-  top: 15px;
-  left: 15px;
+  top: 10px;
+  left: 10px;
   padding: 10px;
 `;

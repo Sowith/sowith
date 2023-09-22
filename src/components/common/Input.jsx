@@ -19,6 +19,7 @@ const InputDefault = styled.input`
 
   &::placeholder {
     color: var(--gray200-color);
+    font-size: 14px;
   }
   &:focus {
     padding: 15px;
