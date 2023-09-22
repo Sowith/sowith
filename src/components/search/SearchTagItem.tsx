@@ -16,10 +16,8 @@ export const TagItem: React.FC<TagItemProps> = ({
         <img src={tagIcon} alt="" />
       </div>
       <div className="tag-info">
-        <span className="tag-title">당근 케이크{tagTitle}</span>
-        <span className="tag-number">
-          게시물 3000+개{`게시물 ${tagNumber}+개`}
-        </span>
+        <span className="tag-title">{tagTitle}</span>
+        <span className="tag-number">{`게시물 ${tagNumber}+개`}</span>
       </div>
     </Container>
   );
@@ -55,11 +53,11 @@ const Container = styled.div`
 
   span.tag-title {
     font-family: var(--font--Medium);
-    font-size: 14px;
+    font-size: 1rem;
   }
 
   span.tag-number {
-    font-size: 10px;
+    font-size: 0.8rem;
     color: #898989;
   }
 `;

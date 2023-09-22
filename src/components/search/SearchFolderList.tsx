@@ -8,6 +8,7 @@ interface FolderData {
   name: string;
   totalpost: number;
   like: boolean;
+  tags: string[];
 }
 
 export const SearchFolderList: React.FC = () => {
@@ -16,12 +17,19 @@ export const SearchFolderList: React.FC = () => {
       folderId: 1,
       name: '빠니보틀의 로드맵',
       totalpost: 10,
-      like: false,
+      like: true,
       src: [
         'https://picsum.photos/200/191',
         'https://picsum.photos/200/192',
         'https://picsum.photos/200/193',
         'https://picsum.photos/200/194',
+      ],
+      tags: [
+        '여행',
+        '국내여행',
+        '제주도',
+        '브이로그',
+        '어쩌구 저쩌구 짱 긴 태그',
       ],
     },
     {
@@ -35,6 +43,7 @@ export const SearchFolderList: React.FC = () => {
         'https://picsum.photos/200/197',
         'https://picsum.photos/200/198',
       ],
+      tags: ['여행', '유럽여행', '피렌체', '인생사진'],
     },
     {
       folderId: 3,
@@ -47,29 +56,49 @@ export const SearchFolderList: React.FC = () => {
         'https://picsum.photos/200/201',
         'https://picsum.photos/200/202',
       ],
+      tags: ['여행', '미국여행', 'LA', 'NBA 직관'],
     },
   ];
 
   const [archiveFolderData, setArchiveFolderData] =
     useState<FolderData[]>(folderData);
 
+  const handleLikeToggle = (folderId: number) => {
+    const updatedFolderData = [...archiveFolderData];
+
+    const folderIndex = updatedFolderData.findIndex(
+      (folder) => folder.folderId === folderId
+    );
+
+    if (folderIndex !== -1) {
+      updatedFolderData[folderIndex].like =
+        !updatedFolderData[folderIndex].like;
+    }
+
+    setArchiveFolderData(updatedFolderData);
+  };
+
   return (
     <Container>
       {archiveFolderData.map((folderItem) => (
-        <SearchFolderItem key={folderItem.folderId} data={folderItem} />
+        <SearchFolderItem
+          key={folderItem.folderId}
+          data={folderItem}
+          onLikeToggle={handleLikeToggle}
+          src={folderItem.src[0]}
+        />
       ))}
     </Container>
   );
 };
 
 const Container = styled.section`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(144px, 144px));
-  justify-content: center;
+  width: 88%;
   padding: 0 auto;
-  gap: 5px;
+  gap: 2px;
   box-sizing: border-box;
   margin: 0 auto;
-  border-radius: 10px;
-  overflow: hidden;
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
 `;

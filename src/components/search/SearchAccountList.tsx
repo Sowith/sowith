@@ -51,5 +51,5 @@ export const AccountList: React.FC<AccountListProps> = ({
 
 const AccountItemContainer = styled.div`
   width: 100%;
-  margin: 20px auto;
+  margin: 30px auto;
 `;

@@ -30,15 +30,13 @@ export const PostItem: React.FC<PostItemProps> = ({
   );
 };
 const Container = styled.div`
-  width: 100px;
-  height: 100px;
-  overflow: hidden;
+  width: calc((100% / 3) - 4px);
+  margin-left: 1.5px;
   cursor: pointer;
   position: relative;
-  object-fit: cover;
-
-  img.post-item {
+  & img {
     width: 100%;
+    aspect-ratio: 1 / 1;
   }
 
   img.icon-multiple_photos {
