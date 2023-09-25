@@ -30,7 +30,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onInputClick }) => {
 const SearchBarContainer = styled.div`
   display: flex;
   margin: 20px auto 20px auto;
-  width: 90%;
+  width: 88%;
   align-items: center;
 
   padding-top: 20px;
