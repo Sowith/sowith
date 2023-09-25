@@ -1,31 +1,39 @@
 import { useState, FC } from 'react';
 import { styled } from 'styled-components';
 
-import testImg from '../../assets/testImg/testimg-folder.png';
-import heartFilled from '../../assets/icon/icon-heart_filled.svg';
-import heartUnfilled from '../../assets/icon/icon-heart_unfilled.svg';
+import { ReactComponent as IconLike } from '../../assets/icon/icon-heart_unfilled.svg';
+import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark.svg';
 
 interface FolderDataItem {
   folderId: number;
   src: string[];
   name: string;
-  totalpost: number;
+  totalLike: number;
   like: boolean;
+  bookmark: boolean;
   tags: string[];
 }
 
 interface FolderItemProps {
   data: FolderDataItem;
   onLikeToggle: (folderId: number) => void;
+  onBookmarkToggle: (folderId: number) => void;
   src: string;
 }
 
 export const SearchFolderItem: FC<FolderItemProps> = ({
   data,
   onLikeToggle,
+  onBookmarkToggle,
 }) => {
+  const maxTagCount = 3;
+
   const handleLikeClick = () => {
     onLikeToggle(data.folderId);
+  };
+
+  const handleBookmarkClick = () => {
+    onBookmarkToggle(data.folderId);
   };
 
   return (
@@ -33,23 +41,34 @@ export const SearchFolderItem: FC<FolderItemProps> = ({
       <BlackOverlay />
       <FolderDescription>
         <p>{data.name}</p>
-        {/* data.name을 사용하여 이름을 동적으로 표시 */}
         <FolderTagList>
-          {/* 여기에 태그 리스트를 렌더링 */}
-          {data.tags.map((tag, index) => (
+          {data.tags.slice(0, maxTagCount).map((tag, index) => (
             <FolderTagItem key={index}>
               <HashTag># </HashTag>
               {tag}
             </FolderTagItem>
           ))}
+
+          {data.tags.length > maxTagCount && (
+            <FolderTagItem>+{data.tags.length - maxTagCount}</FolderTagItem>
+          )}
         </FolderTagList>
       </FolderDescription>
       <FolderInfo>
-        <FolderLike onClick={handleLikeClick}>
-          <img src={data.like ? heartFilled : heartUnfilled} alt="like" />{' '}
-          <span>{data.totalpost}M</span>{' '}
-          {/* data.totalpost를 사용하여 게시물 수 표시 */}
+        <FolderLike>
+          <IconLike
+            fill={data.like ? '#FC9763' : 'none'}
+            stroke={data.like ? '#FC9763' : 'none'}
+            onClick={handleLikeClick}
+            style={{ width: '30px', height: '30px' }}
+          />
+          <span>{data.totalLike}</span>{' '}
         </FolderLike>
+        <IconBookmark
+          fill={data.bookmark ? '#FFDF44' : '#C4C4C4'}
+          stroke={data.bookmark ? '#FFDF44' : 'none'}
+          onClick={handleBookmarkClick}
+        />
       </FolderInfo>
     </Container>
   );
@@ -58,15 +77,15 @@ export const SearchFolderItem: FC<FolderItemProps> = ({
 const Container = styled.div`
   cursor: pointer;
   position: relative;
+  width: calc((100% / 2) - 4px);
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
   justify-content: space-between;
-  width: calc((100% / 2) - 4px);
   aspect-ratio: 1 / 1;
   box-sizing: border-box;
   border-radius: 5px;
-  padding: 2% 2%;
+  padding: 10px;
   background-size: cover;
 
   > img {
@@ -135,6 +154,9 @@ const FolderTagItem = styled.p`
 
 const FolderInfo = styled.div`
   padding: 5px 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const FolderLike = styled.div`
