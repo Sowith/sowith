@@ -1,9 +1,10 @@
 import { FC, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
 import { SearchHistory } from 'components/search/SearchHistory';
 import { GroupUI } from '../../components/common/GroupUI';
-import { SearchFolderList } from 'components/search/SearchFolderList';
+import { SearchTrendingFolderList } from 'components/search/SearchTrendingFolderList';
 
 interface SectionTitleProps {
   index: number;
@@ -11,6 +12,7 @@ interface SectionTitleProps {
 
 export const SearchMain: FC = () => {
   const [isInputClicked, setInputClicked] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputClick = () => {
     setInputClicked(true);
@@ -33,16 +35,14 @@ export const SearchMain: FC = () => {
           <TrendingFolder>
             <SectionTitle index={1}>
               <h2>인기 폴더</h2>
-              <a href="#">더보기</a>
+              <Link to="/trendingfolder">더보기</Link>
             </SectionTitle>
-            <TrendingFolderList>
-              <SearchFolderList />
-            </TrendingFolderList>
+            <SearchTrendingFolderList />
           </TrendingFolder>
           <TrendingGroup>
             <SectionTitle index={2}>
               <h2>인기 그룹</h2>
-              <a href="#">더보기</a>
+              <Link to="/trendinggroup">더보기</Link>
             </SectionTitle>
             <TrendingGroupList>
               {trendingGroups.map((_, idx) => (
@@ -98,13 +98,6 @@ const SectionTitle = styled.div<SectionTitleProps>`
 const TrendingFolder = styled.section`
   width: 100%;
   margin: 0 auto;
-`;
-
-const TrendingFolderList = styled.div`
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  margin-bottom: 15px;
 `;
 
 const TrendingGroup = styled.section`
