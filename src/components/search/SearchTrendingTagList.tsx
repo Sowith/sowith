@@ -25,7 +25,7 @@ export const SearchTrendingTagList: React.FC = () => {
 
 const Container = styled.section`
   width: 88%;
-  padding: 10px 5px;
+  padding: 5px;
   gap: 10px;
   margin: 0 auto;
   display: flex;

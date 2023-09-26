@@ -15,7 +15,9 @@ export const SearchTrendingTagItem: React.FC<TrendingTagItemProps> = ({
 };
 
 const Container = styled.div`
-  /* width: auto; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   white-space: nowrap;
   padding: 10px;
   font-size: 0.8rem;
@@ -25,6 +27,7 @@ const Container = styled.div`
   background-color: var(--main-color);
 
   span {
+    display: inline-block;
     color: #ffffff;
     font-family: var(--font--SemiBold);
   }
