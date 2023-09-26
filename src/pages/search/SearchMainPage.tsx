@@ -5,6 +5,7 @@ import { SearchBar } from '../../components/search/SearchBar';
 import { SearchHistory } from 'components/search/SearchHistory';
 import { GroupUI } from '../../components/common/GroupUI';
 import { SearchTrendingFolderList } from 'components/search/SearchTrendingFolderList';
+import { SearchTrendingTagList } from 'components/search/SearchTrendingTagList';
 
 interface SectionTitleProps {
   index: number;
@@ -12,7 +13,6 @@ interface SectionTitleProps {
 
 export const SearchMain: FC = () => {
   const [isInputClicked, setInputClicked] = useState(false);
-  const navigate = useNavigate();
 
   const handleInputClick = () => {
     setInputClicked(true);
@@ -27,7 +27,10 @@ export const SearchMain: FC = () => {
   return (
     <>
       <h1 className="a11y-hidden">검색 메인 페이지</h1>
-      <SearchBar onInputClick={handleInputClick} />
+      <MainTopNav>
+        <SearchBar onInputClick={handleInputClick} />
+        <SearchTrendingTagList />
+      </MainTopNav>
       {isInputClicked ? (
         <SearchHistory onCancel={handleCancel} />
       ) : (
@@ -69,6 +72,14 @@ const Container = styled.div`
   section {
     padding-top: 18px;
   }
+`;
+
+const MainTopNav = styled.div`
+  z-index: 999;
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  box-shadow: 0px 5px 5px -5px rgba(0, 0, 0, 0.5);
 `;
 
 const SectionTitle = styled.div<SectionTitleProps>`

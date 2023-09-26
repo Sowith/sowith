@@ -15,14 +15,14 @@ export const SearchTrendingTagItem: React.FC<TrendingTagItemProps> = ({
 };
 
 const Container = styled.div`
-  width: auto;
+  /* width: auto; */
+  white-space: nowrap;
+  padding: 10px;
   font-size: 0.8rem;
   box-sizing: border-box;
   border-radius: 20px;
   cursor: pointer;
   background-color: var(--main-color);
-  text-align: center;
-  line-height: 2.5;
 
   span {
     color: #ffffff;
@@ -30,9 +30,8 @@ const Container = styled.div`
   }
 
   &:hover {
-    border: 1px solid var(--main-color);
+    outline: 1px solid var(--main-color);
     background-color: #ffffff;
-    margin: -1px;
     span {
       color: var(--main-color);
     }
