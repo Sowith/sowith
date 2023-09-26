@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
-import { SearchBar } from '../../components/search/SearchBar';
 import {
   HistoryItem,
   HistoryItemProps,

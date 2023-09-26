@@ -236,7 +236,6 @@ const Container = styled.section`
   gap: 10px;
   box-sizing: border-box;
   margin: 0 auto;
-
   display: flex;
   overflow: auto;
 `;
