@@ -8,7 +8,7 @@ import groupIcon from '../../assets/icon/icon-users_group-black.svg';
 import folderIcon from '../../assets/icon/icon-folder.svg';
 import dotIcon from '../../assets/icon/icon-dot.svg';
 import tagIcon from '../../assets/icon/icon-tag.svg';
-import testImg from '../../assets/testImg/testimg-user.png';
+import testImg from '../../assets/testImg/testimg-user.jpg';
 
 // 기능구현 시 하드코딩 되어있는 정보 변경하기
 // todo 다음과 같은 기능 구현:
@@ -120,18 +120,31 @@ const Container = styled.div<{ historyCategory: HistoryCategory }>`
       props.historyCategory === 'text' || props.historyCategory === 'tag'
         ? '1px solid var(--gray200-color)'
         : 'none'};
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     align-self: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+
+    img {
+      width: ${(props) =>
+        props.historyCategory !== 'text' && props.historyCategory !== 'tag'
+          ? '100%'
+          : undefined};
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
   }
 
   div.history-info {
     margin: auto 0;
     padding: 10px 15px;
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
 
   div.history-info span {
@@ -139,8 +152,8 @@ const Container = styled.div<{ historyCategory: HistoryCategory }>`
   }
 
   span.history-title {
-    font-family: var(--font--Medium);
-    font-size: 14px;
+    font-family: var(--font--regular);
+    font-size: 1rem;
   }
 
   div.history-description {
@@ -148,14 +161,14 @@ const Container = styled.div<{ historyCategory: HistoryCategory }>`
     gap: 5px;
 
     span {
-      font-size: 10px;
+      font-size: 0.9rem;
       color: #898888;
     }
   }
 
   img.icon-category {
-    width: 8px;
-    height: 8px;
+    width: 0.8rem;
+    height: 0.8rem;
     align-self: center;
   }
 

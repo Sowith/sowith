@@ -1,10 +1,10 @@
 import { FC, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
 import { SearchHistory } from 'components/search/SearchHistory';
 import { GroupUI } from '../../components/common/GroupUI';
-import { FolderList } from '../../components/common/FolderList';
-import { TagItem } from '../../components/search/SearchTagItem';
+import { SearchTrendingFolderList } from 'components/search/SearchTrendingFolderList';
 
 interface SectionTitleProps {
   index: number;
@@ -12,6 +12,7 @@ interface SectionTitleProps {
 
 export const SearchMain: FC = () => {
   const [isInputClicked, setInputClicked] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputClick = () => {
     setInputClicked(true);
@@ -22,7 +23,6 @@ export const SearchMain: FC = () => {
   };
 
   const trendingGroups = [1, 2, 3];
-  const trendingTags = [1, 2, 3];
 
   return (
     <>
@@ -35,14 +35,14 @@ export const SearchMain: FC = () => {
           <TrendingFolder>
             <SectionTitle index={1}>
               <h2>인기 폴더</h2>
-              <a href="#">더보기</a>
+              <Link to="/trendingfolder">더보기</Link>
             </SectionTitle>
-            <TrendingFolderList></TrendingFolderList>
+            <SearchTrendingFolderList />
           </TrendingFolder>
           <TrendingGroup>
             <SectionTitle index={2}>
               <h2>인기 그룹</h2>
-              <a href="#">더보기</a>
+              <Link to="/trendinggroup">더보기</Link>
             </SectionTitle>
             <TrendingGroupList>
               {trendingGroups.map((_, idx) => (
@@ -50,18 +50,6 @@ export const SearchMain: FC = () => {
               ))}
             </TrendingGroupList>
           </TrendingGroup>
-          <TrendingTag>
-            <SectionTitle index={3}>
-              <h2>인기 태그</h2>
-              <a href="#">더보기</a>
-            </SectionTitle>
-            {/* 컴포넌트화 필요 */}
-            <TrendingTagList>
-              {trendingTags.map((tag, idx) => (
-                <TagItem key={idx} />
-              ))}
-            </TrendingTagList>
-          </TrendingTag>
         </Container>
       )}
     </>
@@ -92,12 +80,12 @@ const SectionTitle = styled.div<SectionTitleProps>`
 
   h2 {
     font-family: var(--font--semibold);
-    font-size: 18px;
+    font-size: 1rem;
   }
 
   a {
     align-self: flex-end;
-    font-size: 11px;
+    font-size: 0.8rem;
   }
 
   ${(props) =>
@@ -112,13 +100,6 @@ const TrendingFolder = styled.section`
   margin: 0 auto;
 `;
 
-const TrendingFolderList = styled.div`
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  margin-bottom: 15px;
-`;
-
 const TrendingGroup = styled.section`
   width: 100%;
   margin: 0 auto;
@@ -126,14 +107,4 @@ const TrendingGroup = styled.section`
 
 const TrendingGroupList = styled.div`
   padding-top: 10px;
-`;
-
-const TrendingTag = styled.section`
-  width: 100%;
-  margin: 0 auto;
-`;
-
-const TrendingTagList = styled.div`
-  padding-top: 6px;
-  margin-bottom: 10px;
 `;

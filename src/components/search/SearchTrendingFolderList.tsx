@@ -1,7 +1,6 @@
-import { FC, useState } from 'react';
-import styled from 'styled-components';
-import { BackButton } from 'components/common/BackButton';
-import { SearchFolderItem } from 'components/search/SearchFolderItem';
+import { useState } from 'react';
+import { styled } from 'styled-components';
+import { SearchTrendingFolderItem } from './SearchTrendingFolderItem';
 
 interface FolderData {
   folderId: number;
@@ -13,7 +12,7 @@ interface FolderData {
   tags: string[];
 }
 
-export const SearchTrendingFolder: FC = () => {
+export const SearchTrendingFolderList: React.FC = () => {
   const folderData: FolderData[] = [
     {
       folderId: 1,
@@ -218,56 +217,26 @@ export const SearchTrendingFolder: FC = () => {
 
   return (
     <Container>
-      <h1 className="a11y-hidden">인기 폴더 페이지</h1>
-      <TopNav>
-        <BackButton />
-        <p>인기 폴더</p>
-      </TopNav>
-      <TrendingFolder>
-        {archiveFolderData.map((folderItem) => (
-          <SearchFolderItem
-            key={folderItem.folderId}
-            data={folderItem}
-            onLikeToggle={handleLikeToggle}
-            onBookmarkToggle={handleBookmarkToggle}
-            src={folderItem.src[0]}
-          />
-        ))}
-      </TrendingFolder>
+      {archiveFolderData.map((folderItem) => (
+        <SearchTrendingFolderItem
+          key={folderItem.folderId}
+          data={folderItem}
+          onLikeToggle={handleLikeToggle}
+          onBookmarkToggle={handleBookmarkToggle}
+          src={folderItem.src[0]}
+        />
+      ))}
     </Container>
   );
 };
 
-const Container = styled.div`
+const Container = styled.section`
   width: 88%;
-  background-color: #ffffff;
-  margin: 0 auto;
-  padding-bottom: 10px;
-
-  section {
-    padding-top: 18px;
-  }
-`;
-
-const TopNav = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 40px;
-  p {
-    font-size: 1.5rem;
-    font-family: var(--font--SemiBold);
-  }
-`;
-
-const TrendingFolder = styled.section`
-  width: 100%;
   padding: 0;
-  gap: 5px;
+  gap: 10px;
   box-sizing: border-box;
   margin: 0 auto;
-  margin-top: 30px;
+
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  overflow: auto;
 `;

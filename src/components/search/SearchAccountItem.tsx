@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import dotIcon from '../../assets/icon/icon-dot.svg';
-import testImg from '../../assets/testImg/testimg-user.png';
+import testImg from '../../assets/testImg/testimg-user.jpg';
 
 export interface AccountItemProps {
   id?: number;
@@ -23,9 +23,9 @@ export const AccountItem: React.FC<AccountItemProps> = ({
         <img src={testImg} alt="" />
       </div>
       <div className="user-info">
-        <span className="user-accountname">hh_lovelyGhost{accountName}</span>
+        <span className="user-accountname">{accountName}</span>
         <div className="user-description">
-          <span className="user-nickname">꼬마유령 캐스퍼{userName}</span>
+          <span className="user-nickname">{userName}</span>
           <img src={dotIcon} alt="spacing dot" />
           {isFollowing ? (
             <span className="user-state">팔로잉</span>
@@ -41,22 +41,31 @@ export const AccountItem: React.FC<AccountItemProps> = ({
 const Container = styled.div`
   background-color: #ffffff;
   display: flex;
-  margin: 0 auto;
-  padding: 10px 0;
+  margin: 10px auto;
   width: 88%;
 
   div.icon-user {
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     align-self: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
   }
 
   div.user-info {
-    padding: 10px 15px;
+    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
 
   div.user-info span {
@@ -65,7 +74,7 @@ const Container = styled.div`
 
   span.user-accountname {
     font-family: var(--font--Medium);
-    font-size: 14px;
+    font-size: 1rem;
   }
 
   div.user-description {
@@ -73,7 +82,7 @@ const Container = styled.div`
     gap: 5px;
 
     span {
-      font-size: 10px;
+      font-size: 0.8rem;
       color: #898888;
     }
   }

@@ -101,7 +101,7 @@ const CategorySwitcher = styled.div`
     display: block;
     flex: 1;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 1rem;
     font-family: var(--font--Medium);
     text-align: center;
   }

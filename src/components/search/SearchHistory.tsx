@@ -107,7 +107,6 @@ const Container = styled.div`
 
 const YesSearchHistory = styled.div`
   > p {
-    font-size: 13px;
     width: 88%;
     margin: 0 auto;
   }
@@ -120,7 +119,7 @@ const SearchStatus = styled.div`
   justify-content: space-between;
   > p,
   button {
-    font-size: 13px;
+    font-size: 1rem;
   }
 `;
 
@@ -136,11 +135,12 @@ const NoSearchHistoryIcon = styled.div`
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
+  gap: 5px;
   align-items: center;
   justify-content: center;
 
   span {
-    font-size: 14px;
+    font-size: 1rem;
     color: var(--gray200-color);
     text-align: center;
   }
