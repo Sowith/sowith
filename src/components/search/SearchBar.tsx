@@ -29,8 +29,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onInputClick }) => {
 
 const SearchBarContainer = styled.div`
   display: flex;
-  margin: 0 auto 20px auto;
-  width: 90%;
+  margin: 20px auto 20px auto;
+  width: 88%;
   align-items: center;
 
   padding-top: 20px;
@@ -50,7 +50,7 @@ const SearchInput = styled.input`
   border: none;
   line-height: 30px;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
 
   &::placeholder {
     color: #c4c4c4;

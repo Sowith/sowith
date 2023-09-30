@@ -14,5 +14,5 @@ export const GroupList: React.FC = () => {
 
 const GroupItemContainer = styled.div`
   width: 100%;
-  margin: 0 auto;
+  margin: 30px auto;
 `;

@@ -21,7 +21,7 @@ interface FolderItemProps {
   src: string;
 }
 
-export const SearchFolderItem: FC<FolderItemProps> = ({
+export const SearchTrendingFolderItem: FC<FolderItemProps> = ({
   data,
   onLikeToggle,
   onBookmarkToggle,
@@ -77,12 +77,15 @@ export const SearchFolderItem: FC<FolderItemProps> = ({
 const Container = styled.div`
   cursor: pointer;
   position: relative;
-  width: calc((100% / 2) - 4px);
+  width: 300px;
+  @media (max-width: 576px) {
+    width: 140px;
+  }
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
   justify-content: space-between;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 3 / 4;
   box-sizing: border-box;
   border-radius: 5px;
   padding: 10px;
@@ -115,7 +118,7 @@ const FolderDescription = styled.div`
     font-size: 2rem;
     margin-bottom: 5px;
     padding: 5px 7px;
-    overflow-wrap: break-word;
+    word-break: keep-all;
     letter-spacing: 1px;
   }
 

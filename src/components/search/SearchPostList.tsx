@@ -22,6 +22,38 @@ const samplePosts = [
       'https://picsum.photos/200/196',
     ],
   },
+  {
+    title: '게시글4',
+    imageUrl: [
+      'https://picsum.photos/200/197',
+      'https://picsum.photos/200/198',
+      'https://picsum.photos/200/199',
+    ],
+  },
+  {
+    title: '게시글5',
+    imageUrl: [
+      'https://picsum.photos/200/200',
+      'https://picsum.photos/200/180',
+      'https://picsum.photos/200/181',
+    ],
+  },
+  {
+    title: '게시글6',
+    imageUrl: [
+      'https://picsum.photos/200/191',
+      'https://picsum.photos/200/192',
+      'https://picsum.photos/200/193',
+    ],
+  },
+  {
+    title: '게시글7',
+    imageUrl: [
+      'https://picsum.photos/200/190',
+      'https://picsum.photos/200/190',
+      'https://picsum.photos/200/190',
+    ],
+  },
 ];
 
 export const PostList: React.FC = () => {
@@ -44,12 +76,9 @@ export const PostList: React.FC = () => {
 };
 
 const Container = styled.section`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 100px));
-  padding: 0 auto;
-  gap: 5px;
-  box-sizing: border-box;
-  margin: 20px auto;
-  overflow: hidden;
-  width: 100%;
+  margin-top: 30px;
+  margin-left: 1.5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
 `;
