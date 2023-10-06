@@ -165,12 +165,12 @@ const FolderTagItem = styled.p`
 `;
 
 const NumberHiddenFolderTagItem = styled.p`
-  border-radius: 3px;
+  border-radius: 5px;
   font-family: var(--font--Regular);
   font-size: 1rem;
   background-color: var(--main-color);
   color: #ffffff;
-  padding: 0px 3px;
+  padding: 0px 5px;
   text-align: start;
   margin: 0;
 
