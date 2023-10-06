@@ -2,7 +2,6 @@ import { FC, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
-import { SearchHistory } from 'components/search/SearchHistory';
 import { GroupUI } from '../../components/common/GroupUI';
 import { SearchTrendingFolderList } from 'components/search/SearchTrendingFolderList';
 import { SearchTrendingTagList } from 'components/search/SearchTrendingTagList';
@@ -14,53 +13,39 @@ interface SectionTitleProps {
 }
 
 export const SearchMain: FC = () => {
-  const [isInputClicked, setInputClicked] = useState(false);
-
-  const handleInputClick = () => {
-    setInputClicked(true);
-  };
-
-  const handleCancel = () => {
-    setInputClicked(false);
-  };
-
   const trendingGroups = [1, 2, 3, 4, 5, 6];
 
   return (
     <>
       <h1 className="a11y-hidden">검색 메인 페이지</h1>
       <MainTopNav>
-        <SearchBar onInputClick={handleInputClick} />
+        <SearchBar />
         <SearchTrendingTagList />
       </MainTopNav>
-      {isInputClicked ? (
-        <SearchHistory onCancel={handleCancel} />
-      ) : (
-        <Container>
-          <TrendingFolder>
-            <SectionTitle index={1}>
-              <h2>인기 폴더</h2>
-              <Link to="/trendingfolder">
-                <img src={arrowNext} alt="인기 폴더 더보기" />
-              </Link>
-            </SectionTitle>
-            <SearchTrendingFolderList />
-          </TrendingFolder>
-          <TrendingGroup>
-            <SectionTitle index={2}>
-              <h2>인기 그룹</h2>
-              <Link to="/trendinggroup">
-                <img src={arrowNext} alt="인기 그룹 더보기" />
-              </Link>
-            </SectionTitle>
-            <TrendingGroupList>
-              {trendingGroups.map((_, idx) => (
-                <GroupUI key={idx} />
-              ))}
-            </TrendingGroupList>
-          </TrendingGroup>
-        </Container>
-      )}
+      <Container>
+        <TrendingFolder>
+          <SectionTitle index={1}>
+            <h2>인기 폴더</h2>
+            <Link to="/trendingfolder">
+              <img src={arrowNext} alt="인기 폴더 더보기" />
+            </Link>
+          </SectionTitle>
+          <SearchTrendingFolderList />
+        </TrendingFolder>
+        <TrendingGroup>
+          <SectionTitle index={2}>
+            <h2>인기 그룹</h2>
+            <Link to="/trendinggroup">
+              <img src={arrowNext} alt="인기 그룹 더보기" />
+            </Link>
+          </SectionTitle>
+          <TrendingGroupList>
+            {trendingGroups.map((_, idx) => (
+              <GroupUI key={idx} />
+            ))}
+          </TrendingGroupList>
+        </TrendingGroup>
+      </Container>
     </>
   );
 };

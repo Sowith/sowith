@@ -1,35 +1,24 @@
-import { styled } from "styled-components";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { styled } from 'styled-components';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-import { GroupUI } from "components/common/GroupUI";
-import { SearchBar } from "../../components/search/SearchBar";
-
+import { GroupUI } from 'components/common/GroupUI';
+import { SearchBar } from '../../components/search/SearchBar';
 
 export const ProfileGroupDetailPage = () => {
   const { currentStep } = useParams();
   const [detailPage, setDetailPage] = useState<number>(
-    parseInt(currentStep || "1")
+    parseInt(currentStep || '1')
   );
 
   const openTabMenu = (e) => {
     setDetailPage(e);
   };
 
-  // const [isInputClicked, setInputClicked] = useState(false);
-
-  const handleInputClick = () => {
-    // setInputClicked(true);
-  };
-
-  const handleCancel = () => {
-    // setInputClicked(false);
-  };
-
   return (
     <ProfileGroupDetailPageWrap>
-      <div style={{marginTop: "20px", marginBottom: "20px"}}>
-        <SearchBar onInputClick={handleInputClick}/>
+      <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+        <SearchBar />
       </div>
       {detailPage === 1 ? (
         <>

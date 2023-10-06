@@ -1,15 +1,31 @@
 import styled from 'styled-components';
-
+import { useNavigate, useLocation } from 'react-router-dom';
 import { BackButton } from 'components/common/BackButton';
+
 import search from '../../assets/icon/icon-search.svg';
 
-interface SearchBarProps {
-  onInputClick: () => void;
-}
+export const SearchBar: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-export const SearchBar: React.FC<SearchBarProps> = ({ onInputClick }) => {
+  const handleInputClick = (): void => {
+    console.log('Input has been clicked!');
+    if (location.pathname !== '/searchhistory') {
+      navigate('/searchhistory');
+    }
+  };
+
+  const handleInputFocus = (): void => {
+    console.log('Input has been Focused!');
+    if (location.pathname !== '/searchhistory') {
+      navigate('/searchhistory');
+    }
+  };
+
   const handleSearchButtonClick = (): void => {
-    console.log('SearchButton has been clicked!');
+    if (location.pathname === '/searchhistory') {
+      console.log('검색 시작!');
+    }
   };
 
   return (
@@ -19,7 +35,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onInputClick }) => {
         <SearchInput
           type="text"
           placeholder="검색어를 입력하세요"
-          onClick={onInputClick}
+          onClick={handleInputClick}
+          onFocus={handleInputFocus}
         />
         <SearchButton onClick={handleSearchButtonClick} />
       </SearchArea>
