@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { styled } from "styled-components";
 
-import { useModalControl } from "../../hooks/useModalControl";
 import { Button } from "../../components/common/Button";
 import { SquareCheckBox } from "components/common/CheckBox";
 import { SearchBar } from "../../components/post/PostSearchBar";
@@ -14,42 +13,48 @@ interface TagData {
   postCount?: number;
 }
 
-export const PostCreateFolderPage: React.FC = () => {
+const tagData: TagData[] = [
+  {
+    tagName: '당근노맛'
+  },
+  {
+    tagName: '당근',
+    postCount: 4300
+  },
+  {
+    tagName: '당근케이크',
+    postCount: 2100
+  },
+  {
+    tagName: '당근마켓',
+    postCount: 1000
+  },
+  {
+    tagName: '당근라페',
+    postCount: 938
+  },
+  {
+    tagName: '당근김밥',
+    postCount: 500
+  },
+  {
+    tagName: '당근요리',
+    postCount: 416
+  },
+];
 
-  const tagData: TagData[] = [
-    {
-      tagName: '당근노맛'
-    },
-    {
-      tagName: '당근',
-      postCount: 4300
-    },
-    {
-      tagName: '당근케이크',
-      postCount: 2100
-    },
-    {
-      tagName: '당근마켓',
-      postCount: 1000
-    },
-    {
-      tagName: '당근라페',
-      postCount: 938
-    },
-    {
-      tagName: '당근김밥',
-      postCount: 500
-    },
-    {
-      tagName: '당근요리',
-      postCount: 416
-    },
-  ];
+interface CreateFolderProps {
+  closeModal: () => void;
+}
 
-  const { openModal, closeModal, ModalComponent } = useModalControl();
+export const PostCreateFolderPage: React.FC<CreateFolderProps> = ({ closeModal }) => {
+
+
   const [selectTag, setSelectTag] = useState<string[]>([]);
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
+  // const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [searchKeyword, setSearchKeyword] = useState<string | string[]>("");
   const [archiveTagData, setArchiveTagData] = useState<TagData[]>(tagData);
+  const [checkedBox, setCheckedBox] = useState<number[]>([]);
 
   const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.currentTarget.dataset.id;
@@ -58,8 +63,6 @@ export const PostCreateFolderPage: React.FC = () => {
 
   return (
     <>
-      <button onClick={openModal}>모달열기</button>
-      <ModalComponent>
         <FolderWrap>
           <IconCreateFolderPosition>
             <IconCreateFolder width={80} height={80} />
@@ -74,9 +77,9 @@ export const PostCreateFolderPage: React.FC = () => {
                 placeholder={"폴더명"}
               />
             </InputStyle>
-
+            
             <CheckPoint>
-              {/* <SquareCheckBox id={"public"} /> */}
+              <SquareCheckBox id={0} checkedBox={checkedBox} setCheckedBox={setCheckedBox}/>
               <p>비밀 폴더로 유지</p>
             </CheckPoint>
           </FolderInfo>
@@ -110,12 +113,10 @@ export const PostCreateFolderPage: React.FC = () => {
           width={'90%'}
           height={'41px'}
           fontSize={'12px'}
-          margin={'auto 0 12px'}
+          margin={'16px 0 16px'}
           fontFamily={'var(--font--Bold)'}
           onClick={closeModal}
         />
-
-      </ModalComponent>
     </>
   );
 };
