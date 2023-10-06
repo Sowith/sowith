@@ -1,86 +1,133 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-
+import { Header } from "../components/post/PostHeader";
 import { PostSelectPicturePage } from "./post/PostSelectPicturePage";
 import { PostInputInfoPage } from "./post/PostInputInfoPage";
-import { PostSelectLocationPage } from "./post/PostSelectLocationPage";
-import { PostSelectFolderPage } from "./post/PostSelectFolderPage";
-import { PostSelectHashTagPage } from "./post/PostSelectHashTagPage";
-import { PostSelectUserTagPage } from "./post/PostSelectUserTagPage";
-import { Header } from "../components/post/PostHeader";
+import { PostFilterPage } from "./post/PostFilterPage";
 
-import { useAlertControl } from "../hooks/useAlertControl";
-import { AlertBox } from "../components/common/AlertBox";
+interface ImageData {
+  src: string;
+}
+
+const imageData: ImageData[] = [
+  { src: "https://picsum.photos/200/191" },
+  { src: "https://picsum.photos/200/192" },
+  { src: "https://picsum.photos/200/193" },
+  { src: "https://picsum.photos/200/194" },
+  { src: "https://picsum.photos/200/195" },
+  { src: "https://picsum.photos/200/196" },
+  { src: "https://picsum.photos/200/197" },
+  { src: "https://picsum.photos/200/198" },
+  { src: "https://picsum.photos/200/199" },
+  { src: "https://picsum.photos/200/201" },
+  { src: "https://picsum.photos/200/202" },
+  { src: "https://picsum.photos/200/203" }
+];
+
+interface PostInfo {
+  phrase: string,
+  location: string,
+  folder: string,
+  hashtag: string[],
+  usertag: string[],
+}
+
+const PostInfoData: PostInfo = {
+  phrase: "",
+  location: "",
+  folder: "",
+  hashtag: [],
+  usertag: [],
+}
+
+interface FilterDataItem {
+  src: string;
+  filter: string;
+}
 
 export const PostTS: React.FC = () => {
-  
+
   const [selectedPicture, setSelectedPicture] = useState<string[]>([]);
+  const [filterStorage, setFilterStorage] = useState<FilterDataItem[]>([]);
+  
+  useEffect(() => {
+    const newData = selectedPicture.map((item) => ({
+      src: item,
+      filter: ""
+    }));
+    setFilterStorage(newData);
+  }, [selectedPicture]);  
+  
   const [step, setStep] = useState<number>(0);
-  const [isPostPage, setIsPostPage] = useState<boolean>(false);
-  const { openAlert, AlertComponent } = useAlertControl();
+  const [postInfo, setPostInfo] = useState<PostInfo>(PostInfoData);
 
   return (
     <AppContainer>
-      <button onClick={openAlert}>알림 버튼</button>
-      <AlertComponent>
-        <AlertBox alertMsg={'위치 입력은 필수입니다'} choice={['확인']} />
-      </AlertComponent>
       <ViewContainer>
-        <Header content={'다음'} handleFunc={() => setIsPostPage(true)} />
+        <Header content={'다음'} step={step} setStep={setStep} selectedPicture={selectedPicture.length} locationSet={!!postInfo.location}/>
+
         <MainWrap>
-          {!isPostPage && (
-            <PostSelectPicturePage
-              // selectedPicture={selectedPicture}
-              // setSelectedPicture={setSelectedPicture}
-              // setStep={setStep}
-            />
-          )}
-          {isPostPage && (
-            <PostInputInfoPage
-              // selectedPicture={selectedPicture}
-              setStep={setStep}
-            />
-          )}
           {[
-            null,
-            <PostSelectLocationPage />,
-            <PostSelectFolderPage />,
-            <PostSelectHashTagPage />,
-            <PostSelectUserTagPage />,
+            <PostSelectPicturePage
+              imageData={imageData}
+              setSelectedPicture={setSelectedPicture}
+            />,
+            <PostFilterPage
+              filterStorage={filterStorage}
+              setFilterStorage={setFilterStorage}
+              selectedPicture={selectedPicture}
+            />,
+            <PostInputInfoPage
+              filterStorage={filterStorage}
+              postInfo={postInfo}
+              setPostInfo={setPostInfo}
+            />
           ][step]}
         </MainWrap>
+
       </ViewContainer>
+      {/* <div className="NavBar"></div> */}
     </AppContainer>
   );
 };
 
 const AppContainer = styled.div`
+  position: relative;
   margin: auto;
-  padding: 50px 0 10px;
+  /* padding: 50px 0 10px; */
   box-sizing: border-box;
   overflow: hidden;
-  position: relative;
   height: 100vh;
-  box-shadow: inset 0 0 10px #000;
-`;
+
+  .NavBar {
+    position: absolute;
+    bottom: 0;
+    background-color: red;
+    min-width: 100%;
+    min-height: 50px;
+  }
+  `;
 
 const ViewContainer = styled.div`
   position: relative;
   margin: auto;
-  min-width: 320px;
-  max-width: 768px;
+  /* min-width: 320px;
+  max-width: 768px; */
   width: 100%;
   height: 100%;
-  border-left: 20px solid #FFF;
-  border-right: 20px solid #FFF;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
   box-sizing: border-box;
 `;
 
 const MainWrap = styled.div`
+  width: calc(100% + 5px);
   height: 90%;
+  /* height: calc(100% - 54px - 50px); */
   overflow-y: scroll;
-  margin-right: -5px;
+  overflow-x: hidden;
+  padding-right: 8px;
 
   &::-webkit-scrollbar-corner {
     display: none;
@@ -95,7 +142,7 @@ const MainWrap = styled.div`
   }
 
   @media (max-width: 768px) {
-    margin-right: 0;
+    width: 100%;
     &::-webkit-scrollbar {
       width: 0;
     }
