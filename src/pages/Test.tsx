@@ -33,7 +33,10 @@ export const Test = () => {
       </Link>
       <Link to="/profileUpdatePage">
           <TestButton>(프로필 수정 페이지)</TestButton>
-        </Link>
+      </Link>
+      <Link to="/mainpostview">
+          <TestButton>(메인 게시글 뷰)</TestButton>
+      </Link>
     </div>
   );
 };
