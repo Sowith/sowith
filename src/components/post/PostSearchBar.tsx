@@ -13,8 +13,8 @@ interface SearchBarProps {
   placeholder: string;
   selectTag?: string[];
   setSelectTag?: React.Dispatch<React.SetStateAction<string[]>>;
-  searchKeyword?: string;
-  setSearchKeyword?: React.Dispatch<React.SetStateAction<string>>;
+  searchKeyword?: string | string[];
+  setSearchKeyword?: React.Dispatch<React.SetStateAction<string | string[]>>;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
@@ -62,7 +62,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           <UserTag key={index} index={index} tag={tag} handleDeleteTag={handleDeleteTag} />
         )
       )}
-      <InputStyle>
+      <InputStyle id={id}>
         <label htmlFor={id}></label>
         <input
           id={id}
@@ -104,11 +104,12 @@ const WrapStyle = styled.div`
 const InputStyle = styled.div`
   position: relative;
   display: inline-block;
+  width: ${(props) => props.id === "hashTagSearch" ? "" : "inherit"};
 
   input {
     font-size: 16px;
     padding: 0 0 0 25px;
-    width: 70px;
+    width: 90%;
     height: 25px;
     margin: 6px;
     border: none;
