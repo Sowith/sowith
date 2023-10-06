@@ -7,8 +7,8 @@ export const Button = ({ text, ...props }) => {
 
 const ButtonDefault = styled.button`
   background-color: var(--main-color);
-  width: ${(props) => props.width || "141px"};
-  height: ${(props) => props.height || ""};
+  min-width: ${(props) => props.width || "141px"};
+  min-height: ${(props) => props.height || ""};
   margin: ${(props) => props.margin || "20px 0 0"};
   padding: ${(props) => props.padding || "9px 0"};
   border-radius: ${(props) => props.borderRadius || "10px"};
