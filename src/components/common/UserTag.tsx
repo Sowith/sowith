@@ -5,14 +5,14 @@ import IconCancelHumanTag from "../../assets/icon/icon-cancel-humantag.svg";
 interface UserTagProps {
   index: number;
   tag: string;
-  handleDeleteTag: (index: number) => void;
+  handleDeleteTag?: (index: number) => void;
 }
 
 export const UserTag: React.FC<UserTagProps> = ({ index, tag, handleDeleteTag }) => {
   return (
     <TagStyle key={index}>
       <span>{`@ ${tag}`}</span>
-      <IconCancelPosition onClick={() => handleDeleteTag(index)}>
+      <IconCancelPosition onClick={() => handleDeleteTag && handleDeleteTag(index)}>
       </IconCancelPosition>
     </TagStyle>
   );
@@ -26,11 +26,11 @@ const TagStyle = styled.div`
   box-sizing: border-box;
   border-radius: 30px;
   height: 25px;
-  background-image: linear-gradient(to right, #ff547c, #ffc76c);
+  background-color: var(--main-color);
 
   span {
     font-size: 12px;
-    font-family: var(--font--Regular);
+    font-family: var(--font--Bold);
     color: #FFF;
     text-align: center;
   }
