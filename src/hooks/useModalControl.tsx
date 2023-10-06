@@ -136,8 +136,9 @@ const ModalContainer = styled.div<{ modalState: boolean, animationState: boolean
   `;
 
 const ModalContent = styled.div`
-    width: 100%;
+    width: 100vw;
     height: 100%;
+    margin-left: -20px;
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
     background-color: #FFF;
@@ -157,8 +158,9 @@ const ModalContent = styled.div`
 const ModalBlur = styled.div<{ modalState: boolean, animationState: boolean }>`
   position: absolute;
   cursor: pointer;
-  width: 100%;
+  width: 100vw;
   height: 100%;
+  margin-left: -20px;
   top: -54px;
   left: 0;
   animation: ${({ modalState, animationState }) => 
