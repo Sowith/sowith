@@ -4,27 +4,39 @@ import { BackButton } from 'components/common/BackButton';
 
 import search from '../../assets/icon/icon-search.svg';
 
-export const SearchBar: React.FC = () => {
+export interface SearchBarProps {
+  onSearchButtonClick?: () => void;
+}
+
+export const SearchBar: React.FC<SearchBarProps> = ({
+  onSearchButtonClick,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleInputClick = (): void => {
     console.log('Input has been clicked!');
-    if (location.pathname !== '/searchhistory') {
+    if (
+      location.pathname !== '/searchhistory' &&
+      !location.pathname.startsWith('/profiledetailPage/')
+    ) {
       navigate('/searchhistory');
     }
   };
 
   const handleInputFocus = (): void => {
     console.log('Input has been Focused!');
-    if (location.pathname !== '/searchhistory') {
+    if (
+      location.pathname !== '/searchhistory' &&
+      !location.pathname.startsWith('/profiledetailPage/')
+    ) {
       navigate('/searchhistory');
     }
   };
 
   const handleSearchButtonClick = (): void => {
-    if (location.pathname === '/searchhistory') {
-      console.log('검색 시작!');
+    if (onSearchButtonClick) {
+      onSearchButtonClick();
     }
   };
 

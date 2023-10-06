@@ -15,10 +15,14 @@ export const ProfileGroupDetailPage = () => {
     setDetailPage(e);
   };
 
+  const callSearchAPI = () => {
+    console.log('검색 API 호출');
+  };
+
   return (
     <ProfileGroupDetailPageWrap>
       <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-        <SearchBar />
+        <SearchBar onSearchButtonClick={callSearchAPI} />
       </div>
       {detailPage === 1 ? (
         <>

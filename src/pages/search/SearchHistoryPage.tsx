@@ -57,10 +57,14 @@ export const SearchHistory: React.FC<SearchHistoryProps> = () => {
     setSearchHistoryData(updatedData);
   };
 
+  const callSearchAPI = (): void => {
+    console.log('검색 API 호출');
+  };
+
   return (
     <Container>
       <h1 className="a11y-hidden">검색 기록 페이지</h1>
-      <SearchBar />
+      <SearchBar onSearchButtonClick={callSearchAPI} />
       {userSearchHistory && (
         <YesSearchHistory>
           <SearchStatus>
