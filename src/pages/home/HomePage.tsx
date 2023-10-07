@@ -6,6 +6,7 @@ import searchIcon from '../../assets/icon/icon-search.svg';
 import currentLocation from '../../assets/icon/icon-current_location.svg';
 import postView from '../../assets/icon/icon-post_view.svg';
 import bottomPostSectionBar from '../../assets/icon/icon-bottom_post_section_bar.svg';
+import { BottomNavBar } from 'components/common/BottomNavBar';
 
 export const Home: FC = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export const Home: FC = () => {
         <PostCardItem></PostCardItem>
         <PostCardItem></PostCardItem>
       </BottomPostSection>
-      <BottomNavBar>하단 네브바 자리</BottomNavBar>
+      <BottomNavBar />
     </Container>
   );
 };
@@ -108,14 +109,3 @@ const BottomPostSection = styled.section`
 `;
 
 const PostCardItem = styled.div``;
-
-const BottomNavBar = styled.div`
-  width: 100%;
-  height: 49px;
-  position: fixed;
-  bottom: 0px;
-  left: 0px;
-  text-align: center;
-  background-color: teal;
-  border-radius: 5px 5px 0 0;
-`;
