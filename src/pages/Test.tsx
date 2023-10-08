@@ -8,7 +8,7 @@ import { MyGlobalStyle } from '../style/GlobalStyle';
 import { SearchMain } from './search/SearchMainPage';
 import { SearchByCategory } from './search/SearchByCategoryPage';
 import { ProfilePage } from 'pages/profile/ProfilePage';
-import { ProfileUpdatePage } from "pages/profile/ProfileUpdatePage"
+import { ProfileUpdatePage } from 'pages/profile/ProfileUpdatePage';
 
 export const Test = () => {
   return (
@@ -32,8 +32,11 @@ export const Test = () => {
         <TestButton>(상세 검색 페이지)</TestButton>
       </Link>
       <Link to="/profileUpdatePage">
-          <TestButton>(프로필 수정 페이지)</TestButton>
-        </Link>
+        <TestButton>(프로필 수정 페이지)</TestButton>
+      </Link>
+      <Link to="/home">
+        <TestButton>(메인 화면)</TestButton>
+      </Link>
     </div>
   );
 };

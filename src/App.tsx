@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // pages
+import { Home } from 'pages/home/HomePage';
 import { SignUP } from './pages/SignUpTS';
 import { Login } from './pages/LoginPage';
 import { MyGlobalStyle } from './style/GlobalStyle';
@@ -22,6 +23,7 @@ export function App(): JSX.Element {
       <MyGlobalStyle />
       <Routes>
         <Route path="/" element={<Test />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/signup" element={<SignUP />} />
         <Route path="/login" element={<Login />} />
         <Route path="/postupload" element={<PostTS />} />
