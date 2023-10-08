@@ -1,40 +1,77 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+import { useAlertControl } from "hooks/useAlertControl";
+import { AlertBox } from "components/common/AlertBox";
 import { Button } from "../common/Button";
 
 import { ReactComponent as IconArrow } from "../../assets/icon/icon-back-arrow.svg";
 import { ReactComponent as IconCamera } from "../../assets/icon/icon-camera.svg";
 
 interface HeaderProps {
-  handleFunc: () => void;
   content: string;
+  step: number;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+  selectedPicture: number;
+  locationSet: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = (props) => {
+
+  const { openAlert, AlertComponent } = useAlertControl();
+
+  const navigate = useNavigate();
+
+  const handleGoForward = () => {
+    if (props.step === 2 && !props.locationSet) {
+      openAlert();
+    }
+    if (props.step === 0 && props.selectedPicture === 0) {
+      openAlert();
+    }
+    else {
+      props.setStep(Prev => Prev === 0 || Prev === 1 ? Prev + 1 : Prev)
+    }
+  }
+
+  const handleGoBack = () => {
+    if (props.step === 0) {
+      navigate(-1)
+    }
+    props.setStep(Prev => Prev === 1 || Prev === 2 ? Prev - 1 : Prev)
+  }
+
   return (
-    <WrapStyle>
-      <IconArrow width={30} />
-      <CameraStyle>
-        <IconCamera />
-      </CameraStyle>
-      <Button
-        onClick={props.handleFunc}
-        type="button"
-        text={props.content}
-        width={'50px'}
-        height={'30px'}
-        fontSize={'12px'}
-        fontFamily={'var(--font--Bold)'}
-        margin={'0px'}
-      />
-    </WrapStyle>
+    <>
+      <AlertComponent>
+        {props.step === 2 && !props.locationSet ?
+          <AlertBox alertMsg={"위치 지정은 필수입니다."} choice={["확인"]} /> :
+          <AlertBox alertMsg={"사진 선택은 필수입니다."} choice={["확인"]} />}
+      </AlertComponent>
+      <WrapStyle>
+        <IconArrow width={30} onClick={handleGoBack} />
+        <CameraStyle step={props.step}>
+          <IconCamera />
+        </CameraStyle>
+        <Button
+          onClick={handleGoForward}
+          type="button"
+          text={props.content}
+          width={'50px'}
+          height={'30px'}
+          fontSize={'12px'}
+          fontFamily={'var(--font--Bold)'}
+          margin={'0px'}
+        />
+      </WrapStyle>
+    </>
   );
 };
 
 const WrapStyle = styled.div`
-  width: 90%;
-  min-width: 320px;
-  max-width: 768px;
+  width: 100%;
+  /* min-width: 320px;
+  max-width: 768px; */
   position: relative;
   margin: auto;
   padding-bottom: 24px;
@@ -44,7 +81,8 @@ const WrapStyle = styled.div`
   align-items: center;
 `;
 
-const CameraStyle = styled.div`
+const CameraStyle = styled.div<{ step: number }>`
+  display: ${(props) => props.step !== 0 ? "none" : "block"};
   position: absolute;
   width: 30px;
   height: 30px;

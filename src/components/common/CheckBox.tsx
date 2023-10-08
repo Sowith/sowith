@@ -4,12 +4,12 @@ import styled, { css } from "styled-components";
 import IconCheck from "../../assets/icon/icon-check.svg";
 
 interface CheckBoxProps {
-  index: number;
+  id: number;
   checkedBox: number[];
-  setCheckedBox: React.Dispatch<React.SetStateAction<number[]>>;
+  setCheckedBox?: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export const CountCheckBox: React.FC<CheckBoxProps> = ({ index, checkedBox, setCheckedBox }) => {
+export const CountCheckBox: React.FC<CheckBoxProps> = ({ id, checkedBox, setCheckedBox }) => {
 
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
@@ -19,24 +19,24 @@ export const CountCheckBox: React.FC<CheckBoxProps> = ({ index, checkedBox, setC
 
   useEffect(() => {
     if (isChecked) {
-      setCheckedBox(prevData => [...prevData, index]);
+      setCheckedBox && setCheckedBox(prevData => [...prevData, id]);
     } else {
-      setCheckedBox(prevData => prevData.filter(item => item !== index));
+      setCheckedBox && setCheckedBox(prevData => prevData.filter(item => item !== id));
     }
   }, [isChecked]);
 
   return (
     <CountCheckBoxStyle>
-      <label htmlFor={String(index)} className="container">
+      <label htmlFor={String(id)} className="container">
         <input
-          id={String(index)}
+          id={String(id)}
           type="checkbox"
           onChange={handleCheckBox}
           checked={isChecked}
         />
         {checkedBox && <div
           className="checkmark"
-          data-checkboxnumber={checkedBox.indexOf(index) + 1}
+          data-checkboxnumber={checkedBox.indexOf(id) + 1}
         ></div>}
       </label>
     </CountCheckBoxStyle>
@@ -44,26 +44,26 @@ export const CountCheckBox: React.FC<CheckBoxProps> = ({ index, checkedBox, setC
 };
 
 
-export const SquareCheckBox: React.FC<CheckBoxProps> = ({ index, checkedBox, setCheckedBox }) => {
-
-  const [isChecked, setIsChecked] = useState<boolean>(false);
+export const SquareCheckBox: React.FC<CheckBoxProps> = ({ id, checkedBox, setCheckedBox }) => {
 
   const handleCheckBox = () => {
-    setIsChecked((prevData) => !prevData);
+    setCheckedBox && setCheckedBox(prevData => {
+      if (prevData.includes(id)) {
+        return prevData.filter(item => item !== id);
+      } else {
+        return [...prevData, id];
+      }
+    });
   };
-
-  useEffect(() => {
-    isChecked && setCheckedBox(prevData => [...prevData, index]);
-  }, [isChecked]);
 
   return (
     <SquareCheckBoxStyle>
-      <label htmlFor={String(index)} className="container">
+      <label htmlFor={String(id)} className="container">
         <input
-          id={String(index)}
+          id={String(id)}
           type="checkbox"
           onChange={handleCheckBox}
-          checked={isChecked}
+          checked={checkedBox.includes(id)} 
         />
         {checkedBox && <div className="checkmark"></div>}
       </label>
@@ -71,26 +71,26 @@ export const SquareCheckBox: React.FC<CheckBoxProps> = ({ index, checkedBox, set
   );
 };
 
-export const CircleCheckBox: React.FC<CheckBoxProps> = ({ index, checkedBox, setCheckedBox }) => {
+export const CircleCheckBox: React.FC<CheckBoxProps> = ({ id, checkedBox, setCheckedBox }) => {
 
   const handleCheckBox = () => {
-    setCheckedBox(prevData => {
-      if (prevData.includes(index)) {
-        return prevData.filter(item => item !== index);
+    setCheckedBox && setCheckedBox(prevData => {
+      if (prevData.includes(id)) {
+        return prevData.filter(item => item !== id);
       } else {
-        return [...prevData, index];
+        return [...prevData, id];
       }
     });
   };
 
   return (
     <CircleCheckBoxStyle>
-      <label htmlFor={String(index)} className="container">
+      <label htmlFor={String(id)} className="container">
         <input
-          id={String(index)}
+          id={String(id)}
           type="checkbox"
           onChange={handleCheckBox}
-          checked={checkedBox.includes(index)} 
+          checked={checkedBox.includes(id)} 
         />
         <div className="checkmark"></div>
       </label>

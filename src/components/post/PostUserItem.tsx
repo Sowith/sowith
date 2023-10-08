@@ -13,14 +13,26 @@ interface UserItemProps {
   index: number;
   checkedBox: number[];
   setCheckedBox: React.Dispatch<React.SetStateAction<number[]>>;
+  handleFunc: (event: React.MouseEvent<HTMLLIElement>) => void;
 }
 
-export const UserItem: React.FC<UserItemProps> = ({profile, userId, userName, isFollow, index, checkedBox, setCheckedBox}) => {
+export const UserItem: React.FC<UserItemProps> = ({profile, userId, userName, isFollow, index, checkedBox, setCheckedBox, handleFunc}) => {
+
+  const handleCheckBox = (e) => {
+    handleFunc(e)
+    setCheckedBox && setCheckedBox(prevData => {
+      if (prevData.includes(index)) {
+        return prevData.filter(item => item !== index);
+      } else {
+        return [...prevData, index];
+      }
+    });
+  };
 
 
   return (
     <>
-    <Container>
+    <Container onClick={handleCheckBox} key={index} data-id={userId}>
       <img className="icon-user" src={profile} alt="" />
       <div className="user-info">
         <span className="user-id">{userId}</span>
@@ -35,7 +47,7 @@ export const UserItem: React.FC<UserItemProps> = ({profile, userId, userName, is
         </div>
       </div>
       <CheckBoxPosition>
-        <CircleCheckBox index={index} checkedBox={checkedBox} setCheckedBox={setCheckedBox}/>
+        <CircleCheckBox id={index} checkedBox={checkedBox} setCheckedBox={setCheckedBox}/>
       </CheckBoxPosition>
     </Container>
     </>
@@ -49,7 +61,7 @@ const CheckBoxPosition = styled.div`
   transform: translateY(-50%);
 `;
 
-const Container = styled.div`
+const Container = styled.li`
   position: relative;
   width: 100%;
   margin-top: 2px;
@@ -73,22 +85,23 @@ const Container = styled.div`
     align-items: center;
   }
   div.user-info {
-    margin: auto 0;
-    padding: 10px 15px;
-    flex-grow: 1;
+    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
   div.user-info span {
     display: block;
   }
   span.user-id {
     font-family: var(--font--Medium);
-    font-size: 14px;
+    font-size: 1rem;
   }
   div.user-description {
     display: flex;
     gap: 5px;
     span {
-      font-size: 10px;
+      font-size: 0.8rem;
       color: #898888;
     }
   }

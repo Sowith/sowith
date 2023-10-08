@@ -5,14 +5,14 @@ import { ReactComponent as IconCancelHashTag } from '../../assets/icon/icon-canc
 interface HashTagProps {
   index: number;
   tag: string;
-  handleDeleteTag: (index: number) => void;
+  handleDeleteTag?: (index: number) => void;
 }
 
 export const HashTag: React.FC<HashTagProps> = ({ index, tag, handleDeleteTag }) => {
   return (
     <TagStyle key={index}>
       <span>{tag}</span>
-      <IconCancelPosition onClick={() => handleDeleteTag(index)}>
+      <IconCancelPosition onClick={() => handleDeleteTag && handleDeleteTag(index)}>
         <IconCancelHashTag />
       </IconCancelPosition>
     </TagStyle>
@@ -27,11 +27,11 @@ const TagStyle = styled.div`
   box-sizing: border-box;
   border-radius: 5px;
   height: 25px;
-  background-image: linear-gradient(to right, #ff547c, #ffc76c);
+  background-color: var(--main-color);
 
   span {
     font-size: 12px;
-    font-family: var(--font--Regular);
+    font-family: var(--font--Bold);
     color: #FFF;
     text-align: center;
   }

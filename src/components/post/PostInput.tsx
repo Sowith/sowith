@@ -1,25 +1,55 @@
+import { useState } from "react";
 import styled, { css } from "styled-components";
+
+import { HashTag } from "components/common/HashTag";
+import { UserTag } from "components/common/UserTag";
 
 import { ReactComponent as IconMoveArrow } from "../../assets/icon/icon-move-arrow.svg";
 
+interface PostInfo {
+  phrase: string,
+  location: string,
+  folder: string,
+  hashtag: string[],
+  usertag: string[],
+}
+
 interface InputProps {
+  value?: string;
   id: string;
   label: string;
   icon: string;
   type: string;
   placeholder: string;
-  isTextarea?: boolean;
   height?: string;
   radius?: string;
-  onClick?: () => void; 
+  tagname?: string;
+  selectTag?: string[];
+  isUserTagSelected?: boolean;
+  isHashTagSelected?: boolean;
+  onClick?: () => void;
+  setPostInfo?: React.Dispatch<React.SetStateAction<PostInfo>>
 }
 
-export const Input: React.FC<InputProps> = ( props ) => {
+export const TextArea: React.FC<InputProps> = (props) => {
+
+  const [inputKeyword, setInputKeyword] = useState<string>("");
 
   const handleTextareaBlur = (event: React.FocusEvent<HTMLTextAreaElement>) => {
     const textarea = event.target;
     textarea.scrollTop = 0;
+
+    props.setPostInfo && props.setPostInfo(Prev => {
+      const updatedPostInfo = { ...Prev };
+      updatedPostInfo.phrase = inputKeyword;
+      return updatedPostInfo;
+    })
   };
+
+  const handleInput = (e) => {
+    e.preventDefault();
+    setInputKeyword(e.target.value)
+  }
 
   return (
     <WrapStyle>
@@ -29,18 +59,47 @@ export const Input: React.FC<InputProps> = ( props ) => {
       <ImgPosition>
         <img src={props.icon} alt="Icon" />
       </ImgPosition>
-      {props.isTextarea ? 
-        <TextareaStyle {...props} onBlur={handleTextareaBlur}></TextareaStyle> :
-        <InputStyle {...props}></InputStyle>
-      }
-      {!props.isTextarea && (
-        <IconPosition>
-          <IconMoveArrow />
-        </IconPosition>
-      )}
+      <TextareaStyle {...props} value={inputKeyword} onChange={handleInput} onBlur={handleTextareaBlur}></TextareaStyle>
     </WrapStyle>
   );
 };
+
+export const Input: React.FC<InputProps> = (props) => {
+
+  return (
+    <WrapStyle>
+      <label htmlFor={props.id} className="a11y-hidden">
+        {props.label}
+      </label>
+      <ImgPosition>
+        <img src={props.icon} alt="Icon" />
+      </ImgPosition>
+      {(!props.isHashTagSelected && !props.isUserTagSelected) &&
+        <InputStyle {...props} autoComplete="off">
+        </InputStyle>
+      }
+      {props.isHashTagSelected && (
+        <TagStyle {...props}>
+          {props.selectTag?.map((tag, index) => (
+            <HashTag key={index} index={index} tag={tag} />
+          ))}
+        </TagStyle>
+      )}
+      {props.isUserTagSelected && (
+        <TagStyle {...props}>
+          {props.selectTag?.map((tag, index) => (
+            <UserTag key={index} index={index} tag={tag} />
+          ))}
+        </TagStyle>
+      )}
+      <IconPosition>
+        <IconMoveArrow />
+      </IconPosition>
+    </WrapStyle>
+  );
+};
+
+
 
 const WrapStyle = styled.div`
   position: relative;
@@ -68,9 +127,14 @@ const CommonStyle = css`
   }
 `;
 
+const TagStyle = styled.div`
+  ${CommonStyle}
+  margin-top: -7px;
+`;
+
 const InputStyle = styled.input<InputProps>`
   ${CommonStyle}
-  height: 50px;
+  height: auto;
   box-sizing: border-box;
   vertical-align: top;
   `;
