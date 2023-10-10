@@ -15,20 +15,20 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const location = useLocation();
 
   const handleInputClick = (): void => {
-    console.log('Input has been clicked!');
     if (
       location.pathname !== '/searchhistory' &&
-      !location.pathname.startsWith('/profiledetailPage/')
+      !location.pathname.startsWith('/profiledetailPage/') &&
+      !location.pathname.startsWith('/chatting')
     ) {
       navigate('/searchhistory');
     }
   };
 
   const handleInputFocus = (): void => {
-    console.log('Input has been Focused!');
     if (
       location.pathname !== '/searchhistory' &&
-      !location.pathname.startsWith('/profiledetailPage/')
+      !location.pathname.startsWith('/profiledetailPage/') &&
+      !location.pathname.startsWith('/chatting')
     ) {
       navigate('/searchhistory');
     }
