@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { BackButton } from 'components/common/BackButton';
 
 import search from '../../assets/icon/icon-search.svg';
+import { useEffect, useState } from 'react';
 
 export interface SearchBarProps {
   onSearchButtonClick?: () => void;
@@ -13,12 +14,26 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const currentPath = location.pathname;
+  const [placeholderText, SetPlaceHolderText] = useState('');
+
+  useEffect(() => {
+    if (currentPath === '/profiledetailPage/1') {
+      SetPlaceHolderText('내가 참여한 그룹은?');
+    } else if (currentPath === '/profiledetailPage/2') {
+      SetPlaceHolderText('내가 팔로우한 그룹은?');
+    } else if (currentPath === '/chatting') {
+      SetPlaceHolderText('내가 마지막으로 이야기를 나눈 친구는?');
+    } else if (currentPath === '/searchhistory') {
+      SetPlaceHolderText('나는 뭘 검색했을까?👀');
+    } else SetPlaceHolderText('요즘 소윗에서 가장 핫한 검색어는?');
+  }, [currentPath]);
 
   const handleInputClick = (): void => {
     if (
-      location.pathname !== '/searchhistory' &&
-      !location.pathname.startsWith('/profiledetailPage/') &&
-      !location.pathname.startsWith('/chatting')
+      currentPath !== '/searchhistory' &&
+      !currentPath.startsWith('/profiledetailPage/') &&
+      !currentPath.startsWith('/chatting')
     ) {
       navigate('/searchhistory');
     }
@@ -26,9 +41,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleInputFocus = (): void => {
     if (
-      location.pathname !== '/searchhistory' &&
-      !location.pathname.startsWith('/profiledetailPage/') &&
-      !location.pathname.startsWith('/chatting')
+      currentPath !== '/searchhistory' &&
+      !currentPath.startsWith('/profiledetailPage/') &&
+      !currentPath.startsWith('/chatting')
     ) {
       navigate('/searchhistory');
     }
@@ -46,7 +61,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       <SearchArea>
         <SearchInput
           type="text"
-          placeholder="검색어를 입력하세요"
+          placeholder={placeholderText}
           onClick={handleInputClick}
           onFocus={handleInputFocus}
         />
