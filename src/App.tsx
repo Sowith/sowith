@@ -14,7 +14,11 @@ import { ProfileUpdatePage } from 'pages/profile/ProfileUpdatePage';
 import { ProfileGroupDetailPage } from './pages/profile/ProfileGroupDetailPage';
 import { PostTS } from 'pages/PostTS';
 import { SignUpCompletedPage } from 'pages/SignUpCompletedPage';
+import { ChatHistoryPage } from 'pages/chat/ChatHistoryPage';
+import { ChatSelectUser } from 'pages/chat/ChatSelectUser';
+import { ChatRoomPage } from 'pages/chat/ChatRoomPage';
 import { Test } from './pages/Test';
+
 
 export function App(): JSX.Element {
   return (
@@ -36,6 +40,9 @@ export function App(): JSX.Element {
           element={<ProfileGroupDetailPage />}
         />
         <Route path="/com" element={<SignUpCompletedPage />} />
+        <Route path="/chatHistoryPage" element={<ChatHistoryPage />} />
+        <Route path="/chatSelectUser" element={<ChatSelectUser />} />
+        <Route path="/chatRoom" element={<ChatRoomPage />} />
       </Routes>
     </BrowserRouter>
   );
