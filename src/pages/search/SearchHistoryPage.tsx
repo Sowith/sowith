@@ -1,15 +1,14 @@
+import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import { styled } from 'styled-components';
 import {
   HistoryItem,
   HistoryItemProps,
-} from '../../components/search/SearchHistoryItem';
+} from 'components/search/SearchHistoryItem';
+import { SearchBar } from 'components/search/SearchBar';
 
 import soWithLogo from '../../assets/icon/icon-sowith-heart.svg';
 
-interface SearchHistoryProps {
-  onCancel: () => void;
-}
+interface SearchHistoryProps {}
 
 const sampleData: HistoryItemProps[] = [
   {
@@ -42,7 +41,7 @@ const sampleData: HistoryItemProps[] = [
 
 export default sampleData;
 
-export const SearchHistory: React.FC<SearchHistoryProps> = ({ onCancel }) => {
+export const SearchHistory: React.FC<SearchHistoryProps> = () => {
   const [searchHistoryData, setSearchHistoryData] = useState(sampleData);
   const [userSearchHistory, setUserSearchHistory] = useState<boolean>(true);
 
@@ -58,43 +57,44 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onCancel }) => {
     setSearchHistoryData(updatedData);
   };
 
+  const callSearchAPI = (): void => {
+    console.log('검색 API 호출');
+  };
+
   return (
-    <>
-      <h1 className="a11y-hidden">검색 페이지</h1>
-      <Container>
-        {userSearchHistory && (
-          <YesSearchHistory>
-            <SearchStatus>
-              <p>최근 검색 기록</p>
-              <button onClick={onCancel}>취소</button>
-            </SearchStatus>
+    <Container>
+      <h1 className="a11y-hidden">검색 기록 페이지</h1>
+      <SearchBar onSearchButtonClick={callSearchAPI} />
+      {userSearchHistory && (
+        <YesSearchHistory>
+          <SearchStatus>
+            <p>최근 검색 기록</p>
+          </SearchStatus>
 
-            <SearchHistoryList>
-              {searchHistoryData.map((data, index) => (
-                <HistoryItem
-                  key={index}
-                  {...(data as HistoryItemProps)}
-                  onDelete={() => handleDeleteHistoryItem(index)}
-                />
-              ))}
-            </SearchHistoryList>
-          </YesSearchHistory>
-        )}
+          <SearchHistoryList>
+            {searchHistoryData.map((data, index) => (
+              <HistoryItem
+                key={index}
+                {...(data as HistoryItemProps)}
+                onDelete={() => handleDeleteHistoryItem(index)}
+              />
+            ))}
+          </SearchHistoryList>
+        </YesSearchHistory>
+      )}
 
-        {!userSearchHistory && (
-          <NoSearchHistory>
-            <SearchStatus>
-              <p>최근 검색 기록</p>
-              <button onClick={onCancel}>취소</button>
-            </SearchStatus>
-            <NoSearchHistoryIcon>
-              <img src={soWithLogo} alt="SoWith Logo" />
-              <span>검색 기록이 없어요</span>
-            </NoSearchHistoryIcon>
-          </NoSearchHistory>
-        )}
-      </Container>
-    </>
+      {!userSearchHistory && (
+        <NoSearchHistory>
+          <SearchStatus>
+            <p>최근 검색 기록</p>
+          </SearchStatus>
+          <NoSearchHistoryIcon>
+            <img src={soWithLogo} alt="SoWith Logo" />
+            <span>검색 기록이 없어요</span>
+          </NoSearchHistoryIcon>
+        </NoSearchHistory>
+      )}
+    </Container>
   );
 };
 
@@ -102,9 +102,20 @@ const Container = styled.div`
   width: 100%;
   background-color: #ffffff;
   margin: 0 auto;
+  padding-bottom: 10px;
+
+  h2 {
+    margin: 0;
+  }
+
+  > section {
+    padding-top: 18px;
+  }
 `;
 
 const YesSearchHistory = styled.div`
+  margin: 30px auto 30px auto;
+
   > p {
     width: 88%;
     margin: 0 auto;
@@ -124,7 +135,14 @@ const SearchStatus = styled.div`
 
 const SearchHistoryList = styled.section``;
 
-const NoSearchHistory = styled.div``;
+const NoSearchHistory = styled.div`
+  margin: 30px auto 30px auto;
+
+  > p {
+    width: 88%;
+    margin: 0 auto;
+  }
+`;
 
 const NoSearchHistoryIcon = styled.div`
   display: flex;
