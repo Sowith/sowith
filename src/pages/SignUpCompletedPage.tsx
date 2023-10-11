@@ -8,7 +8,7 @@ import logoSowithText from "../assets/logo/logo-sowith-only-text.svg";
 //후에 page 상태는 프롭스로 받을 예정입니다
 
 export const SignUpCompletedPage = () => {
-  const [page, setPage] = useState(2);
+  const [page, setPage] = useState(1);
 
   return (
     <>

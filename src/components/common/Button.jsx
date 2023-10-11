@@ -17,7 +17,7 @@ const ButtonDefault = styled.button`
   font-size: ${(props) => props.fontSize || "16px"};
   font-family: ${(props) => props.fontFamily || "var(--font--Medium)"};  
   box-sizing: border-box;
-  box-shadow: ${({boxShadow = false}) => boxShadow ? "4px 4px 4px 0 rgba(0, 0, 0, 0.25)" : ""};  ;
+  box-shadow: ${({boxShadow = false}) => boxShadow ? "4px 4px 4px 0 rgba(0, 0, 0, 0.25)" : ""};
 
   &:hover {
     cursor: pointer;

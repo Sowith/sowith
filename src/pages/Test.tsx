@@ -1,14 +1,15 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { styled } from 'styled-components';
+import React from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { styled } from "styled-components";
 
-import { SignUP } from './SignUpTS';
-import { Login } from './LoginPage';
-import { MyGlobalStyle } from '../style/GlobalStyle';
-import { SearchMain } from './search/SearchMainPage';
-import { SearchByCategory } from './search/SearchByCategoryPage';
-import { ProfilePage } from 'pages/profile/ProfilePage';
-import { ProfileUpdatePage } from "pages/profile/ProfileUpdatePage"
+import { SignUP } from "./SignUpTS";
+import { Login } from "./LoginPage";
+import { MyGlobalStyle } from "../style/GlobalStyle";
+import { SearchMain } from "./search/SearchMainPage";
+import { SearchByCategory } from "./search/SearchByCategoryPage";
+import { ProfilePage } from "pages/profile/ProfilePage";
+import { ProfileUpdatePage } from "pages/profile/ProfileUpdatePage";
+import { ChatHistoryPage } from "./chat/ChatHistoryPage";
 
 export const Test = () => {
   return (
@@ -32,8 +33,11 @@ export const Test = () => {
         <TestButton>(상세 검색 페이지)</TestButton>
       </Link>
       <Link to="/profileUpdatePage">
-          <TestButton>(프로필 수정 페이지)</TestButton>
-        </Link>
+        <TestButton>(프로필 수정 페이지)</TestButton>
+      </Link>
+      <Link to="/chatHistoryPage">
+        <TestButton>채팅</TestButton>
+      </Link>
     </div>
   );
 };

@@ -36,7 +36,6 @@ export const ProfileTop: React.FC<ProfileTopProps> = ({
       const uid = user.uid;
 
       console.log("프로필 탑 유저", user)
-      console.log("스테이트 : 유저데이터", userData)
 
       setUserData({ name, email, photo_url, uid });
     }
@@ -50,7 +49,7 @@ const goToProfileUpdatePage = () => {
   return (
     <ProfileTopContainer>
       <div className="profileTopLeft">
-      <ProfileImage src={profileimg} alt="프로필 이미지"></ProfileImage>
+      <ProfileImage src={userData?.photo_url} alt="프로필 이미지"></ProfileImage>
       <button onClick={goToProfileUpdatePage}>프로필 수정</button>
       </div>
       <ProfileTopInfo>
@@ -107,7 +106,7 @@ const ProfileTopContainer = styled.section`
 
 const ProfileImage = styled.img`
   width: 100%;
-  max-width: 160px;
+  max-width: 100px;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
 `;
