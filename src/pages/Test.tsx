@@ -38,6 +38,9 @@ export const Test = () => {
       <Link to="/chatHistoryPage">
         <TestButton>채팅</TestButton>
       </Link>
+      <Link to="/home">
+        <TestButton>(메인 화면)</TestButton>
+      </Link>
     </div>
   );
 };

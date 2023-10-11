@@ -10,7 +10,7 @@ export const ChatSelectUser = () => {
 
   return (
     <>
-      <SearchBar onInputClick={handleInputClick}></SearchBar>
+      <SearchBar></SearchBar>
       <section>
         <SelectUserTop>
           <span>팔로우 목록</span>

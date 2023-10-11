@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { styled } from 'styled-components';
 
-import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark.svg';
-import { ReactComponent as IconFolderPlus } from '../../assets/icon/icon-folder-plus.svg';
+import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark-post-only.svg';
 
 interface FolderDataItem {
   folderId: number;
@@ -16,9 +15,11 @@ interface FolderListProps {
   archiveFolderData: FolderDataItem[];
   setArchiveFolderData: React.Dispatch<React.SetStateAction<FolderDataItem[]>>;
   isAddButton?: boolean;
+  setSearchKeyword?: React.Dispatch<React.SetStateAction<string[] | string>>;
+  setModalIndex?: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setArchiveFolderData, isAddButton=false }) => {
+export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setArchiveFolderData, isAddButton = false, setSearchKeyword, setModalIndex }) => {
 
   const handleBookMark = (id: number) => {
     const updatedImageData = archiveFolderData.map((item) => {
@@ -30,10 +31,24 @@ export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setAr
     setArchiveFolderData(updatedImageData);
   };
 
+  const handleFolder = (foldName) => {
+    setSearchKeyword && setSearchKeyword((Prev) => {
+      if (Array.isArray(Prev)) {
+        if (!Prev.includes(foldName)) { // Prev에 foldName이 없을 때만 추가
+          return [...Prev, foldName];
+        }
+      } else if (Prev !== foldName) { // Prev가 문자열이면서 foldName과 다를 때만 배열로 변환
+        return [Prev, foldName];
+      }
+      return Prev; // 중복된 값이 이미 있을 경우 변경 없음
+    });
+  }
+  
+
   return (
     <Container>
       {archiveFolderData?.map((items, index) => (
-        <FolderContainer key={index}>
+        <FolderContainer key={index} onClick={() => handleFolder(items.name)}>
           <FolderCover>
             {items.src.map((item, itemIndex) => (
               <img key={itemIndex} src={item} alt="" />
@@ -46,16 +61,15 @@ export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setAr
           <BookmarkBtnPosition onClick={() => handleBookMark(items.folderId)}>
             <IconBookmark
               fill={items.bookmark ? '#FFDF44' : '#C4C4C4'}
-              stroke={items.bookmark ? '#FFDF44' : 'none'}
+              stroke={items.bookmark ? '#FFDF44' : 'rgba(0, 0, 0, 0)'}
             />
           </BookmarkBtnPosition>
         </FolderContainer>
       ))}
 
       {isAddButton &&
-        <AddFolder>
-          <IconFolderPlus/>
-        </AddFolder>
+        <AddFolderBtn onClick={()=> setModalIndex && setModalIndex(5)}>
+        </AddFolderBtn>
       }
         
     </Container>
@@ -63,15 +77,19 @@ export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setAr
 };
 
 const Container = styled.div`
-  width: 90%;
   max-height: calc(100% - 170px);
-  padding: 16px 13px 0;
+  padding: 16px 13px 20px;
   margin-right: -5px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   overflow-y: scroll;
-
+  margin: 0 auto;
+  
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+/* 
   &::-webkit-scrollbar-corner {
     display: none;
   }
@@ -83,6 +101,12 @@ const Container = styled.div`
     border-radius: 50px;
     background: var(--main-color);
   }
+  @media (max-width: 768px) {
+    width: 100%;
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+  } */
 `;
 
 const FolderContainer = styled.a`
@@ -102,7 +126,8 @@ const FolderCover = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
-
+  aspect-ratio: 1 / 1;
+  
   img {
     width: 100%;
     height: 100%;
@@ -110,7 +135,8 @@ const FolderCover = styled.div`
   }
 `;
 
-const AddFolder = styled.div`
+const AddFolderBtn = styled.div`
+  position: relative;
   margin: 10px;
   height: calc(100% - 66px);
   border-radius: 20px;
@@ -118,6 +144,22 @@ const AddFolder = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &::before {
+    position: absolute;
+    content: "";
+    background-color: #FFF;
+    width: 5px;
+    height: 100px;
+    border-radius: 30px;
+  }
+  &::after {
+    content: "";
+    background-color: #FFF;
+    width: 100px;
+    height: 5px;
+    border-radius: 30px;
+  }
 `;
 
 const FolderContent = styled.div`

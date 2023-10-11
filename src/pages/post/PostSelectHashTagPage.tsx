@@ -1,19 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { styled } from "styled-components";
 
-import { useModalControl } from "../../hooks/useModalControl";
 import { SearchBar } from "../../components/post/PostSearchBar";
-import { Button } from "../../components/common/Button";
+import { Button } from "../../components/common/Button"
 
 import IconHashTag from "../../assets/icon/icon-hash-tag.svg";
 
+interface PostInfo {
+  phrase: string,
+  location: string,
+  folder: string,
+  hashtag: string[],
+  usertag: string[],
+}
+
+interface SelectHashTagProps {
+  setPostInfo: React.Dispatch<React.SetStateAction<PostInfo>>
+  closeModal: () => void; 
+}
 
 interface TagData {
   tagName: string;
   postCount?: number;
 }
 
-export const PostSelectHashTagPage: React.FC = () => {
+export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ setPostInfo, closeModal }) => {
 
   const tagData: TagData[] = [
     {
@@ -44,57 +55,66 @@ export const PostSelectHashTagPage: React.FC = () => {
       postCount: 416
     },
   ];
-  
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
+
+  // const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [searchKeyword, setSearchKeyword] = useState<string | string[]>("");
   const [selectTag, setSelectTag] = useState<string[]>([]);
-  const { openModal, closeModal, ModalComponent } = useModalControl();
   const [archiveTagData, setArchiveTagData] = useState<TagData[]>(tagData);
+  
 
   const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.currentTarget.dataset.id;
-    targetElement && setSelectTag([...selectTag, targetElement]);
+    if (targetElement) {
+      const newTags = [...selectTag];
+      if (!newTags.includes(targetElement)) {
+        newTags.push(targetElement);
+        setSelectTag(newTags);
+      }
+    }
   };
 
-  useEffect(() => {
-    openModal();
-  }, []);
+  const handleCloseModal = () => {
+    closeModal();
+    setPostInfo(Prev => {
+      const updatedPostInfo = { ...Prev };
+      updatedPostInfo.hashtag = selectTag;
+      return updatedPostInfo;
+    });
+  }
 
   return (
     <>
-      <ModalComponent>
-        <SearchBar
-          id={'hashTagSearch'}
-          icon={IconHashTag}
-          tagname={'hashtag'}
-          placeholder={'태그 검색...'}
-          selectTag={selectTag}
-          setSelectTag={setSelectTag}
-          searchKeyword={searchKeyword}
-          setSearchKeyword={setSearchKeyword}
-        />
+      <SearchBar
+        id={'hashTagSearch'}
+        icon={IconHashTag}
+        tagname={'hashtag'}
+        placeholder={'태그 검색...'}
+        selectTag={selectTag}
+        setSelectTag={setSelectTag}
+        searchKeyword={searchKeyword}
+        setSearchKeyword={setSearchKeyword}
+      />
 
-        <TagList>
-          <>
-          {archiveTagData.map((item, index) => 
+      <TagList>
+        <>
+          {archiveTagData.map((item, index) =>
             <Tag onClick={handleTag} key={index} data-id={item.tagName}>
               <p>{item.tagName}</p>
               <span>{item.postCount}</span>
             </Tag>
           )}
-          </>
-        </TagList>
-
-        <Button
-          type="button"
-          text={"완료"}
-          width={'90%'}
-          height={'41px'}
-          fontSize={'12px'}
-          margin={'auto 0 12px'}
-          fontFamily={'var(--font--Bold)'}
-          onClick={closeModal}
-        />
-      </ModalComponent>
+        </>
+      </TagList>
+      <Button
+        type="button"
+        text={"완료"}
+        width={'90%'}
+        height={'41px'}
+        fontSize={'12px'}
+        margin={'16px 0 16px'}
+        fontFamily={'var(--font--Bold)'}
+        onClick={handleCloseModal}
+      />
     </>
   );
 };
