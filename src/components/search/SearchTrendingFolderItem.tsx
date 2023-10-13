@@ -89,7 +89,7 @@ const Container = styled.div`
   position: relative;
   width: 256px;
   @media (max-width: 576px) {
-    width: 140px;
+    width: 169px;
   }
   display: flex;
   flex-shrink: 0;
@@ -170,7 +170,7 @@ const NumberHiddenFolderTagItem = styled.p`
   font-size: 1rem;
   background-color: var(--main-color);
   color: #ffffff;
-  padding: 0px 5px;
+  padding: 0px 7px;
   text-align: start;
   margin: 0;
 
