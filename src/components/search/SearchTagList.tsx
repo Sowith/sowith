@@ -15,7 +15,6 @@ const sampleTags: TagData[] = [
 export const TagList = () => {
   return (
     <TagItemContainer>
-      {/* 3. 데이터 맵핑 */}
       {sampleTags.map((tag) => (
         <TagItem
           key={tag.id}
@@ -29,5 +28,5 @@ export const TagList = () => {
 
 const TagItemContainer = styled.div`
   width: 100%;
-  margin: 0 auto;
+  margin: 30px auto;
 `;

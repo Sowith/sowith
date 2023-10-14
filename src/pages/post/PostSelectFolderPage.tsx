@@ -1,13 +1,26 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { styled } from "styled-components";
 
-import { useModalControl } from "../../hooks/useModalControl";
 import { SearchBar } from "../../components/post/PostSearchBar";
 import { FolderList } from "../../components/common/FolderList";
-import { Button } from "../../components/common/Button";
+import { Button } from "../../components/common/Button"
 
-import { ReactComponent as IconSowithLogo } from "../../assets/icon/icon-sowith-logo.svg";
-import IconFolder from "../../assets/icon/icon-folder.svg";
+import IconFolder from "../../assets/icon/icon-folder-post-only.svg";
+
+interface PostInfo {
+  phrase: string,
+  location: string,
+  folder: string,
+  hashtag: string[],
+  usertag: string[],
+}
+
+interface SelectFolderProps {
+  setPostInfo: React.Dispatch<React.SetStateAction<PostInfo>>
+  closeModal: () => void;
+  setModalIndex?: React.Dispatch<React.SetStateAction<number>>
+  setSearchKeyword?: React.Dispatch<React.SetStateAction<string>>
+}
 
 interface FolderData {
   folderId: number;
@@ -17,8 +30,8 @@ interface FolderData {
   src: string[];
 }
 
-export const PostSelectFolderPage: React.FC = () => {
-  
+export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ setPostInfo, closeModal, setModalIndex }) => {
+
   const folderData: FolderData[] = [
     {
       folderId: 1,
@@ -58,46 +71,54 @@ export const PostSelectFolderPage: React.FC = () => {
     },
   ];
 
-  const { openModal, closeModal, ModalComponent } = useModalControl();
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [searchKeyword, setSearchKeyword] = useState<string | string[]>([]);
   const [archiveFolderData, setArchiveFolderData] = useState<FolderData[]>(folderData);
 
-  useEffect(() => {
-    openModal();
-  }, []);
+  const handleCloseModal = () => {
+    closeModal();
+    setPostInfo((Prev) => {
+      const updatedPostInfo = { ...Prev };
+  
+      if (typeof searchKeyword === 'string') {
+        updatedPostInfo.folder = searchKeyword;
+      } else {
+        updatedPostInfo.folder = searchKeyword.join(' / ');
+      }
+      return updatedPostInfo;
+    });
+  }
+  
+  
 
   return (
     <>
-      <ModalComponent>
-        <SearchBar
-          id={'folderSearch'}
-          icon={IconFolder}
-          placeholder={'폴더 검색...'}
-          searchKeyword={searchKeyword}
-          setSearchKeyword={setSearchKeyword}
-        />
+      <SearchBar
+        id={'folderSearch'}
+        icon={IconFolder}
+        placeholder={'폴더 검색...'}
+        searchKeyword={searchKeyword}
+        setSearchKeyword={setSearchKeyword}
+      />
 
-        <FolderList archiveFolderData={archiveFolderData} setArchiveFolderData={setArchiveFolderData} isAddButton={true}/>
+      <FolderList archiveFolderData={archiveFolderData} setArchiveFolderData={setArchiveFolderData} isAddButton={true} setSearchKeyword={setSearchKeyword} setModalIndex={setModalIndex && setModalIndex}/>
 
-        {/* 폴더가 존재하지 않을경우
+      {archiveFolderData.length === 0 &&
         <NonFolderContainer>
-          <IconSowithLogo />
           <p className="alert-msg">폴더가 존재하지 않습니다</p>
           <Button type="button" text={"폴더생성하기"} width={'112px'} height={'41px'} fontSize={'12px'} fontFamily={'var(--font--Bold)'} borderRadius={'30px'} />
         </NonFolderContainer>
-        */}
+      }
 
-        <Button
-          type="button"
-          text={"완료"}
-          width={'90%'}
-          height={'41px'}
-          fontSize={'12px'}
-          margin={'auto 0 12px'}
-          fontFamily={'var(--font--Bold)'}
-          onClick={closeModal}
-        />
-      </ModalComponent>
+      <Button
+        type="button"
+        text={"완료"}
+        width={'90%'}
+        height={'41px'}
+        fontSize={'12px'}
+        margin={'16px 0 16px'}
+        fontFamily={'var(--font--Bold)'}
+        onClick={handleCloseModal}
+      />
     </>
   );
 };

@@ -1,10 +1,13 @@
 import { FC, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
 import { SearchHistory } from 'components/search/SearchHistory';
 import { GroupUI } from '../../components/common/GroupUI';
-import { FolderList } from '../../components/common/FolderList';
-import { TagItem } from '../../components/search/SearchTagItem';
+import { SearchTrendingFolderList } from 'components/search/SearchTrendingFolderList';
+import { SearchTrendingTagList } from 'components/search/SearchTrendingTagList';
+
+import arrowNext from '../../assets/icon/icon-arrow-next.svg';
 
 interface SectionTitleProps {
   index: number;
@@ -21,13 +24,15 @@ export const SearchMain: FC = () => {
     setInputClicked(false);
   };
 
-  const trendingGroups = [1, 2, 3];
-  const trendingTags = [1, 2, 3];
+  const trendingGroups = [1, 2, 3, 4, 5, 6];
 
   return (
     <>
       <h1 className="a11y-hidden">검색 메인 페이지</h1>
-      <SearchBar onInputClick={handleInputClick} />
+      <MainTopNav>
+        <SearchBar onInputClick={handleInputClick} />
+        <SearchTrendingTagList />
+      </MainTopNav>
       {isInputClicked ? (
         <SearchHistory onCancel={handleCancel} />
       ) : (
@@ -35,14 +40,18 @@ export const SearchMain: FC = () => {
           <TrendingFolder>
             <SectionTitle index={1}>
               <h2>인기 폴더</h2>
-              <a href="#">더보기</a>
+              <Link to="/trendingfolder">
+                <img src={arrowNext} alt="인기 폴더 더보기" />
+              </Link>
             </SectionTitle>
-            <TrendingFolderList></TrendingFolderList>
+            <SearchTrendingFolderList />
           </TrendingFolder>
           <TrendingGroup>
             <SectionTitle index={2}>
               <h2>인기 그룹</h2>
-              <a href="#">더보기</a>
+              <Link to="/trendinggroup">
+                <img src={arrowNext} alt="인기 그룹 더보기" />
+              </Link>
             </SectionTitle>
             <TrendingGroupList>
               {trendingGroups.map((_, idx) => (
@@ -50,18 +59,6 @@ export const SearchMain: FC = () => {
               ))}
             </TrendingGroupList>
           </TrendingGroup>
-          <TrendingTag>
-            <SectionTitle index={3}>
-              <h2>인기 태그</h2>
-              <a href="#">더보기</a>
-            </SectionTitle>
-            {/* 컴포넌트화 필요 */}
-            <TrendingTagList>
-              {trendingTags.map((tag, idx) => (
-                <TagItem key={idx} />
-              ))}
-            </TrendingTagList>
-          </TrendingTag>
         </Container>
       )}
     </>
@@ -78,26 +75,29 @@ const Container = styled.div`
     margin: 0;
   }
 
-  section {
+  > section {
     padding-top: 18px;
   }
 `;
 
+const MainTopNav = styled.div`
+  z-index: 999;
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  box-shadow: 0px 5px 5px -5px rgba(0, 0, 0, 0.5);
+  padding-bottom: 10px;
+`;
+
 const SectionTitle = styled.div<SectionTitleProps>`
   display: flex;
-  padding-bottom: 6px;
   justify-content: space-between;
   width: 88%;
-  margin: 0 auto;
+  margin: 0 auto 10px auto;
 
   h2 {
     font-family: var(--font--semibold);
-    font-size: 18px;
-  }
-
-  a {
-    align-self: flex-end;
-    font-size: 11px;
+    font-size: 1rem;
   }
 
   ${(props) =>
@@ -109,14 +109,7 @@ const SectionTitle = styled.div<SectionTitleProps>`
 
 const TrendingFolder = styled.section`
   width: 100%;
-  margin: 0 auto;
-`;
-
-const TrendingFolderList = styled.div`
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  margin-bottom: 15px;
+  margin-bottom: 45px;
 `;
 
 const TrendingGroup = styled.section`
@@ -126,14 +119,4 @@ const TrendingGroup = styled.section`
 
 const TrendingGroupList = styled.div`
   padding-top: 10px;
-`;
-
-const TrendingTag = styled.section`
-  width: 100%;
-  margin: 0 auto;
-`;
-
-const TrendingTagList = styled.div`
-  padding-top: 6px;
-  margin-bottom: 10px;
 `;

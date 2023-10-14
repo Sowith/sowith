@@ -8,7 +8,7 @@ import { MyGlobalStyle } from '../style/GlobalStyle';
 import { SearchMain } from './search/SearchMainPage';
 import { SearchByCategory } from './search/SearchByCategoryPage';
 import { ProfilePage } from 'pages/profile/ProfilePage';
-import { ProfileUpdatePage } from "pages/profile/ProfileUpdatePage"
+import { ProfileUpdatePage } from 'pages/profile/ProfileUpdatePage';
 
 export const Test = () => {
   return (

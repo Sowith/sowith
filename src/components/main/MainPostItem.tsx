@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { useFirestoreGet } from 'hooks/useFirestoreGet';
 import { MainUserItem } from '../../components/main/MainUserItem';
 import { SelectedFilter } from "../../components/post/PostSelectedFilter"
 
@@ -8,62 +9,100 @@ import { ReactComponent as IconLike } from "../../assets/icon/icon-like-heart.sv
 import { ReactComponent as IconComment } from "../../assets/icon/icon-comment.svg"
 import iconSwitchMap from "../../assets/icon/icon-switch-map.svg";
 
-interface PostItem {
-  profile: string,
-  userId: string,
-  location: string,
-  heartCount: string,
-  commentCount: string,
-  dateInfo: string,
-  content: string
-  images: Array<{ src: string, filter: string }>
+interface PostItemProps {
+  item: any;
+  index: number
+  openModal: () => void;
+  setIsCommentModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setCurrentComments: React.Dispatch<React.SetStateAction<any>>;
 }
 
-interface PostItemProps {
-  item: PostItem
-  index: number
-} 
+export const MainPostItem: React.FC<PostItemProps> = ({ item, index, openModal, setIsCommentModal, setCurrentComments }) => {
 
-export const MainPostItem:React.FC<PostItemProps> = ({ item, index }) => {
+  const token = sessionStorage.getItem('token');
+  const uid = token !== null ? JSON.parse(token).uid : null;
 
+  const { SearchDocument } = useFirestoreGet('users');
+  
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [postData, setPostData] = useState<any>({});
+  const [isLike, setIsLike] = useState<boolean>(item.data?.likedUsers.includes(uid));
+  const isLiked = item.data?.likedUsers.includes(uid)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await SearchDocument(item.data.uid);
+      const updatedComments = { ...item.data, ...response };
+      setPostData(updatedComments)
+    };
+    fetchData();
+  }, []);
+
+  const handleModal = () => {
+    if (postData) {
+      // setCurrentComments(postData.comments);
+      const fetchData = async () => {
+          const updatedComments = await Promise.all(
+            postData.comments.map(async comment => {
+              const response = await SearchDocument(comment.uid);
+              return { ...comment, ...response };
+            })
+          );
+          setCurrentComments(updatedComments);
+        }
+        fetchData();
+      };
+      // setIsCommentModal(true);
+      // openModal();
+  }
 
   return (
     <>
-      <PostItem key={index}>
-        <MainUserItem profile={item.profile} userId={item.userId} location={item.location} />
-        <SelectedFilter filterStorage={item.images} />
-        <InteractionContainer>
-          <div className="interaction-btn">
-            <IconLike
-              onClick={() => { setIsLiked(Prev => !Prev) }}
-              fill={isLiked ? "#FB004D" : "#505050"}
-              stroke={isLiked ? "#FB004D" : "#FFF"}
-            />
-            <span className="heart-count">{item.heartCount}</span>
-          </div>
-          <div className="interaction-btn">
-            <IconComment />
-            <span className="comment-count">{item.commentCount}</span>
-          </div>
-          <span className="date-info">{item.dateInfo}</span>
-        </InteractionContainer>
+      {Object.keys(postData).length !== 0 &&
+        <>
+          <PostItem key={index}>
+            <MainUserItem item={postData} openModal={openModal} setIsCommentModal={setIsCommentModal} />
+            <SelectedFilter filterStorage={postData.images} />
+            <InteractionContainer>
+              <button className="interaction-btn">
 
-        <ContentContainer isExpanded={isExpanded}>
-          <span className="content">
-            <span className="user-id">{item.userId}</span>
-            {item.content}
-          </span>
-          <button className="more-btn" onClick={() => setIsExpanded(Prev => !Prev)}>더보기</button>
-        </ContentContainer>
-      </PostItem>
+                <IconLike
+                  onClick={() => { setIsLike(Prev => !Prev) }}
+                  fill={isLike ? "#FB004D" : "#FFF"}
+                  stroke={isLike ? "#FB004D" : "#505050"}
+                />
+                {
+                  isLiked ? (
+                    <span className='heart-count'>{isLike ? postData.likedUsers.length : postData.likedUsers.length - 1}</span>
+                  ) : (
+                    <span className='heart-count'>{isLike ? postData.likedUsers.length + 1 : postData.likedUsers.length}</span>
+                  )
+                }
+              </button>
+              <button className="interaction-btn" onClick={handleModal}>
+                <IconComment />
+                <span className="comment-count">{postData.comments.length}</span>
+              </button>
+              <span className="date-info">{postData.createdAt.seconds + " 일전"}</span>
+            </InteractionContainer>
 
-      <IconSwitchMapBtnPosition>
-      </IconSwitchMapBtnPosition>
+            <ContentContainer isExpanded={isExpanded}>
+              <span className="content">
+                <span className="user-id">{postData.data.userId}</span>
+                {postData.content}
+              </span>
+              <button className="more-btn" onClick={() => setIsExpanded(Prev => !Prev)}>더보기</button>
+            </ContentContainer>
+          </PostItem>
+
+          <IconSwitchMapBtnPosition>
+          </IconSwitchMapBtnPosition>
+        </>
+      }
     </>
   )
 }
+
 
 const PostItem = styled.div`
   box-shadow: 0 10px #EEE;

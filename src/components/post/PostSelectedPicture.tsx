@@ -2,7 +2,16 @@ import React, { useRef, useEffect } from "react";
 import { styled } from "styled-components";
 import { ReactComponent as IconPictureCount } from "../../assets/icon/icon-picture-count.svg";
 
-export const SelectedPicture: React.FC = () => {
+interface FilterDataItem {
+  src: string;
+  filter: string;
+}
+
+interface SelectedPictureProps {
+  filterStorage: FilterDataItem[];
+} 
+
+export const SelectedPicture: React.FC<SelectedPictureProps> = ({ filterStorage }) => {
   
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -22,27 +31,14 @@ export const SelectedPicture: React.FC = () => {
     }
   }, []);
 
-  const imageData = [
-    { src: "https://picsum.photos/200/191" },
-    { src: "https://picsum.photos/200/192" },
-    { src: "https://picsum.photos/200/193" },
-    { src: "https://picsum.photos/200/194" },
-    { src: "https://picsum.photos/200/195" },
-    { src: "https://picsum.photos/200/196" },
-    { src: "https://picsum.photos/200/197" },
-    { src: "https://picsum.photos/200/198" },
-    { src: "https://picsum.photos/200/199" },
-    { src: "https://picsum.photos/200/199" },
-  ];
-
   return (
     <WrapStyle ref={scrollContainerRef}>
-      {imageData.map((item, index) => (
-        <img key={index} src={item.src} alt="" />
+      {filterStorage.map((item, index) => (
+        <Image key={index} src={item.src} alt="" filter={item.filter}/>
       ))}
       <PictureCountStyle>
         <IconPictureCount />
-        <span>{imageData.length}</span>
+        <span>{filterStorage.length}</span>
       </PictureCountStyle>
     </WrapStyle>
   );
@@ -65,11 +61,13 @@ const WrapStyle = styled.div`
     border-radius: 50px;
     background: var(--main-color);
   }
-  img {
-    width: 130px;
-    height: 130px;
-    object-fit: cover;
-  }
+`;
+
+const Image = styled.img<{filter: string}>`
+  filter: ${(props) => props.filter};
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
 `;
 
 const PictureCountStyle = styled.div`

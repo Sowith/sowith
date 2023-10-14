@@ -1,75 +1,126 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 
-import { useModalControl } from "../../hooks/useModalControl";
 import { SearchBar } from "../../components/post/PostSearchBar";
-import { Button } from "../../components/common/Button";
+import { Button } from "../../components/common/Button"
 
 import IconLocation from "../../assets/icon/icon-location.svg";
 import dotIcon from "../../assets/icon/icon-dot.svg";
 
-export const PostSelectLocationPage: React.FC = () => {
-  
-  const { openModal, closeModal, ModalComponent } = useModalControl();
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
+interface PostInfo {
+  phrase: string,
+  location: string,
+  folder: string,
+  hashtag: string[],
+  usertag: string[],
+}
 
-  useEffect(() => {
-    openModal();
-  }, []);
+interface SelectLocationProps {
+  setPostInfo: React.Dispatch<React.SetStateAction<PostInfo>>
+  closeModal: () => void; 
+}
+
+interface LocationData {
+  locationName: string,
+  locationCategories: string,
+  locationDistance: string,
+  locationAddress: string
+}
+
+const locationData: LocationData[] = [
+  {
+    locationName: '상도 당근 마켓',
+    locationCategories: "마트",
+    locationDistance: "0.1km",
+    locationAddress: ""
+  },
+  {
+    locationName: '서울',
+    locationCategories: "",
+    locationDistance: "163km",
+    locationAddress: ""
+  },
+  {
+    locationName: '서울 동작구 상도동',
+    locationCategories: "마트",
+    locationDistance: "0.9km",
+    locationAddress: ""
+  },
+  {
+    locationName: '숭실대학교',
+    locationCategories: "학교",
+    locationDistance: "1.3km",
+    locationAddress: "서울시 동작구 상도로 369 숭실대학교"
+  },
+];
+
+export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ setPostInfo, closeModal }) => {
+
+  // const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [searchKeyword, setSearchKeyword] = useState<string | string[]>("");
+  const [locationItems, setLocationItems] = useState<LocationData[]>(locationData);
+
+  const handlePostInfo = (locationName) => {
+    setSearchKeyword(locationName)
+  }
+
+  // const handleCloseModal = () => {
+  //   closeModal();
+  //   setPostInfo(Prev => {
+  //     const updatedPostInfo = { ...Prev };
+  //     updatedPostInfo.location = searchKeyword;
+  //     return updatedPostInfo;
+  //   });
+  // }
+
+
+  const handleCloseModal = () => {
+    closeModal();
+    setPostInfo((Prev) => {
+      const updatedPostInfo = { ...Prev };
+      if (!Array.isArray(searchKeyword)) {
+        updatedPostInfo.location = searchKeyword;
+      }
+      return updatedPostInfo;
+    });
+  }  
 
   return (
     <>
-      <ModalComponent>
-        <SearchBar
-          id={'locationSearch'}
-          icon={IconLocation}
-          tagname={'hashtag'}
-          placeholder={'위치 검색...'}
-          searchKeyword={searchKeyword}
-          setSearchKeyword={setSearchKeyword}
-        />
+      <SearchBar
+        id={'locationSearch'}
+        icon={IconLocation}
+        tagname={'hashtag'}
+        placeholder={'위치 검색...'}
+        searchKeyword={searchKeyword}
+        setSearchKeyword={setSearchKeyword}
+      />
 
-        <Container>
-          <LocationItem>
-            <p className="location-name">상도 당근 마켓</p>
-            <span className="location-categories">마트</span>
-            <LocationDetail>
-              <span className="location-distance">0.1km</span>
-            </LocationDetail>
-          </LocationItem>
-          <LocationItem>
-            <p className="location-name">서울</p>
-            <span className="location-distance">6.3km</span>
-          </LocationItem>
-          <LocationItem>
-            <p className="location-name">서울 동작구 상도동</p>
-            <span className="location-categories">마트</span>
-            <LocationDetail>
-              <span className="location-distance">0.9km</span>
-            </LocationDetail>
-          </LocationItem>
-          <LocationItem>
-            <p className="location-name">숭실대학교</p>
-            <span className="location-categories">학교</span>
-            <LocationDetail>
-              <span className="location-distance">1.3km</span>
-              <img src={dotIcon} alt="spacing dot" />
-              <span className="location-address">서울시 동작구 상도로 369 숭실대학교</span>
-            </LocationDetail>
-          </LocationItem>
-        </Container>
-
-        <Button
-          type="button"
-          text={"완료"}
-          width={'90%'}
-          height={'41px'}
-          fontSize={'12px'}
-          margin={'auto 0 12px'}
-          fontFamily={'var(--font--Bold)'}
-          onClick={closeModal}
-        />
-      </ModalComponent>
+      <Container>
+        {
+          locationItems.map((item, index) => (
+            <LocationItem key={index} onClick={() => handlePostInfo(item.locationName)}>
+              <p className="location-name">{item.locationName}</p>
+              <span className="location-categories">{item.locationCategories || ""}</span>
+              <LocationDetail>
+                <span className="location-distance">{item.locationDistance}</span>
+                <img src={dotIcon} alt="spacing dot" />
+                <span className="location-address">{item.locationAddress || ""}</span>
+              </LocationDetail>
+            </LocationItem>
+          ))
+        }
+      </Container>
+      <Button
+        type="button"
+        text={"완료"}
+        width={'90%'}
+        height={'41px'}
+        fontSize={'12px'}
+        margin={'16px 0 16px'}
+        fontFamily={'var(--font--Bold)'}
+        onClick={handleCloseModal}
+      />
     </>
   );
 };

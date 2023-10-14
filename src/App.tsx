@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // pages
+import { Home } from 'pages/home/HomePage';
 import { SignUP } from './pages/SignUpTS';
 import { Login } from './pages/LoginPage';
 import { MyGlobalStyle } from './style/GlobalStyle';
@@ -10,8 +11,8 @@ import { SearchByCategory } from './pages/search/SearchByCategoryPage';
 import { SearchTrendingGroup } from 'pages/search/SearchTrendingGroupPage';
 import { SearchTrendingFolder } from 'pages/search/SearchTrendingFolderPage';
 import { ProfilePage } from './pages/profile/ProfilePage';
-import { ProfileUpdatePage } from "pages/profile/ProfileUpdatePage";
-import { ProfileGroupDetailPage } from "./pages/profile/ProfileGroupDetailPage"
+import { ProfileUpdatePage } from 'pages/profile/ProfileUpdatePage';
+import { ProfileGroupDetailPage } from './pages/profile/ProfileGroupDetailPage';
 import { PostTS } from 'pages/PostTS';
 import { SignUpCompletedPage } from 'pages/SignUpCompletedPage';
 import { MainPostViewPage } from './pages/main/MainPostViewPage'
@@ -23,16 +24,20 @@ export function App(): JSX.Element {
       <MyGlobalStyle />
       <Routes>
         <Route path="/" element={<Test />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/signup" element={<SignUP />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/postupload" element={<PostTS/>} />
+        <Route path="/postupload" element={<PostTS />} />
         <Route path="/profilePage" element={<ProfilePage />} />
         <Route path="/searchmain" element={<SearchMain />} />
-        <Route path="/searchbycategory" element={<SearchByCategory />} />
-        <Route path="/trendinggroup" element={<SearchTrendingGroup />} />
         <Route path="/trendingfolder" element={<SearchTrendingFolder />} />
+        <Route path="trendinggroup" element={<SearchTrendingGroup />} />
+        <Route path="/searchbycategory" element={<SearchByCategory />} />
         <Route path="/profileUpdatePage" element={<ProfileUpdatePage />} />
-        <Route path="/profiledetailPage/:currentStep" element={<ProfileGroupDetailPage />} />
+        <Route
+          path="/profiledetailPage/:currentStep"
+          element={<ProfileGroupDetailPage />}
+        />
         <Route path="/com" element={<SignUpCompletedPage />} />
         <Route path="/mainpostview" element={<MainPostViewPage />} />
         

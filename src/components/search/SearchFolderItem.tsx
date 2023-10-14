@@ -1,103 +1,99 @@
-import { useState } from 'react';
+import { useState, FC } from 'react';
 import { styled } from 'styled-components';
 
-import heartFilled from '../../assets/icon/icon-heart_filled.svg';
-import heartUnfilled from '../../assets/icon/icon-heart_unfilled.svg';
+import { ReactComponent as IconLike } from '../../assets/icon/icon-heart_unfilled.svg';
+import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark.svg';
 
 interface FolderDataItem {
   folderId: number;
   src: string[];
   name: string;
-  totalpost: number;
+  totalLike: number;
   like: boolean;
+  bookmark: boolean;
+  tags: string[];
 }
 
 interface FolderItemProps {
   data: FolderDataItem;
+  onLikeToggle: (folderId: number) => void;
+  onBookmarkToggle: (folderId: number) => void;
+  src: string;
 }
 
-const folderData: FolderDataItem[] = [
-  {
-    folderId: 1,
-    name: '빠니보틀의 로드맵',
-    totalpost: 10,
-    like: true,
-    src: [
-      'https://picsum.photos/200/191',
-      'https://picsum.photos/200/192',
-      'https://picsum.photos/200/193',
-      'https://picsum.photos/200/194',
-    ],
-  },
-  {
-    folderId: 2,
-    name: '용리단길 맛집 모음',
-    totalpost: 78,
-    like: true,
-    src: [
-      'https://picsum.photos/200/195',
-      'https://picsum.photos/200/196',
-      'https://picsum.photos/200/197',
-      'https://picsum.photos/200/198',
-    ],
-  },
-  {
-    folderId: 3,
-    name: '내 2023년 여름',
-    totalpost: 10,
-    like: false,
-    src: [
-      'https://picsum.photos/200/199',
-      'https://picsum.photos/200/200',
-      'https://picsum.photos/200/201',
-      'https://picsum.photos/200/202',
-    ],
-  },
-];
+export const SearchFolderItem: FC<FolderItemProps> = ({
+  data,
+  onLikeToggle,
+  onBookmarkToggle,
+}) => {
+  const maxTagCount = 3;
 
-export const FolderItem: React.FC<FolderItemProps> = ({ data }) => {
-  const [liked, setLiked] = useState(data.like);
+  const handleLikeClick = () => {
+    onLikeToggle(data.folderId);
+  };
+
+  const handleBookmarkClick = () => {
+    onBookmarkToggle(data.folderId);
+  };
 
   return (
-    <Container>
-      {/* <BlackOverlay />
-      <FolderContainer key={index}>
-        <FolderCover>
-          {items.src.map((item, itemIndex) => (
-            <img key={itemIndex} src={item} alt="" />
+    <Container style={{ backgroundImage: `url(${data.src[0]})` }}>
+      <BlackOverlay />
+      <FolderDescription>
+        <p>{data.name}</p>
+        <FolderTagList>
+          {data.tags.slice(0, maxTagCount).map((tag, index) => (
+            <FolderTagItem key={index}>
+              <HashTag># </HashTag>
+              {tag}
+            </FolderTagItem>
           ))}
-        </FolderCover>
-        <FolderContent>
-          <p className="folder-name">{items.name}</p>
-          <span className="folder-totalpost">{`게시물 ${items.totalpost}개`}</span>
-        </FolderContent>
-      </FolderContainer> */}
+
+          {data.tags.length > maxTagCount && (
+            <FolderTagItem>+{data.tags.length - maxTagCount}</FolderTagItem>
+          )}
+        </FolderTagList>
+      </FolderDescription>
+      <FolderInfo>
+        <FolderLike>
+          <IconLike
+            fill={data.like ? '#FC9763' : 'none'}
+            stroke={data.like ? '#FC9763' : 'none'}
+            onClick={handleLikeClick}
+            style={{ width: '30px', height: '30px' }}
+          />
+          <span>{data.totalLike}</span>{' '}
+        </FolderLike>
+        <IconBookmark
+          fill={data.bookmark ? '#FFDF44' : '#C4C4C4'}
+          stroke={data.bookmark ? '#FFDF44' : 'none'}
+          onClick={handleBookmarkClick}
+        />
+      </FolderInfo>
     </Container>
   );
 };
 
 const Container = styled.div`
+  cursor: pointer;
   position: relative;
+  width: calc((100% / 2) - 4px);
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
   justify-content: space-between;
-  width: 120px;
-  height: 120px;
-  padding: 9px 7px;
+  aspect-ratio: 1 / 1;
   box-sizing: border-box;
   border-radius: 5px;
+  padding: 10px;
+  background-size: cover;
+
+  > img {
+    z-index: 0;
+  }
 
   > * {
     z-index: 1;
-  }
-
-  > p {
-    font-family: var(--font--semibold);
-    color: #ffffff;
-    font-size: 12px;
-    margin: 0;
-    overflow-wrap: break-word;
   }
 `;
 
@@ -112,23 +108,69 @@ const BlackOverlay = styled.div`
   opacity: 0.7;
 `;
 
+const FolderDescription = styled.div`
+  > p {
+    font-family: var(--font--Bold);
+    color: #ffffff;
+    font-size: 2rem;
+    margin-bottom: 5px;
+    padding: 5px 7px;
+    overflow-wrap: break-word;
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 576px) {
+    > p {
+      font-size: 1rem;
+    }
+  }
+`;
+
+const FolderTagList = styled.div`
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  flex: 1;
+  padding: 5px 5px;
+`;
+
+const HashTag = styled.span`
+  color: var(--main-color);
+`;
+
+const FolderTagItem = styled.p`
+  border-radius: 3px;
+  font-family: var(--font--Regular);
+  font-size: 1rem;
+  color: #ffffff;
+  padding: 0px 3px;
+  text-align: start;
+  margin: 0;
+
+  @media (max-width: 576px) {
+    font-size: 0.8rem;
+  }
+`;
+
 const FolderInfo = styled.div`
+  padding: 5px 5px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const FolderLike = styled.div`
   display: flex;
   gap: 4px;
-
   img {
-    width: 10px;
-    height: 10px;
+    width: 30px;
+    height: 30px;
   }
 
   span {
-    font-size: 8px;
-    font-family: var(--font--Thin);
+    align-self: center;
+    font-size: 1rem;
+    font-family: var(--font--Regular);
     color: #ffffff;
   }
 `;

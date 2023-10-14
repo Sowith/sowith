@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 export const useAlertControl = () => {
@@ -42,11 +42,11 @@ const fadeIn = keyframes`
 
 const AlertContainer = styled.div`
   position: absolute;
+  width: 100vw;
+  height: 100vh;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center; 
