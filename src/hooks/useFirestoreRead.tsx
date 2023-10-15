@@ -3,21 +3,8 @@ import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firesto
 
 export const useFirestoreRead = (collectionName) => {
 
-  const ReadAllField = async () => {
+  const ReadAllDocument = async () => {
     const querySnapshot = await getDocs(collection(appFireStore, collectionName));
-    const result = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      data: doc.data()
-    }));
-    return result;
-  }
-
-  // where 사용 유형
-  // where('tag', '!=', []) tag 필드 안에 (배열)값이 들어있는 것들만 가져오기
-  
-  const ReadField = async ( fieldName, operator, value) => {
-    const q = query(collection(appFireStore, collectionName), where(fieldName, operator, value))
-    const querySnapshot = await getDocs(q)
     const result = querySnapshot.docs.map(doc => ({
       id: doc.id,
       data: doc.data()
@@ -35,7 +22,20 @@ export const useFirestoreRead = (collectionName) => {
     } else {
       console.error('해당 문서를 찾을 수 없습니다: ', documentName);
     }
-  
   }
-  return { ReadAllField, ReadField, ReadDocument }
+
+  // where 사용 유형
+  // where('tag', '!=', []) tag 필드 안에 (배열)값이 들어있는 것들만 가져오기
+  
+  const ReadField = async ( fieldName, operator, value) => {
+    const q = query(collection(appFireStore, collectionName), where(fieldName, operator, value))
+    const querySnapshot = await getDocs(q)
+    const result = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      data: doc.data()
+    }));
+    return result;
+  }
+
+  return { ReadAllDocument, ReadField, ReadDocument }
 }
