@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components';
 
-import { useFirestoreGet } from 'hooks/useFirestoreGet';
+import { useFirestoreRead } from 'hooks/useFirestoreRead';
 import { useModalControl } from 'hooks/useModalControl';
 import { MainPostItem } from '../../components/main/MainPostItem';
 import { MainPostMoreMenu } from 'components/main/MainPostMoreMenu';
@@ -15,12 +15,11 @@ export const MainPostViewPage: React.FC = () => {
   const [PostItemData, setPostItemData] = useState<any>([]);
   const [comments, setComments] = useState<any>([]);
 
-  const { SearchAllField } = useFirestoreGet('posts');
-  const { SearchDocument } = useFirestoreGet('users');
+  const { ReadAllField } = useFirestoreRead('posts');
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await SearchAllField()
+      const response = await ReadAllField()
       response && setPostItemData(response)
     }
     fetchData()

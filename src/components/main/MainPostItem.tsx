@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { useFirestoreGet } from 'hooks/useFirestoreGet';
+import { useFirestoreRead } from 'hooks/useFirestoreRead';
 import { MainUserItem } from '../../components/main/MainUserItem';
 import { SelectedFilter } from "../../components/post/PostSelectedFilter"
 
@@ -22,7 +22,7 @@ export const MainPostItem: React.FC<PostItemProps> = ({ item, index, openModal, 
   const token = sessionStorage.getItem('token');
   const uid = token !== null ? JSON.parse(token).uid : null;
 
-  const { SearchDocument } = useFirestoreGet('users');
+  const { ReadDocument } = useFirestoreRead('users');
   
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [postData, setPostData] = useState<any>({});
@@ -31,7 +31,7 @@ export const MainPostItem: React.FC<PostItemProps> = ({ item, index, openModal, 
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await SearchDocument(item.data.uid);
+      const response = await ReadDocument(item.data.uid);
       const updatedComments = { ...item.data, ...response };
       setPostData(updatedComments)
     };
@@ -44,7 +44,7 @@ export const MainPostItem: React.FC<PostItemProps> = ({ item, index, openModal, 
       const fetchData = async () => {
           const updatedComments = await Promise.all(
             postData.comments.map(async comment => {
-              const response = await SearchDocument(comment.uid);
+              const response = await ReadDocument(comment.uid);
               return { ...comment, ...response };
             })
           );
