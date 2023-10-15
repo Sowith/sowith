@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-export const useModalControl = ( modalHeight: number, autoHeight: boolean = false ) => {
+export const useModalControl = ( modalHeightDiff: number, autoHeight: boolean = false ) => {
   const [modalState, setModalState] = useState<boolean>(false);
   const [initialMount, setInitialMount] = useState<boolean>(true);
   const [animationState, setAnimationState] = useState<boolean>(true);
@@ -45,7 +45,7 @@ export const useModalControl = ( modalHeight: number, autoHeight: boolean = fals
         {!initialMount && (
           <>
             <ModalBlur onClick={closeModal} modalState={modalState} animationState={animationState}></ModalBlur>
-            <ModalContainer modalState={modalState} animationState={animationState} modalHeight={modalHeight} autoHeight={autoHeight}>
+            <ModalContainer modalState={modalState} animationState={animationState} modalHeightDiff={modalHeightDiff} autoHeight={autoHeight}>
               <ModalContent>
                 <div className='bar'></div>
                 {children}
@@ -118,12 +118,12 @@ const WrapStyle = styled.div<{ accessAllow: boolean }>`
   pointer-events: ${({ accessAllow }) => accessAllow ? 'auto' : 'none'};
 `;
 
-const ModalContainer = styled.div<{ modalState: boolean, animationState: boolean, modalHeight: number, autoHeight: boolean }>`
+const ModalContainer = styled.div<{ modalState: boolean, animationState: boolean, modalHeightDiff: number, autoHeight: boolean }>`
   position: fixed;
   left: 0;
-  top: ${(props) => !!props.autoHeight ? "" : props.modalHeight}px;
+  top: ${(props) => !!props.autoHeight ? "" : props.modalHeightDiff}px;
   bottom: ${(props) => !!props.autoHeight && 0};
-  height: ${(props) => !!props.autoHeight ? "" : `calc(100% - ${props.modalHeight}px)`};
+  height: ${(props) => !!props.autoHeight ? "" : `calc(100% - ${props.modalHeightDiff}px)`};
   /* top: 54px; */
   /* height: calc(100% - 54px);  */
   width: 100%;
