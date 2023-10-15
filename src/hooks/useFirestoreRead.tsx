@@ -1,9 +1,9 @@
 import { appFireStore } from '../firebase/config';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 
-export const useFirestoreGet = (collectionName) => {
+export const useFirestoreRead = (collectionName) => {
 
-  const SearchAllField = async () => {
+  const ReadAllField = async () => {
     const querySnapshot = await getDocs(collection(appFireStore, collectionName));
     const result = querySnapshot.docs.map(doc => ({
       id: doc.id,
@@ -15,7 +15,7 @@ export const useFirestoreGet = (collectionName) => {
   // where 사용 유형
   // where('tag', '!=', []) tag 필드 안에 (배열)값이 들어있는 것들만 가져오기
   
-  const SearchField = async ( fieldName, operator, value) => {
+  const ReadField = async ( fieldName, operator, value) => {
     const q = query(collection(appFireStore, collectionName), where(fieldName, operator, value))
     const querySnapshot = await getDocs(q)
     const result = querySnapshot.docs.map(doc => ({
@@ -25,7 +25,7 @@ export const useFirestoreGet = (collectionName) => {
     return result;
   }
 
-  const SearchDocument = async ( documentName ) => {
+  const ReadDocument = async ( documentName ) => {
     const docRef = doc(appFireStore, collectionName, documentName);
     const docSnapshot = await getDoc(docRef);
   
@@ -37,5 +37,5 @@ export const useFirestoreGet = (collectionName) => {
     }
   
   }
-  return { SearchAllField, SearchField, SearchDocument }
+  return { ReadAllField, ReadField, ReadDocument }
 }
