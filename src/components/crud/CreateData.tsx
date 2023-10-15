@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
-import { useFirestoreAdd } from 'hooks/useFirestoreAdd'
+import { useFirestoreCreate } from 'hooks/useFirestoreCreate'
 
 export const CreateData = () => {
-  const { addDocument } = useFirestoreAdd('tests');
+  const { CreateDocument } = useFirestoreCreate('tests');
   useEffect(()=> {
-    addDocument({
+    CreateDocument({
       name: 'Tokyo',
       content: 'Japan',
       tag: ['밥', '요리']

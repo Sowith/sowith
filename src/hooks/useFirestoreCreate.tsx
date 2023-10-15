@@ -1,12 +1,12 @@
 import { appFireStore, timestamp } from '../firebase/config';
 import { collection, addDoc } from 'firebase/firestore';
 
-export const useFirestoreAdd = (collectionName) => {
+export const useFirestoreCreate = (collectionName) => {
 
   const token = sessionStorage.getItem('token');
   const uid = token !== null ? JSON.parse(token).uid : null;
 
-  const addDocument = async (data) => {
+  const CreateDocument = async (data) => {
     try {
       if (uid !== null) {
         const createdAt = timestamp.fromDate(new Date());
@@ -21,5 +21,5 @@ export const useFirestoreAdd = (collectionName) => {
     }
 
   }
-  return { addDocument };
+  return { CreateDocument };
 }
