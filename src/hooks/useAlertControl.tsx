@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-export const useAlertControl = (top: number = 0) => {
+export const useAlertControl = (topPosition: number = 0) => {
   const [alertState, setAlertState] = useState(false);
 
   const openAlert = () => {
@@ -20,7 +20,7 @@ export const useAlertControl = (top: number = 0) => {
     return (
       <>
         {alertState && (
-          <AlertContainer onClick={closeAlert} top={top}>
+          <AlertContainer onClick={closeAlert} topPosition={topPosition}>
             <div>{children}</div>
           </AlertContainer>
         )}
@@ -40,11 +40,11 @@ const fadeIn = keyframes`
   }
 `;
 
-const AlertContainer = styled.div<{top: number}>`
+const AlertContainer = styled.div<{topPosition: number}>`
   position: fixed;
   width: 100vw;
   height: 100vh;
-  top: ${(props) => `calc(50% - ${props.top !== 0 ? props.top : 0}px)`};
+  top: ${(props) => `calc(50% - ${props.topPosition !== 0 ? props.topPosition : 0}px)`};
   /* top: 50%; */
   left: 50%;
   transform: translate(-50%, -50%);
