@@ -1,7 +1,8 @@
-import { useState, FC } from 'react';
+import { FC } from 'react';
 import { styled } from 'styled-components';
 
-import { ReactComponent as IconLike } from '../../assets/icon/icon-heart_unfilled.svg';
+import heartUnfilled from '../../assets/icon/icon-heart_unfilled.svg';
+import heartFilled from '../../assets/icon/icon-heart_filled.svg';
 import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark.svg';
 
 interface FolderDataItem {
@@ -50,19 +51,28 @@ export const SearchFolderItem: FC<FolderItemProps> = ({
           ))}
 
           {data.tags.length > maxTagCount && (
-            <FolderTagItem>+{data.tags.length - maxTagCount}</FolderTagItem>
+            <NumberHiddenFolderTagItem>
+              +{data.tags.length - maxTagCount}
+            </NumberHiddenFolderTagItem>
           )}
         </FolderTagList>
       </FolderDescription>
       <FolderInfo>
         <FolderLike>
-          <IconLike
-            fill={data.like ? '#FC9763' : 'none'}
-            stroke={data.like ? '#FC9763' : 'none'}
-            onClick={handleLikeClick}
-            style={{ width: '30px', height: '30px' }}
-          />
-          <span>{data.totalLike}</span>{' '}
+          {data.like ? (
+            <img
+              src={heartFilled}
+              alt="Heart Filled"
+              onClick={handleLikeClick}
+            />
+          ) : (
+            <img
+              src={heartUnfilled}
+              alt="Heart Unfilled"
+              onClick={handleLikeClick}
+            />
+          )}
+          <span>{data.totalLike}</span>
         </FolderLike>
         <IconBookmark
           fill={data.bookmark ? '#FFDF44' : '#C4C4C4'}
@@ -144,6 +154,21 @@ const FolderTagItem = styled.p`
   font-size: 1rem;
   color: #ffffff;
   padding: 0px 3px;
+  text-align: start;
+  margin: 0;
+
+  @media (max-width: 576px) {
+    font-size: 0.8rem;
+  }
+`;
+
+const NumberHiddenFolderTagItem = styled.p`
+  border-radius: 5px;
+  font-family: var(--font--Regular);
+  font-size: 1rem;
+  background-color: var(--main-color);
+  color: #ffffff;
+  padding: 0px 7px;
   text-align: start;
   margin: 0;
 
