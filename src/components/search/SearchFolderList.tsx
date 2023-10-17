@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import { SearchFolderItem } from './SearchFolderItem';
+import { collection, query, where, doc, getDocs } from 'firebase/firestore';
+import { appFireStore } from '../../firebase/config.js';
 
 interface FolderData {
   folderId: number;
@@ -12,7 +14,13 @@ interface FolderData {
   tags: string[];
 }
 
-export const SearchFolderList: React.FC = () => {
+interface SearchFolderListProps {
+  searchKeyword: string;
+}
+
+export const SearchFolderList: React.FC<SearchFolderListProps> = ({
+  searchKeyword,
+}) => {
   const folderData: FolderData[] = [
     {
       folderId: 1,
@@ -180,6 +188,21 @@ export const SearchFolderList: React.FC = () => {
       bookmark: true,
     },
   ];
+
+  const q = query(
+    collection(appFireStore, 'folders'),
+    where('name', 'array-contains', searchKeyword)
+  );
+
+  getDocs(q).then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data());
+    });
+  });
+
+  // 로직 추가
+  // firestore에서 폴더 데이터를 불러올 때 SearchBar의 placeholder에 입력된 문자열을 기반으로 filter된 폴더 데이터를 불러오도록 수정
+  // 조건부 query를 때려서 가져오기
 
   const [archiveFolderData, setArchiveFolderData] =
     useState<FolderData[]>(folderData);

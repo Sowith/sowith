@@ -12,7 +12,14 @@ const sampleTags: TagData[] = [
   { id: 4, tagTitle: '#태그4', tagNumber: 250 },
 ];
 
-export const TagList = () => {
+interface SearchTagListProps {
+  searchKeyword: string;
+}
+
+export const TagList: React.FC<SearchTagListProps> = ({ searchKeyword }) => {
+  // 로직 추가
+  // firestore에서 태그 리스트 데이터를 불러올 때 SearchBar의 placeholder에 입력된 문자열을 기반으로 filter된 태그 리스트 데이터를 불러오도록 수정
+
   return (
     <TagItemContainer>
       {sampleTags.map((tag) => (

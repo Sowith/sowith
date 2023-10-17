@@ -4,6 +4,7 @@ import { AccountItem, AccountItemProps } from './SearchAccountItem';
 
 interface AccountListProps {
   accounts?: AccountItemProps[];
+  searchKeyword: string;
 }
 
 const sampleAccounts: AccountItemProps[] = [
@@ -39,6 +40,7 @@ const sampleAccounts: AccountItemProps[] = [
 
 export const AccountList: React.FC<AccountListProps> = ({
   accounts = sampleAccounts,
+  searchKeyword,
 }): JSX.Element => {
   return (
     <AccountItemContainer>

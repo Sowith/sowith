@@ -7,15 +7,20 @@ import { useEffect, useState } from 'react';
 
 export interface SearchBarProps {
   onSearchButtonClick?: () => void;
+  onInputChange?: (string) => void;
+  searchValue?: string;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
   onSearchButtonClick,
+  onInputChange,
+  searchValue,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
   const [placeholderText, SetPlaceHolderText] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   useEffect(() => {
     if (currentPath === '/profiledetailPage/1') {
@@ -49,6 +54,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchKeyword(e.target.value);
+
+    if (onInputChange) {
+      onInputChange(e.target.value);
+    }
+  };
+
   const handleSearchButtonClick = (): void => {
     if (onSearchButtonClick) {
       onSearchButtonClick();
@@ -62,8 +75,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         <SearchInput
           type="text"
           placeholder={placeholderText}
+          value={searchValue}
           onClick={handleInputClick}
           onFocus={handleInputFocus}
+          onChange={handleInputChange}
         />
         <SearchButton onClick={handleSearchButtonClick} />
       </SearchArea>

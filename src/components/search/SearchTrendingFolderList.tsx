@@ -181,6 +181,19 @@ export const SearchTrendingFolderList: React.FC = () => {
     },
   ];
 
+  // 로직 추가
+  // 가장 인기있는 폴더(좋아요 기준으로 정렬) 순서대로 폴더 객체를 정렬
+  // 대략적인 로직
+  // const folderData = [
+  // ... (주어진 데이터베이스 내용)
+  // ];
+
+  // totalLike로 폴더를 내림차순으로 정렬
+  // folderData.sort((a, b) => b.totalLike - a.totalLike);
+
+  // 모든 폴더를 포함하는 trendingFolderData 객체
+  // const trendingFolderData = [...folderData];
+
   const [archiveFolderData, setArchiveFolderData] =
     useState<FolderData[]>(folderData);
 

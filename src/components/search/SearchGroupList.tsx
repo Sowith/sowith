@@ -1,7 +1,13 @@
 import styled from 'styled-components';
 import { GroupUI } from 'components/common/GroupUI';
 
-export const GroupList: React.FC = () => {
+interface SearchGroupListProps {
+  searchKeyword: string;
+}
+
+export const GroupList: React.FC<SearchGroupListProps> = ({
+  searchKeyword,
+}) => {
   return (
     <GroupItemContainer>
       <GroupUI />

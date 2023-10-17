@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   HistoryItem,
   HistoryItemProps,
@@ -44,6 +45,8 @@ export default sampleData;
 export const SearchHistory: React.FC<SearchHistoryProps> = () => {
   const [searchHistoryData, setSearchHistoryData] = useState(sampleData);
   const [userSearchHistory, setUserSearchHistory] = useState<boolean>(true);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchHistoryData.length === 0) {
@@ -57,14 +60,22 @@ export const SearchHistory: React.FC<SearchHistoryProps> = () => {
     setSearchHistoryData(updatedData);
   };
 
-  const callSearchAPI = (): void => {
-    console.log('검색 API 호출');
+  const handleSearchKeywordChange = (value: string) => {
+    setSearchKeyword(value);
+  };
+
+  const moveSearchByCategory = (): void => {
+    navigate('/searchbycategory', { state: searchKeyword });
   };
 
   return (
     <Container>
       <h1 className="a11y-hidden">검색 기록 페이지</h1>
-      <SearchBar onSearchButtonClick={callSearchAPI} />
+      <SearchBar
+        onInputChange={handleSearchKeywordChange}
+        onSearchButtonClick={moveSearchByCategory}
+        searchValue={searchKeyword}
+      />
       {userSearchHistory && (
         <YesSearchHistory>
           <SearchStatus>

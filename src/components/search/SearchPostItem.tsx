@@ -6,6 +6,8 @@ import multiplePhotosIcon from '../../assets/icon/icon-multiple_photos.svg';
 interface PostItemProps {
   isMultiplePhotos?: boolean;
   imageUrl: string; // 이미지 URL을 받을 prop
+  postContent?: string;
+  postTag?: [string];
 }
 
 export const PostItem: React.FC<PostItemProps> = ({
@@ -44,7 +46,7 @@ const Container = styled.div`
     margin: 0;
     bottom: 5px;
     right: 5px;
-    width: 20px;
-    height: 20px;
+    width: 40px;
+    height: 40px;
   }
 `;

@@ -7,6 +7,7 @@ import { SearchFolderList } from 'components/search/SearchFolderList';
 import { GroupList } from '../../components/search/SearchGroupList';
 import { AccountList } from '../../components/search/SearchAccountList';
 import { TagList } from '../../components/search/SearchTagList';
+import { useLocation } from 'react-router-dom';
 
 interface Category {
   id: number;
@@ -15,16 +16,8 @@ interface Category {
 }
 
 export const SearchByCategory: FC = () => {
-  const [isInputClicked, setInputClicked] = useState(false);
-
-  const handleInputClick = () => {
-    setInputClicked(true);
-  };
-
-  const handleCancel = () => {
-    setInputClicked(false);
-  };
-
+  const location = useLocation();
+  const searchKeyword: string = location.state;
   const [currentStep, setCurrentStep] = useState<number>(1);
   const CATEGORIES: Category[] = [
     { id: 1, name: '게시글', className: 'category-post' },
@@ -41,17 +34,17 @@ export const SearchByCategory: FC = () => {
   const renderComponentByCategory = () => {
     switch (currentStep) {
       case 1:
-        return <PostList />;
+        return <PostList searchKeyword={searchKeyword} />;
       case 2:
-        return <SearchFolderList />;
+        return <SearchFolderList searchKeyword={searchKeyword} />;
       case 3:
-        return <AccountList />;
+        return <AccountList searchKeyword={searchKeyword} />;
       case 4:
-        return <GroupList />;
+        return <GroupList searchKeyword={searchKeyword} />;
       case 5:
-        return <TagList />;
+        return <TagList searchKeyword={searchKeyword} />;
       default:
-        return <PostList />;
+        return <PostList searchKeyword={searchKeyword} />;
     }
   };
 
@@ -59,7 +52,7 @@ export const SearchByCategory: FC = () => {
     <>
       <h1 className="a11y-hidden">검색 페이지/게시글</h1>
       <Container>
-        <SearchBar />
+        <SearchBar searchValue={searchKeyword} />
         <CategorySwitcher>
           {CATEGORIES.map((category) => (
             <button

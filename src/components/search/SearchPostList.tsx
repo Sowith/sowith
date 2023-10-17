@@ -9,10 +9,14 @@ const samplePosts = [
       'https://picsum.photos/200/191',
       'https://picsum.photos/200/192',
     ],
+    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
+    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
   },
   {
     title: '게시글2',
     imageUrl: ['https://picsum.photos/200/193'],
+    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
+    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
   },
   {
     title: '게시글3',
@@ -21,6 +25,8 @@ const samplePosts = [
       'https://picsum.photos/200/195',
       'https://picsum.photos/200/196',
     ],
+    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
+    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
   },
   {
     title: '게시글4',
@@ -29,6 +35,8 @@ const samplePosts = [
       'https://picsum.photos/200/198',
       'https://picsum.photos/200/199',
     ],
+    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
+    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
   },
   {
     title: '게시글5',
@@ -37,6 +45,8 @@ const samplePosts = [
       'https://picsum.photos/200/180',
       'https://picsum.photos/200/181',
     ],
+    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
+    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
   },
   {
     title: '게시글6',
@@ -53,13 +63,20 @@ const samplePosts = [
       'https://picsum.photos/200/190',
       'https://picsum.photos/200/190',
     ],
+    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
+    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
   },
 ];
 
-export const PostList: React.FC = () => {
+interface SearchPostListProps {
+  searchKeyword: string;
+}
+
+export const PostList: React.FC<SearchPostListProps> = ({ searchKeyword }) => {
   // 저장할 상태들
 
   // 로직 구현
+  // firestore에서 게시글 데이터를 불러올 때 SearchBar의 placeholder에 입력된 문자열을 기반으로 filter된 게시글 데이터를 불러오도록 수정
 
   // 컴포넌트
   return (
