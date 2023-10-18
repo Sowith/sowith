@@ -5,7 +5,7 @@ interface SearchGroupListProps {
   searchKeyword: string;
 }
 
-export const GroupList: React.FC<SearchGroupListProps> = ({
+export const SearchGroupList: React.FC<SearchGroupListProps> = ({
   searchKeyword,
 }) => {
   return (

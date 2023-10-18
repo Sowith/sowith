@@ -39,11 +39,11 @@ export const SearchMain: FC = () => {
               <img src={arrowNext} alt="인기 그룹 더보기" />
             </Link>
           </SectionTitle>
-          <TrendingGroupList>
+          <TrendingSearchGroupList>
             {trendingGroups.map((_, idx) => (
               <GroupUI key={idx} />
             ))}
-          </TrendingGroupList>
+          </TrendingSearchGroupList>
         </TrendingGroup>
       </Container>
     </>
@@ -102,6 +102,6 @@ const TrendingGroup = styled.section`
   margin: 0 auto;
 `;
 
-const TrendingGroupList = styled.div`
+const TrendingSearchGroupList = styled.div`
   padding-top: 10px;
 `;

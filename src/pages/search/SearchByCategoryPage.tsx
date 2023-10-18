@@ -4,7 +4,7 @@ import { SearchBar } from '../../components/search/SearchBar';
 import { StepBar } from '../../components/common/StepBar';
 import { PostList } from '../../components/search/SearchPostList';
 import { SearchFolderList } from 'components/search/SearchFolderList';
-import { GroupList } from '../../components/search/SearchGroupList';
+import { SearchGroupList } from '../../components/search/SearchGroupList';
 import { AccountList } from '../../components/search/SearchAccountList';
 import { TagList } from '../../components/search/SearchTagList';
 import { useLocation } from 'react-router-dom';
@@ -40,7 +40,7 @@ export const SearchByCategory: FC = () => {
       case 3:
         return <AccountList searchKeyword={searchKeyword} />;
       case 4:
-        return <GroupList searchKeyword={searchKeyword} />;
+        return <SearchGroupList searchKeyword={searchKeyword} />;
       case 5:
         return <TagList searchKeyword={searchKeyword} />;
       default:

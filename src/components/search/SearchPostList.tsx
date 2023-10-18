@@ -1,6 +1,7 @@
 import React, { useState } from 'react'; // React를 추가
 import { styled } from 'styled-components';
 import { PostItem } from './SearchPostItem';
+import { PostItemProps } from './SearchPostItem';
 
 const samplePosts = [
   {

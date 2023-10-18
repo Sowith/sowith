@@ -5,11 +5,11 @@ import heartUnfilled from '../../assets/icon/icon-heart_unfilled.svg';
 import heartFilled from '../../assets/icon/icon-heart_filled.svg';
 import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark.svg';
 
-interface FolderDataItem {
-  folderId: number;
-  src: string[];
+export interface FolderDataItem {
+  folderId: string;
+  folderImages: string[];
   name: string;
-  totalLike: number;
+  likeCount: number;
   like: boolean;
   bookmark: boolean;
   tags: string[];
@@ -17,8 +17,8 @@ interface FolderDataItem {
 
 interface FolderItemProps {
   data: FolderDataItem;
-  onLikeToggle: (folderId: number) => void;
-  onBookmarkToggle: (folderId: number) => void;
+  onLikeToggle: (folderId: string) => void;
+  onBookmarkToggle: (folderId: string) => void;
   src: string;
 }
 
@@ -38,7 +38,7 @@ export const SearchTrendingFolderItem: FC<FolderItemProps> = ({
   };
 
   return (
-    <Container style={{ backgroundImage: `url(${data.src[0]})` }}>
+    <Container style={{ backgroundImage: `url(${data.folderImages[0]})` }}>
       <BlackOverlay />
       <FolderDescription>
         <p>{data.name}</p>
@@ -72,7 +72,7 @@ export const SearchTrendingFolderItem: FC<FolderItemProps> = ({
               onClick={handleLikeClick}
             />
           )}
-          <span>{data.totalLike}</span>
+          <span>{data.likeCount}</span>
         </FolderLike>
         <IconBookmark
           fill={data.bookmark ? '#FFDF44' : '#C4C4C4'}

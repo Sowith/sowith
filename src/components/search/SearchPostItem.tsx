@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 
 import multiplePhotosIcon from '../../assets/icon/icon-multiple_photos.svg';
 
-interface PostItemProps {
+export interface PostItemProps {
   isMultiplePhotos?: boolean;
   imageUrl: string; // 이미지 URL을 받을 prop
   postContent?: string;
@@ -11,8 +11,8 @@ interface PostItemProps {
 }
 
 export const PostItem: React.FC<PostItemProps> = ({
-  isMultiplePhotos = false,
-  imageUrl, // imageUrl prop을 구조 분해 할당으로 가져옵니다.
+  isMultiplePhotos,
+  imageUrl,
 }) => {
   const handlePostClick = () => {
     console.log('게시물이 클릭되었습니다!');

@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-interface TrendingTagItemProps {
+export interface TrendingTagData {
   trendingTag?: string;
 }
 
-export const SearchTrendingTagItem: React.FC<TrendingTagItemProps> = ({
+export const SearchTrendingTagItem: React.FC<TrendingTagData> = ({
   trendingTag,
 }) => {
   return (
