@@ -65,7 +65,7 @@ const Container = styled.li`
   position: relative;
   width: 100%;
   margin-top: 2px;
-  margin-right: -5px;
+  /* margin-right: -5px; */
   background-color: #FFF;
   display: flex;
   min-height: 50px;
