@@ -7,7 +7,7 @@ import "firebase/compat/storage";
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, Timestamp } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -26,5 +26,6 @@ const analytics = getAnalytics(app);
 const appAuth = getAuth();
 const appFireStore = getFirestore(app);
 const auth = firebase.auth();
+const timestamp = Timestamp
 
-export { appAuth, appFireStore, auth };
+export { appAuth, appFireStore, auth, timestamp };
