@@ -40,7 +40,7 @@ export const Test = () => {
       <Link to="/createdata">
           <TestButton>데이터 생성</TestButton>
       </Link>
-      <Link to="/getdata">
+      <Link to="/readdata">
           <TestButton>데이터 조회</TestButton>
       </Link>
       <Link to="/updatedata">

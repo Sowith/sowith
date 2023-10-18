@@ -19,7 +19,7 @@ import { SignUpCompletedPage } from 'pages/SignUpCompletedPage';
 import { MainPostViewPage } from './pages/main/MainPostViewPage'
 import { Test } from './pages/Test';
 import { CreateData } from 'components/crud/CreateData';
-import { GetData } from 'components/crud/GetData';
+import { ReadData } from 'components/crud/ReadData';
 import { UpdateData } from 'components/crud/UpdateData';
 import { DeleteData } from 'components/crud/DeleteData';
 
@@ -48,7 +48,7 @@ export function App(): JSX.Element {
           <Route path="/com" element={<SignUpCompletedPage />} />
           <Route path="/mainpostview" element={<MainPostViewPage />} />
           <Route path="/createdata" element={<CreateData />} />
-          <Route path="/getdata" element={<GetData />} />
+          <Route path="/readdata" element={<ReadData />} />
           <Route path="/updatedata" element={<UpdateData />} />
           <Route path="/deletedata" element={<DeleteData />} />
 

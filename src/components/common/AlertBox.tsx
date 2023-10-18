@@ -13,7 +13,7 @@ export const AlertBox: React.FC<AlertBoxProps> = ({ alertMsg, choice, handleFunc
         <p>{alertMsg}</p>
         <ButtonStyle>
           <button className='cancel' onClick={handleFunc}>{choice[0]}</button>
-          {choice[1] && <button className='delete' onClick={handleFunc}>{choice[1]}</button>}
+          {choice[1] && <button className='confirm' onClick={handleFunc}>{choice[1]}</button>}
         </ButtonStyle>
       </AlertStyle>
     </div>
@@ -57,10 +57,11 @@ const AlertStyle = styled.div`
     &:hover{
     }
   }
-  .delete {
+  .confirm {
     width: 126px;
     height: 40px;
     color: #F22222;
     border-top: 1px solid #FFF;
+    border-left: 1px solid #FFF;
   }
 `;
