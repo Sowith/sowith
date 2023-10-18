@@ -8,7 +8,7 @@ interface Photo {
 }
 
 interface SelectedFilterProps {
-  filterStorage: Photo[];
+  filterStorage: any;
   setSelectedPicture?: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -44,9 +44,9 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
     const difference = subtract >= 100 ? 100 : subtract
 
     if (imageSliderRef.current && startX < currentX) {
-      imageSliderRef.current.style.transform = `translateX(${currentIndex * -100 + difference}%)`;
+      imageSliderRef.current.style.transform = `translateX(${currentIndex * -100 + (100% - difference)}%)`;
     } else if (imageSliderRef.current && startX > currentX) {
-      imageSliderRef.current.style.transform = `translateX(${currentIndex * -100 - difference}%)`;
+      imageSliderRef.current.style.transform = `translateX(${currentIndex * -100 - (100% - difference)}%)`;
     }
   };
 
@@ -62,11 +62,8 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
     setStartX(null);
   };
 
-  console.log(location.pathname);
-  
-
   return (
-    <WrapperStyle isMainPostView={location.pathname==="/home"}>
+    <WrapperStyle isMainPostView={location.pathname==="/mainpostview"} selectedLength={filterStorage.length}>
       <div
         className="photo-navigator"
         onTouchStart={handleTouchStart}
@@ -82,12 +79,12 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
             ></div>
           ))}
         </div>
-        <ImageSliderWrapper>
+        <ImageSliderWrapper isMainPostView={location.pathname==="/mainpostview"}>
           <ImageSlider ref={imageSliderRef} currentIndex={currentIndex}>
             {filterStorage.map((photo, index) => (
               <ImageStyle
                 key={index}
-                src={photo.src}
+                src={photo}
                 alt={`사진 ${index + 1}`}
                 filter={photo.filter}
               />
@@ -101,7 +98,7 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
   );
 };
 
-const WrapperStyle = styled.div<{isMainPostView : boolean}>`
+const WrapperStyle = styled.div<{isMainPostView : boolean, selectedLength: number}>`
   position: relative;
   height: 70%;
   
@@ -131,7 +128,7 @@ const WrapperStyle = styled.div<{isMainPostView : boolean}>`
     background-color: ${(props) => props.isMainPostView ? "" : "rgba(0, 0, 0, 0.5)"};
     padding: 10px 10px;
     border-radius: 30px;
-    display: flex;
+    display: ${(props) => props.selectedLength === 1 ? "none" : "flex"};
     bottom: ${(props) => props.isMainPostView ? "-28px" : "10px"};
     z-index: 999;
   }
@@ -150,11 +147,11 @@ const WrapperStyle = styled.div<{isMainPostView : boolean}>`
   }
 `;
 
-const ImageSliderWrapper = styled.div`
+const ImageSliderWrapper = styled.div<{isMainPostView : boolean}>`
   overflow: hidden;
   width: 100%;
-  /* border-radius: 5px;
-  width: 90%; */
+  border-radius: ${(props) => props.isMainPostView ? "0px" : "5px"};
+  /* width: 90%; */
   height: 100%;
 `;
 

@@ -32,10 +32,10 @@ export const Test = () => {
         <TestButton>(상세 검색 페이지)</TestButton>
       </Link>
       <Link to="/profileUpdatePage">
-        <TestButton>(프로필 수정 페이지)</TestButton>
+          <TestButton>(프로필 수정 페이지)</TestButton>
       </Link>
-      <Link to="/home">
-        <TestButton>(메인 화면)</TestButton>
+      <Link to="/mainpostview">
+          <TestButton>(메인 게시글 뷰)</TestButton>
       </Link>
     </div>
   );

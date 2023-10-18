@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-export const useModalControl = () => {
+export const useModalControl = ( modalHeightDiff: number, autoHeight: boolean = false ) => {
   const [modalState, setModalState] = useState<boolean>(false);
   const [initialMount, setInitialMount] = useState<boolean>(true);
   const [animationState, setAnimationState] = useState<boolean>(true);
@@ -35,7 +35,7 @@ export const useModalControl = () => {
     }
   }, [modalState]);
 
-  type ModalComponentProps = {
+  interface ModalComponentProps {
     children: React.ReactNode;
   };
 
@@ -45,7 +45,7 @@ export const useModalControl = () => {
         {!initialMount && (
           <>
             <ModalBlur onClick={closeModal} modalState={modalState} animationState={animationState}></ModalBlur>
-            <ModalContainer modalState={modalState} animationState={animationState}>
+            <ModalContainer modalState={modalState} animationState={animationState} modalHeightDiff={modalHeightDiff} autoHeight={autoHeight}>
               <ModalContent>
                 <div className='bar'></div>
                 {children}
@@ -118,11 +118,14 @@ const WrapStyle = styled.div<{ accessAllow: boolean }>`
   pointer-events: ${({ accessAllow }) => accessAllow ? 'auto' : 'none'};
 `;
 
-const ModalContainer = styled.div<{ modalState: boolean, animationState: boolean }>`
-  position: absolute;
+const ModalContainer = styled.div<{ modalState: boolean, animationState: boolean, modalHeightDiff: number, autoHeight: boolean }>`
+  position: fixed;
   left: 0;
-  top: 54px;
-  height: calc(100% - 54px);
+  top: ${(props) => !!props.autoHeight ? "" : props.modalHeightDiff}px;
+  bottom: ${(props) => !!props.autoHeight && 0};
+  height: ${(props) => !!props.autoHeight ? "" : `calc(100% - ${props.modalHeightDiff}px)`};
+  /* top: 54px; */
+  /* height: calc(100% - 54px);  */
   width: 100%;
   animation: ${({ modalState, animationState }) =>
     modalState ?
@@ -133,12 +136,13 @@ const ModalContainer = styled.div<{ modalState: boolean, animationState: boolean
   } 0.6s 
     ${({ modalState }) => modalState ? 'ease' : 'ease-in'} 
     forwards;
+  z-index: 9999;
   `;
 
 const ModalContent = styled.div`
     width: 100vw;
     height: 100%;
-    margin-left: -20px;
+    /* margin-left: -20px; */
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
     background-color: #FFF;
@@ -156,11 +160,11 @@ const ModalContent = styled.div`
 `;
 
 const ModalBlur = styled.div<{ modalState: boolean, animationState: boolean }>`
-  position: absolute;
+  position: fixed;
   cursor: pointer;
   width: 100vw;
   height: 100%;
-  margin-left: -20px;
+  /* margin-left: -20px; */
   top: -54px;
   left: 0;
   animation: ${({ modalState, animationState }) => 
@@ -172,4 +176,5 @@ const ModalBlur = styled.div<{ modalState: boolean, animationState: boolean }>`
     0.6s 
     ease 
     forwards;
+  z-index: 9999;
 `;

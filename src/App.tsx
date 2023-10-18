@@ -16,6 +16,7 @@ import { ProfileUpdatePage } from 'pages/profile/ProfileUpdatePage';
 import { ProfileGroupDetailPage } from './pages/profile/ProfileGroupDetailPage';
 import { PostTS } from 'pages/PostTS';
 import { SignUpCompletedPage } from 'pages/SignUpCompletedPage';
+import { MainPostViewPage } from './pages/main/MainPostViewPage'
 import { Test } from './pages/Test';
 
 export function App(): JSX.Element {
@@ -40,6 +41,8 @@ export function App(): JSX.Element {
           element={<ProfileGroupDetailPage />}
         />
         <Route path="/com" element={<SignUpCompletedPage />} />
+        <Route path="/mainpostview" element={<MainPostViewPage />} />
+        
       </Routes>
     </BrowserRouter>
   );
