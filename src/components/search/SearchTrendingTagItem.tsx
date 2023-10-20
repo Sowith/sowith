@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 export interface TrendingTagData {
-  trendingTag?: string;
+  trendingTag: string;
+  tagNumber: number;
 }
 
 export const SearchTrendingTagItem: React.FC<TrendingTagData> = ({
