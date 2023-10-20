@@ -8,6 +8,7 @@ import { SignUP } from './pages/SignUpTS';
 import { Login } from './pages/LoginPage';
 import { MyGlobalStyle } from './style/GlobalStyle';
 import { SearchMain } from './pages/search/SearchMainPage';
+import { SearchHistory } from 'pages/search/SearchHistoryPage';
 import { SearchByCategory } from './pages/search/SearchByCategoryPage';
 import { SearchTrendingGroup } from 'pages/search/SearchTrendingGroupPage';
 import { SearchTrendingFolder } from 'pages/search/SearchTrendingFolderPage';
@@ -16,7 +17,7 @@ import { ProfileUpdatePage } from 'pages/profile/ProfileUpdatePage';
 import { ProfileGroupDetailPage } from './pages/profile/ProfileGroupDetailPage';
 import { PostTS } from 'pages/PostTS';
 import { SignUpCompletedPage } from 'pages/SignUpCompletedPage';
-import { MainPostViewPage } from './pages/main/MainPostViewPage'
+import { MainPostViewPage } from './pages/main/MainPostViewPage';
 import { Test } from './pages/Test';
 import { CreateData } from 'components/crud/CreateData';
 import { ReadData } from 'components/crud/ReadData';
@@ -37,8 +38,15 @@ export function App(): JSX.Element {
           <Route path="/postupload" element={<PostTS />} />
           <Route path="/profilePage" element={<ProfilePage />} />
           <Route path="/searchmain" element={<SearchMain />} />
-          <Route path="/trendingfolder" element={<SearchTrendingFolder />} />
-          <Route path="trendinggroup" element={<SearchTrendingGroup />} />
+          <Route
+            path="/searchmain/trendingfolder"
+            element={<SearchTrendingFolder />}
+          />
+          <Route
+            path="/searchmain/trendinggroup"
+            element={<SearchTrendingGroup />}
+          />
+          <Route path="/searchhistory" element={<SearchHistory />} />
           <Route path="/searchbycategory" element={<SearchByCategory />} />
           <Route path="/profileUpdatePage" element={<ProfileUpdatePage />} />
           <Route
@@ -51,7 +59,6 @@ export function App(): JSX.Element {
           <Route path="/readdata" element={<ReadData />} />
           <Route path="/updatedata" element={<UpdateData />} />
           <Route path="/deletedata" element={<DeleteData />} />
-
         </Routes>
       </BrowserRouter>
     </RecoilRoot>
