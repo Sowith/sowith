@@ -1,68 +1,61 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useFirestoreRead } from 'hooks/useFirestoreRead';
 import styled from 'styled-components';
-import { SearchTrendingTagItem } from './SearchTrendingTagItem';
-import { TrendingTagData } from './SearchTrendingTagItem';
+
+import {
+	SearchTrendingTagItem,
+	TrendingTagData,
+} from './SearchTrendingTagItem';
 
 export const SearchTrendingTagList: React.FC = () => {
-  const tagData = [
-    '🔥 HOT',
-    'JavaScript',
-    'Styled Components',
-    'Web Development',
-    'Frontend',
-    '유럽여행',
-    '용리단길',
-    'NBA',
-    '피렌체',
-  ];
+	const [archiveTrendingTagData, setArchiveTrendingTagData] = useState<
+		TrendingTagData[]
+	>([]);
 
-  // useEffect(() => {
-  //   const fetchFolders = async () => {
-  //     try {
-  //       const tagsData: TrendingTagData[] = [];
-  //       const q = query(collection(appFireStore, 'tags'));
-  //       const querySnapshot = await getDocs(q);
+	const firestoreReader = useFirestoreRead('tags');
 
-  //       querySnapshot.forEach((doc) => {
-  //         const data = doc.data() as TrendingTagData;
-  //         console.log(data);
-  //         const tags = {
-  //           folderId: doc.id,
-  //           name: data.name,
-  //           likeCount: data.likeCount,
-  //           folderImages: data.folderImages,
-  //           tags: data.tags,
-  //           like: data.like,
-  //           bookmark: data.bookmark,
-  //         };
-  //         folderData.push(folder);
-  //       });
+	useEffect(() => {
+		const fetchTrendingTags = async () => {
+			const response = await firestoreReader.ReadAllDocument();
 
-  //       console.log(folderData);
+			const tagData: TrendingTagData[] = response.map((item) => {
+				const taggedFolderCount = item?.data?.taggedFolderIDs?.length;
+				const taggedGroupCount = item?.data?.taggedGroupIDs?.length;
+				const taggedPostCount = item?.data?.taggedPostIDs?.length;
 
-  //       setArchiveFolderData(folderData);
-  //     } catch (error) {
-  //       console.error('Firestore에서 폴더를 가져오는 중 오류 발생:', error);
-  //     }
-  //   };
+				return {
+					tagId: item.id,
+					trendingTag: item.data.tagName,
+					tagNumber: taggedFolderCount + taggedGroupCount + taggedPostCount,
+				};
+			});
 
-  //   fetchFolders();
-  // }, []);
+			const sortedByTrending = tagData.sort(
+				(a, b) => a.tagNumber - b.tagNumber
+			);
+			setArchiveTrendingTagData(sortedByTrending);
+		};
 
-  return (
-    <Container>
-      {tagData.map((tag, index) => (
-        <SearchTrendingTagItem key={index} trendingTag={tag} />
-      ))}
-    </Container>
-  );
+		fetchTrendingTags();
+	}, []);
+
+	return (
+		<Container>
+			{archiveTrendingTagData.map((tag) => (
+				<SearchTrendingTagItem
+					trendingTag={tag.trendingTag}
+					tagNumber={tag.tagNumber}
+				/>
+			))}
+		</Container>
+	);
 };
 
 const Container = styled.section`
-  width: 88%;
-  padding: 5px;
-  gap: 10px;
-  margin: 0 auto;
-  display: flex;
-  overflow: auto;
+	width: 88%;
+	padding: 5px;
+	gap: 10px;
+	margin: 0 auto;
+	display: flex;
+	overflow: auto;
 `;

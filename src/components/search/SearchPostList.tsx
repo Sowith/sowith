@@ -1,102 +1,55 @@
-import React, { useState } from 'react'; // React를 추가
+import { useState, useEffect } from 'react';
+import { useFirestoreRead } from 'hooks/useFirestoreRead';
 import { styled } from 'styled-components';
-import { PostItem } from './SearchPostItem';
-import { PostItemProps } from './SearchPostItem';
 
-const samplePosts = [
-  {
-    title: '게시글1',
-    imageUrl: [
-      'https://picsum.photos/200/191',
-      'https://picsum.photos/200/192',
-    ],
-    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
-    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
-  },
-  {
-    title: '게시글2',
-    imageUrl: ['https://picsum.photos/200/193'],
-    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
-    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
-  },
-  {
-    title: '게시글3',
-    imageUrl: [
-      'https://picsum.photos/200/194',
-      'https://picsum.photos/200/195',
-      'https://picsum.photos/200/196',
-    ],
-    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
-    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
-  },
-  {
-    title: '게시글4',
-    imageUrl: [
-      'https://picsum.photos/200/197',
-      'https://picsum.photos/200/198',
-      'https://picsum.photos/200/199',
-    ],
-    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
-    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
-  },
-  {
-    title: '게시글5',
-    imageUrl: [
-      'https://picsum.photos/200/200',
-      'https://picsum.photos/200/180',
-      'https://picsum.photos/200/181',
-    ],
-    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
-    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
-  },
-  {
-    title: '게시글6',
-    imageUrl: [
-      'https://picsum.photos/200/191',
-      'https://picsum.photos/200/192',
-      'https://picsum.photos/200/193',
-    ],
-  },
-  {
-    title: '게시글7',
-    imageUrl: [
-      'https://picsum.photos/200/190',
-      'https://picsum.photos/200/190',
-      'https://picsum.photos/200/190',
-    ],
-    postContent: '오늘은 맛집에 놀러갔습니다 맛집 어쩌구.',
-    postTag: ['맛집', '또간집', '내일갈집', '성동구핫플'],
-  },
-];
+import { PostItem, PostItemProps } from './SearchPostItem';
 
 interface SearchPostListProps {
-  searchKeyword: string;
+	searchKeyword: string;
 }
 
 export const PostList: React.FC<SearchPostListProps> = ({ searchKeyword }) => {
-  // 저장할 상태들
+	const [archivePostData, setArchivePostData] = useState<PostItemProps[]>([]);
 
-  // 로직 구현
-  // firestore에서 게시글 데이터를 불러올 때 SearchBar의 placeholder에 입력된 문자열을 기반으로 filter된 게시글 데이터를 불러오도록 수정
+	const firestoreReader = useFirestoreRead('posts');
 
-  // 컴포넌트
-  return (
-    <Container>
-      {samplePosts.map((post, index) => (
-        <PostItem
-          key={index}
-          isMultiplePhotos={post.imageUrl.length > 1}
-          imageUrl={post.imageUrl[0]}
-        />
-      ))}
-    </Container>
-  );
+	useEffect(() => {
+		const fetchFilteredPosts = async () => {
+			const response = await firestoreReader.ReadField(
+				'content',
+				'==',
+				searchKeyword
+			);
+
+			const postData: PostItemProps[] = response.map((item) => ({
+				postId: item.id,
+				imageUrl: item.data.images,
+			}));
+
+			setArchivePostData(postData);
+		};
+
+		fetchFilteredPosts();
+	}, []);
+
+	// 반환하는 컴포넌트
+	return (
+		<Container>
+			{archivePostData.map((post, index) => (
+				<PostItem
+					key={index}
+					isMultiplePhotos={post.imageUrl.length > 1}
+					imageUrl={post.imageUrl[0]}
+				/>
+			))}
+		</Container>
+	);
 };
 
 const Container = styled.section`
-  margin-top: 30px;
-  margin-left: 1.5px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
+	margin-top: 30px;
+	margin-left: 1.5px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px;
 `;
