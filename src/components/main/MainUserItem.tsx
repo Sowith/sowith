@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+import { useformatRelativeTime } from 'hooks/useformatRelativeTime';
 import { useAlertControl } from 'hooks/useAlertControl';
 import { AlertBox } from 'components/common/AlertBox';
 import { ReactComponent as IconDotMore } from '../../assets/icon/icon-dot-more.svg';
@@ -11,7 +12,7 @@ import { ReactComponent as IconLike } from '../../assets/icon/icon-like-heart.sv
 interface MainUserItemProps {
   item: any;
   openModal?: () => void;
-  setIsCommentModal?: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsCommentModal?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const MainUserItem: React.FC<MainUserItemProps> = ({ item, openModal, setIsCommentModal }) => {
@@ -24,10 +25,11 @@ export const MainUserItem: React.FC<MainUserItemProps> = ({ item, openModal, set
   const isLiked = item.likedUsers?.includes(loginUid);
 
   const { openAlert, AlertComponent } = useAlertControl(100);
+  const { convertToAgoFormat } = useformatRelativeTime();
 
   const handleModal = () => {
-    setIsCommentModal && setIsCommentModal(false)
-    openModal && openModal()
+    const time = new Date();
+    setIsCommentModal && setIsCommentModal("false," + String(time.getTime()));
   }
 
   const handleAlert = () => {
@@ -59,7 +61,7 @@ export const MainUserItem: React.FC<MainUserItemProps> = ({ item, openModal, set
         <div className="user-info">
           <span className="user-id">
             {item.data.userId}
-            {!!item.images && <span className="creat-post">{item.createdAt + " 일전"}</span>}
+            {!item.images && <span className="creat-post">{convertToAgoFormat(item.createdAt.seconds)}</span>}
           </span>
           <span className="description">{!!item.images ? item.location : item.content}</span>
           {!item.images &&
