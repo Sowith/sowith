@@ -34,21 +34,41 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
   }, [currentIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setStartX(e.touches[0].clientX);
+    const windowInnerWidth = window.innerWidth
+    windowInnerWidth < 1024 && setStartX(e.touches[0].clientX);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (startX === null) return;
     const currentX = e.touches[0].clientX;
-    const subtract = Math.abs(startX - currentX)
-    const difference = subtract >= 100 ? 100 : subtract
-
-    if (imageSliderRef.current && startX < currentX) {
-      imageSliderRef.current.style.transform = `translateX(${currentIndex * -100 + (100% - difference)}%)`;
-    } else if (imageSliderRef.current && startX > currentX) {
-      imageSliderRef.current.style.transform = `translateX(${currentIndex * -100 - (100% - difference)}%)`;
+    const subtract = Math.abs(startX - currentX);
+    // const difference = subtract >= 100 ? 100 : subtract;
+  
+    const imageSliderRefCurrent = imageSliderRef.current;
+    if (imageSliderRefCurrent) {
+      const pixelsToMove = subtract; 
+      const transformPercentage = (pixelsToMove / imageSliderRefCurrent.clientWidth) * 100; 
+  
+      if (startX < currentX) {
+        imageSliderRefCurrent.style.transform = `translateX(${currentIndex * -100 + transformPercentage}%)`;
+      } else if (startX > currentX) {
+        imageSliderRefCurrent.style.transform = `translateX(${currentIndex * -100 - transformPercentage}%)`;
+      }
     }
-  };
+  };  
+
+  // const handleTouchMove = (e: React.TouchEvent) => {
+  //   if (startX === null) return;
+  //   const currentX = e.touches[0].clientX;
+  //   const subtract = Math.abs(startX - currentX)
+  //   const difference = subtract >= 100 ? 100 : subtract
+
+  //   if (imageSliderRef.current && startX < currentX) {
+  //     imageSliderRef.current.style.transform = `translateX(${currentIndex * -100 + (100% - difference)}%)`;
+  //   } else if (imageSliderRef.current && startX > currentX) {
+  //     imageSliderRef.current.style.transform = `translateX(${currentIndex * -100 - (100% - difference)}%)`;
+  //   }
+  // };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (startX === null) return;
@@ -107,8 +127,10 @@ const WrapperStyle = styled.div<{isMainPostView : boolean, selectedLength: numbe
     position: absolute;
     width: 50%;
     height: 100%;
+    @media (max-width: 1023px) {
+      display: none;
+    }
   }
-
   .previous-btn {
     left: 0;
   }
