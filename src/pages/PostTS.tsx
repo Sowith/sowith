@@ -25,22 +25,6 @@ const imageData: ImageData[] = [
   { src: "https://picsum.photos/200/203" }
 ];
 
-interface PostInfo {
-  phrase: string,
-  location: string,
-  folder: string,
-  hashtag: string[],
-  usertag: string[],
-}
-
-const PostInfoData: PostInfo = {
-  phrase: "",
-  location: "",
-  folder: "",
-  hashtag: [],
-  usertag: [],
-}
-
 interface FilterDataItem {
   src: string;
   filter: string;
@@ -60,13 +44,11 @@ export const PostTS: React.FC = () => {
   }, [selectedPicture]);  
   
   const [step, setStep] = useState<number>(0);
-  const [postInfo, setPostInfo] = useState<PostInfo>(PostInfoData);
 
   return (
     <AppContainer>
       <ViewContainer>
-        <Header content={'다음'} step={step} setStep={setStep} selectedPicture={selectedPicture.length} locationSet={!!postInfo.location}/>
-
+        <Header content={'다음'} step={step} setStep={setStep} selectedPicture={selectedPicture.length} />
         <MainWrap>
           {[
             <PostSelectPicturePage
@@ -80,8 +62,6 @@ export const PostTS: React.FC = () => {
             />,
             <PostInputInfoPage
               filterStorage={filterStorage}
-              postInfo={postInfo}
-              setPostInfo={setPostInfo}
             />
           ][step]}
         </MainWrap>
@@ -116,15 +96,15 @@ const ViewContainer = styled.div`
   max-width: 768px; */
   width: 100%;
   height: 100%;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
+  padding: 40px 20px 0;
+  /* border-left: 20px solid transparent;
+  border-right: 20px solid transparent; */
   box-sizing: border-box;
 `;
 
 const MainWrap = styled.div`
   width: calc(100% + 5px);
-  height: 90%;
-  /* height: calc(100% - 54px - 50px); */
+  height: calc(100% - 57px);
   overflow-y: scroll;
   overflow-x: hidden;
   padding-right: 8px;
