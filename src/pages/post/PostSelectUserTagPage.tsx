@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+
+import { useRecoilState } from "recoil";
+import postFormState from "recoil/postFormState";
 
 import { SearchBar } from "../../components/post/PostSearchBar";
 import { UserItem } from "../../components/post/PostUserItem";
@@ -12,16 +15,7 @@ import profile_3 from "../../assets/testImg/profile_3.jpg";
 import profile_4 from "../../assets/testImg/profile_4.jpg";
 import profile_5 from "../../assets/testImg/profile_5.jpg";
 
-interface PostInfo {
-  phrase: string,
-  location: string,
-  folder: string,
-  hashtag: string[],
-  usertag: string[],
-}
-
 interface SelectFolderProps {
-  setPostInfo: React.Dispatch<React.SetStateAction<PostInfo>>
   closeModal: () => void; 
 }
 
@@ -46,8 +40,8 @@ const tagData: TagData[] = [
     profile: profile_2
   },
   {
-    userId: 'kang_hoon',
-    userName: '한승훈',
+    userId: 'dong_hoon',
+    userName: '한동훈',
     isFollow: true,
     profile: profile_3
   },
@@ -64,41 +58,49 @@ const tagData: TagData[] = [
     profile: profile_5
   },
 ];
-export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ setPostInfo, closeModal }) => {
+export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ closeModal }) => {
 
-  // const [searchKeyword, setSearchKeyword] = useState("");
-  const [searchKeyword, setSearchKeyword] = useState<string | string[]>("");
-  const [checkedBox, setCheckedBox] = useState<number[]>([]);
+  const [postForm, setPostForm] = useRecoilState(postFormState)  
+  const [selectTag, setSelectTag] = useState<any>(postForm.usertag);
+  const [searchKeyword, setSearchKeyword] = useState<any>();
   const [tagItem, setTagItem] = useState<TagData[]>(tagData);
-  const [selectTag, setSelectTag] = useState<string[]>([]);
+
 
   const handleCloseModal = () => {
     closeModal();
-    setPostInfo(Prev => {
-      const updatedPostInfo = { ...Prev };
-      updatedPostInfo.usertag = selectTag;
-      return updatedPostInfo;
-    });
+    setTimeout(() => {
+      setPostForm(Prev => {
+        const updatedPostInfo = { ...Prev };
+        updatedPostInfo.usertag = selectTag;
+        return updatedPostInfo;
+      });
+    }, 600)
     }
     
-    const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
-      const targetElement = event.currentTarget.dataset.id;
-      if (targetElement) {
-        const newTags = [...selectTag];
-        if (!newTags.includes(targetElement)) {
-          newTags.push(targetElement);
-          setSelectTag(newTags);
-        }
-      }
-    };
+    // const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
+    //   const targetElement = event.currentTarget.dataset.id;
+    //   if (targetElement) {
+    //     const newTags = [...selectTag];
+    //     if (!newTags.includes(targetElement)) {
+    //       newTags.push(targetElement);
+    //       setSelectTag(newTags);
+    //     }
+    //   }
+    // };
+
+    useEffect(() => {
+      const selectedItems = tagItem.filter(item => selectTag.includes(item.userId));
+      const unselectedItems = tagItem.filter(item => !selectTag.includes(item.userId));
+      selectedItems.sort((a, b) => selectTag.indexOf(a) - selectTag.indexOf(b));
+      const sortedTagItems = [...selectedItems, ...unselectedItems];
+      setTagItem(sortedTagItems);
+
+    }, [tagItem])
 
 
-  // useEffect(() => {
-  //   const priorityElements = tagItem.filter((_, item) => checkedBox.includes(item));
-  //   const remainingElements = tagItem.filter((_, item) => !checkedBox.includes(item));
-  //   const result = [...priorityElements, ...remainingElements];
-  //   setTagItem(result);
-  // }, [checkedBox]);
+
+
+
 
   return (
     <>
@@ -125,15 +127,17 @@ export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ setPostInfo
           {tagItem.map((item, index) => (
             <ul>
               <UserItem
-                handleFunc={handleTag}
+                // handleFunc={handleTag}
                 key={index}
                 profile={item.profile}
                 userId={item.userId}
                 userName={item.userName}
                 isFollow={item.isFollow}
                 index={index}
-                checkedBox={checkedBox}
-                setCheckedBox={setCheckedBox}
+                // checkedBox={checkedBox}
+                // setCheckedBox={setCheckedBox}
+                selectTag={selectTag}
+                setSelectTag={setSelectTag}
               />
             </ul>
           )
@@ -157,7 +161,7 @@ const Container = styled.div`
   width: 90%;
   height: calc(100% - 170px);
   padding: 16px 13px 0;
-  margin-right: -5px;
+  /* margin-right: -5px; */
   overflow-y: scroll;
 
   &::-webkit-scrollbar-corner {
