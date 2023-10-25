@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import postFormState from "recoil/postFormState";
 
 import { useAlertControl } from "hooks/useAlertControl";
 import { AlertBox } from "components/common/AlertBox";
@@ -13,17 +15,19 @@ interface HeaderProps {
   step: number;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   selectedPicture: number;
-  locationSet: boolean;
+  // locationSet: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = (props) => {
 
   const { openAlert, AlertComponent } = useAlertControl();
 
+  const postForm = useRecoilValue(postFormState);
+
   const navigate = useNavigate();
 
   const handleGoForward = () => {
-    if (props.step === 2 && !props.locationSet) {
+    if (props.step === 2 && !postForm.location) {
       openAlert();
     }
     if (props.step === 0 && props.selectedPicture === 0) {
@@ -44,7 +48,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
   return (
     <>
       <AlertComponent>
-        {props.step === 2 && !props.locationSet ?
+        {props.step === 2 && !postForm.location ?
           <AlertBox alertMsg={"위치 지정은 필수입니다."} choice={["확인"]} /> :
           <AlertBox alertMsg={"사진 선택은 필수입니다."} choice={["확인"]} />}
       </AlertComponent>

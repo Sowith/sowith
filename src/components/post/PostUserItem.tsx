@@ -11,24 +11,21 @@ interface UserItemProps {
   userName: string;
   isFollow?: boolean;
   index: number;
-  checkedBox: number[];
-  setCheckedBox: React.Dispatch<React.SetStateAction<number[]>>;
-  handleFunc: (event: React.MouseEvent<HTMLLIElement>) => void;
+  selectTag: any;
+  setSelectTag: React.Dispatch<React.SetStateAction<any>>;
 }
 
-export const UserItem: React.FC<UserItemProps> = ({profile, userId, userName, isFollow, index, checkedBox, setCheckedBox, handleFunc}) => {
+export const UserItem: React.FC<UserItemProps> = ({profile, userId, userName, isFollow, index, selectTag, setSelectTag}) => {
 
   const handleCheckBox = (e) => {
-    handleFunc(e)
-    setCheckedBox && setCheckedBox(prevData => {
-      if (prevData.includes(index)) {
-        return prevData.filter(item => item !== index);
+    setSelectTag && setSelectTag(prevData => {
+      if (prevData.includes(userId)) {
+        return prevData.filter(item => item !== userId);
       } else {
-        return [...prevData, index];
+        return [...prevData, userId];
       }
     });
   };
-
 
   return (
     <>
@@ -47,7 +44,7 @@ export const UserItem: React.FC<UserItemProps> = ({profile, userId, userName, is
         </div>
       </div>
       <CheckBoxPosition>
-        <CircleCheckBox id={index} checkedBox={checkedBox} setCheckedBox={setCheckedBox}/>
+        <CircleCheckBox id={userId} checkedBox={selectTag} setCheckedBox={setSelectTag}/>
       </CheckBoxPosition>
     </Container>
     </>

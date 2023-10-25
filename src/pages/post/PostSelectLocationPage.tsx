@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { styled } from "styled-components";
+
+import { useRecoilState } from "recoil";
+import postFormState from "recoil/postFormState";
 
 import { SearchBar } from "../../components/post/PostSearchBar";
 import { Button } from "../../components/common/Button"
@@ -7,17 +10,8 @@ import { Button } from "../../components/common/Button"
 import IconLocation from "../../assets/icon/icon-location.svg";
 import dotIcon from "../../assets/icon/icon-dot.svg";
 
-interface PostInfo {
-  phrase: string,
-  location: string,
-  folder: string,
-  hashtag: string[],
-  usertag: string[],
-}
-
 interface SelectLocationProps {
-  setPostInfo: React.Dispatch<React.SetStateAction<PostInfo>>
-  closeModal: () => void; 
+  closeModal: () => void;
 }
 
 interface LocationData {
@@ -54,36 +48,30 @@ const locationData: LocationData[] = [
   },
 ];
 
-export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ setPostInfo, closeModal }) => {
+export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeModal }) => {
 
   // const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [searchKeyword, setSearchKeyword] = useState<string | string[]>("");
+  const [postForm, setPostForm] = useRecoilState(postFormState)
+  const [searchKeyword, setSearchKeyword] = useState<any>(postForm.location);
   const [locationItems, setLocationItems] = useState<LocationData[]>(locationData);
+
 
   const handlePostInfo = (locationName) => {
     setSearchKeyword(locationName)
   }
 
-  // const handleCloseModal = () => {
-  //   closeModal();
-  //   setPostInfo(Prev => {
-  //     const updatedPostInfo = { ...Prev };
-  //     updatedPostInfo.location = searchKeyword;
-  //     return updatedPostInfo;
-  //   });
-  // }
-
-
   const handleCloseModal = () => {
     closeModal();
-    setPostInfo((Prev) => {
-      const updatedPostInfo = { ...Prev };
-      if (!Array.isArray(searchKeyword)) {
-        updatedPostInfo.location = searchKeyword;
-      }
-      return updatedPostInfo;
-    });
-  }  
+    setTimeout(() => {
+      setPostForm((Prev) => {
+        const updatedPostInfo = { ...Prev };
+        if (!Array.isArray(searchKeyword)) {
+          updatedPostInfo.location = searchKeyword;
+        }
+        return updatedPostInfo;
+      });
+    }, 400)
+  }
 
   return (
     <>
@@ -119,7 +107,9 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ setPostI
         fontSize={'12px'}
         margin={'16px 0 16px'}
         fontFamily={'var(--font--Bold)'}
-        onClick={handleCloseModal}
+        onClick={() => {
+          handleCloseModal()
+        }}
       />
     </>
   );
@@ -129,7 +119,7 @@ const Container = styled.ul`
   width: 90%;
   padding: 16px 13px 0;
   height: calc(100% - 170px);
-  margin-right: -5px;
+  /* margin-right: -5px; */
   overflow-y: scroll;
 
   &::-webkit-scrollbar-corner {
