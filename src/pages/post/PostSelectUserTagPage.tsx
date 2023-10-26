@@ -91,30 +91,12 @@ export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ closeModal 
     useEffect(() => {
       const selectedItems = tagItem.filter(item => selectTag.includes(item.userId));
       const unselectedItems = tagItem.filter(item => !selectTag.includes(item.userId));
-      selectedItems.sort((a, b) => selectTag.indexOf(a) - selectTag.indexOf(b));
       const sortedTagItems = [...selectedItems, ...unselectedItems];
       setTagItem(sortedTagItems);
-
-    }, [tagItem])
-
-
-
-
-
+    }, [selectTag])
 
   return (
     <>
-        {/* <SearchBar
-        id={'UserTagSearch'}
-        icon={IconUserTag}
-        tagname={'humantag'}
-        placeholder={'유저 검색...'}
-        selectTag={selectId}
-        setSelectTag={setSelectId}
-        searchKeyword={searchKeyword}
-        setSearchKeyword={setSearchKeyword}
-        /> */}
-
         <SearchBar
           id={'UserTagSearch'}
           icon={IconUserTag}
