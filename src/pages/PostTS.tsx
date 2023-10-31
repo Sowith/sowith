@@ -1,64 +1,49 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import { useRecoilState } from "recoil";
+import postFormState from "recoil/postFormState";
+
 import { Header } from "../components/post/PostHeader";
 import { PostSelectPicturePage } from "./post/PostSelectPicturePage";
 import { PostInputInfoPage } from "./post/PostInputInfoPage";
 import { PostFilterPage } from "./post/PostFilterPage";
 
-interface ImageData {
-  src: string;
-}
-
-const imageData: ImageData[] = [
-  { src: "https://picsum.photos/200/191" },
-  { src: "https://picsum.photos/200/192" },
-  { src: "https://picsum.photos/200/193" },
-  { src: "https://picsum.photos/200/194" },
-  { src: "https://picsum.photos/200/195" },
-  { src: "https://picsum.photos/200/196" },
-  { src: "https://picsum.photos/200/197" },
-  { src: "https://picsum.photos/200/198" },
-  { src: "https://picsum.photos/200/199" },
-  { src: "https://picsum.photos/200/201" },
-  { src: "https://picsum.photos/200/202" },
-  { src: "https://picsum.photos/200/203" }
-];
-
-interface FilterDataItem {
-  src: string;
-  filter: string;
-}
+// interface FilterDataItem {
+//   src: string;
+//   filter: string;
+// }
 
 export const PostTS: React.FC = () => {
 
-  const [selectedPicture, setSelectedPicture] = useState<string[]>([]);
-  const [filterStorage, setFilterStorage] = useState<FilterDataItem[]>([]);
-  
-  useEffect(() => {
-    const newData = selectedPicture.map((item) => ({
-      src: item,
-      filter: ""
-    }));
-    setFilterStorage(newData);
-  }, [selectedPicture]);  
-  
+  const [postForm, setPostForm] = useRecoilState(postFormState)
+  const [filterStorage, setFilterStorage] = useState<any>(postForm.picture);
+  const [selectedPicture, setSelectedPicture] = useState<string>("");
   const [step, setStep] = useState<number>(0);
+
+  useEffect(() => {
+    setPostForm((Prev) => {
+      const data = { ...Prev };
+        data.picture = filterStorage;
+      return data;
+    });
+  }, [filterStorage])
 
   return (
     <AppContainer>
       <ViewContainer>
-        <Header content={'다음'} step={step} setStep={setStep} selectedPicture={selectedPicture.length} />
+        <Header content={'다음'} step={step} setStep={setStep} filterStorageLength={filterStorage.length} />
         <MainWrap>
           {[
-            <PostSelectPicturePage
-              imageData={imageData}
-              setSelectedPicture={setSelectedPicture}
-            />,
+            // <PostSelectPicturePage
+            //   imageData={imageData}
+            //   setSelectedPicture={setSelectedPicture}
+            // />,
             <PostFilterPage
               filterStorage={filterStorage}
               setFilterStorage={setFilterStorage}
               selectedPicture={selectedPicture}
+              setSelectedPicture={setSelectedPicture}
             />,
             <PostInputInfoPage
               filterStorage={filterStorage}

@@ -2,10 +2,10 @@ import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-interface Photo {
-  src: string;
-  filter: string;
-}
+// interface FilterDataItem {
+//   src: string;
+//   filter: string;
+// }
 
 interface SelectedFilterProps {
   filterStorage: any;
@@ -104,7 +104,9 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
             {filterStorage.map((photo, index) => (
               <ImageStyle
                 key={index}
-                src={photo}
+                // src={photo}
+                // src={photo.src ? URL.createObjectURL(photo.src) : photo}
+                src={photo.src}
                 alt={`사진 ${index + 1}`}
                 filter={photo.filter}
               />
@@ -120,7 +122,7 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
 
 const WrapperStyle = styled.div<{isMainPostView : boolean, selectedLength: number}>`
   position: relative;
-  height: 70%;
+  min-height: 70%;
   
   .previous-btn,
   .next-btn {
@@ -174,7 +176,7 @@ const ImageSliderWrapper = styled.div<{isMainPostView : boolean}>`
   width: 100%;
   border-radius: ${(props) => props.isMainPostView ? "0px" : "5px"};
   /* width: 90%; */
-  height: 100%;
+  height: inherit;
 `;
 
 const ImageSlider = styled.div<{ currentIndex: number }>`

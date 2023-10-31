@@ -76,7 +76,7 @@ const PictureCountStyle = styled.div`
   left: 6px;
   width: 45px;
   height: 25px;
-  padding: 1px;
+  padding: 2px;
   box-sizing: border-box;
   text-align: center;
   background: rgba(0, 0, 0, 0.6);
