@@ -13,6 +13,7 @@ const { persistAtom } = recoilPersist(
 const postFormState = atom({
   key: 'data',
   default: {
+    picture: [] as any,
     phrase: "",
     location: "",
     folder: [] as string[],
