@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useFirestoreRead } from 'hooks/useFirestoreRead';
 import styled from 'styled-components';
 
 import {
@@ -49,11 +50,24 @@ export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 	const [searchKeyword, setSearchKeyword] = useState('');
 	const navigate = useNavigate();
 
+	const firestoreReader = useFirestoreRead('users');
+
 	useEffect(() => {
+		const fetchUserSearchHistory = async () => {
+			const response = await firestoreReader.ReadField(
+				'uid',
+				'==',
+				'QyMtIaMqjzv2kjlQlbHf'
+			);
+
+			console.log(response);
+		};
+
+		fetchUserSearchHistory();
 		if (searchHistoryData.length === 0) {
 			setUserSearchHistory(false);
 		}
-	}, [searchHistoryData]);
+	}, []);
 
 	const handleDeleteHistoryItem = (index: number) => {
 		const updatedData = [...searchHistoryData];
