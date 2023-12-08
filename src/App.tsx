@@ -13,7 +13,6 @@ import { SearchByCategory } from './pages/search/SearchByCategoryPage';
 import { SearchTrendingFolder } from 'pages/search/SearchTrendingFolderPage';
 import { ProfilePage } from './pages/profile/ProfilePage';
 import { ProfileUpdatePage } from 'pages/profile/ProfileUpdatePage';
-import { ProfileGroupDetailPage } from './pages/profile/ProfileGroupDetailPage';
 import { PostTS } from 'pages/PostTS';
 import { SignUpCompletedPage } from 'pages/SignUpCompletedPage';
 import { MainPostViewPage } from './pages/main/MainPostViewPage';
@@ -44,10 +43,6 @@ export function App(): JSX.Element {
 					<Route path='/searchhistory' element={<SearchHistory />} />
 					<Route path='/searchbycategory' element={<SearchByCategory />} />
 					<Route path='/profileUpdatePage' element={<ProfileUpdatePage />} />
-					<Route
-						path='/profiledetailPage/:currentStep'
-						element={<ProfileGroupDetailPage />}
-					/>
 					<Route path='/com' element={<SignUpCompletedPage />} />
 					<Route path='/mainpostview' element={<MainPostViewPage />} />
 					<Route path='/createdata' element={<CreateData />} />
