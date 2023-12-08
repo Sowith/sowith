@@ -3,7 +3,6 @@ import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { SearchBar } from '../../components/search/SearchBar';
 import { SearchTrendingFolderList } from 'components/search/SearchTrendingFolderList';
-import { SearchTrendingGroupList } from 'components/search/SearchTrendingGroupList';
 import { SearchTrendingTagList } from 'components/search/SearchTrendingTagList';
 
 import arrowNext from '../../assets/icon/icon-arrow-next.svg';
@@ -30,15 +29,6 @@ export const SearchMain: React.FC = () => {
 					</SectionTitle>
 					<SearchTrendingFolderList />
 				</TrendingFolder>
-				<TrendingGroup>
-					<SectionTitle index={2}>
-						<h2>인기 그룹</h2>
-						<Link to='/searchmain/trendinggroup'>
-							<img src={arrowNext} alt='인기 그룹 더보기' />
-						</Link>
-					</SectionTitle>
-					<SearchTrendingGroupList />
-				</TrendingGroup>
 			</Container>
 		</>
 	);
