@@ -80,8 +80,3 @@ const TrendingFolder = styled.section`
 	width: 100%;
 	margin-bottom: 45px;
 `;
-
-const TrendingGroup = styled.section`
-	width: 100%;
-	margin: 0 auto;
-`;
