@@ -1,6 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+import { useImageUpload } from "hooks/useImageUpload";
+import { useFirestoreCreate } from "hooks/useFirestoreCreate";
+import { useRecoilValue } from "recoil";
+import postFormState from "recoil/postFormState";
+
 import { useAlertControl } from "hooks/useAlertControl";
 import { AlertBox } from "components/common/AlertBox";
 import { Button } from "../common/Button";
@@ -12,25 +17,70 @@ interface HeaderProps {
   content: string;
   step: number;
   setStep: React.Dispatch<React.SetStateAction<number>>;
-  selectedPicture: number;
-  locationSet: boolean;
+  filterStorageLength: number;
+  // locationSet: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = (props) => {
 
   const { openAlert, AlertComponent } = useAlertControl();
 
+  const postForm = useRecoilValue(postFormState);
+
   const navigate = useNavigate();
 
+  const { imagesUpload } = useImageUpload()
+  const { CreateDocument } = useFirestoreCreate('posts');
+
+  const handleUpload = async () => {
+    const uploadPromises = postForm.picture.map((item) => {
+      return imagesUpload("post", item.src, item.filter);
+    });
+
+    try {
+      // 모든 이미지 업로드를 기다림
+      const downloadURLs = await Promise.all(uploadPromises);
+
+      CreateDocument({
+        comments: [],
+        content: postForm.phrase,
+        images: downloadURLs,
+        likedUsers: [],
+        location: postForm.location,
+        hashtags: postForm.hashtag,
+        tagUsers: postForm.usertag,
+      });
+
+    } catch (error) {
+      console.error("이미지 업로드 중 오류 발생:", error);
+      // 오류 처리
+    }
+  };
+
+
+
+  // CreateDocument({
+  //   images: uploadPromises
+  // });
+
+  // const uploadPromises = await Promise.all(
+  //   postForm.picture.map((item) => {
+  //     return imagesUpload("post", item.src, item.filter);
+  //   })
+  // );
+
+
+
   const handleGoForward = () => {
-    if (props.step === 2 && !props.locationSet) {
+    if (props.step === 1 && !postForm.location) {
       openAlert();
-    }
-    if (props.step === 0 && props.selectedPicture === 0) {
+    } else if (props.step === 1 && postForm.location) {
+      handleUpload();
+      navigate(-1);
+    } else if (props.step === 0 && props.filterStorageLength === 0) {
       openAlert();
-    }
-    else {
-      props.setStep(Prev => Prev === 0 || Prev === 1 ? Prev + 1 : Prev)
+    } else {
+      props.setStep(Prev => Prev === 0 ? Prev + 1 : Prev)
     }
   }
 
@@ -38,13 +88,13 @@ export const Header: React.FC<HeaderProps> = (props) => {
     if (props.step === 0) {
       navigate(-1)
     }
-    props.setStep(Prev => Prev === 1 || Prev === 2 ? Prev - 1 : Prev)
+    props.setStep(Prev => Prev === 1 ? Prev - 1 : Prev)
   }
 
   return (
     <>
       <AlertComponent>
-        {props.step === 2 && !props.locationSet ?
+        {props.step === 2 && !postForm.location ?
           <AlertBox alertMsg={"위치 지정은 필수입니다."} choice={["확인"]} /> :
           <AlertBox alertMsg={"사진 선택은 필수입니다."} choice={["확인"]} />}
       </AlertComponent>

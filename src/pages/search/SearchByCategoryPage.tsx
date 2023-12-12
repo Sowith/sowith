@@ -1,7 +1,6 @@
 import { useState, FC } from 'react';
 import { styled } from 'styled-components';
 import { SearchBar } from '../../components/search/SearchBar';
-import { SearchHistory } from 'components/search/SearchHistory';
 import { StepBar } from '../../components/common/StepBar';
 import { PostList } from '../../components/search/SearchPostList';
 import { SearchFolderList } from 'components/search/SearchFolderList';
@@ -59,26 +58,22 @@ export const SearchByCategory: FC = () => {
   return (
     <>
       <h1 className="a11y-hidden">검색 페이지/게시글</h1>
-      <SearchBar onInputClick={handleInputClick} />
-      {isInputClicked ? (
-        <SearchHistory onCancel={handleCancel} />
-      ) : (
-        <Container>
-          <CategorySwitcher>
-            {CATEGORIES.map((category) => (
-              <button
-                key={category.id}
-                className={category.className}
-                onClick={() => handleButtonClick(category.id)}
-              >
-                {category.name}
-              </button>
-            ))}
-          </CategorySwitcher>
-          <StepBar currentStep={currentStep} howManyTabs={5} />
-          {renderComponentByCategory()}
-        </Container>
-      )}
+      <Container>
+        <SearchBar />
+        <CategorySwitcher>
+          {CATEGORIES.map((category) => (
+            <button
+              key={category.id}
+              className={category.className}
+              onClick={() => handleButtonClick(category.id)}
+            >
+              {category.name}
+            </button>
+          ))}
+        </CategorySwitcher>
+        <StepBar currentStep={currentStep} howManyTabs={5} />
+        {renderComponentByCategory()}
+      </Container>
     </>
   );
 };
@@ -87,15 +82,13 @@ const Container = styled.div`
   width: 100%;
   background-color: #ffffff;
   margin: 0 auto;
-
-  margin-top: 60px;
 `;
 
 const CategorySwitcher = styled.div`
   display: flex;
   justify-content: space-evenly;
   width: 88%;
-  margin: 0 auto 5px auto;
+  margin: 60px auto 5px auto;
 
   button {
     display: block;

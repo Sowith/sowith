@@ -1,15 +1,58 @@
 import styled from 'styled-components';
-
+import { useNavigate, useLocation } from 'react-router-dom';
 import { BackButton } from 'components/common/BackButton';
-import search from '../../assets/icon/icon-search.svg';
 
-interface SearchBarProps {
-  onInputClick: () => void;
+import search from '../../assets/icon/icon-search.svg';
+import { useEffect, useState } from 'react';
+
+export interface SearchBarProps {
+  onSearchButtonClick?: () => void;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({ onInputClick }) => {
+export const SearchBar: React.FC<SearchBarProps> = ({
+  onSearchButtonClick,
+}) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const [placeholderText, SetPlaceHolderText] = useState('');
+
+  useEffect(() => {
+    if (currentPath === '/profiledetailPage/1') {
+      SetPlaceHolderText('내가 참여한 그룹은?');
+    } else if (currentPath === '/profiledetailPage/2') {
+      SetPlaceHolderText('내가 팔로우한 그룹은?');
+    } else if (currentPath === '/chatting') {
+      SetPlaceHolderText('내가 마지막으로 이야기를 나눈 친구는?');
+    } else if (currentPath === '/searchhistory') {
+      SetPlaceHolderText('나는 뭘 검색했을까?👀');
+    } else SetPlaceHolderText('요즘 소윗에서 가장 핫한 검색어는?');
+  }, [currentPath]);
+
+  const handleInputClick = (): void => {
+    if (
+      currentPath !== '/searchhistory' &&
+      !currentPath.startsWith('/profiledetailPage/') &&
+      !currentPath.startsWith('/chatting')
+    ) {
+      navigate('/searchhistory');
+    }
+  };
+
+  const handleInputFocus = (): void => {
+    if (
+      currentPath !== '/searchhistory' &&
+      !currentPath.startsWith('/profiledetailPage/') &&
+      !currentPath.startsWith('/chatting')
+    ) {
+      navigate('/searchhistory');
+    }
+  };
+
   const handleSearchButtonClick = (): void => {
-    console.log('SearchButton has been clicked!');
+    if (onSearchButtonClick) {
+      onSearchButtonClick();
+    }
   };
 
   return (
@@ -18,8 +61,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onInputClick }) => {
       <SearchArea>
         <SearchInput
           type="text"
-          placeholder="검색어를 입력하세요"
-          onClick={onInputClick}
+          placeholder={placeholderText}
+          onClick={handleInputClick}
+          onFocus={handleInputFocus}
         />
         <SearchButton onClick={handleSearchButtonClick} />
       </SearchArea>

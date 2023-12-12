@@ -1,39 +1,32 @@
-import { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import { useRef } from 'react';
+import styled from 'styled-components';
 
-export const useModalControl = ( modalHeightDiff: number, autoHeight: boolean = false ) => {
-  const [modalState, setModalState] = useState<boolean>(false);
-  const [initialMount, setInitialMount] = useState<boolean>(true);
-  const [animationState, setAnimationState] = useState<boolean>(true);
-  const [accessAllow, setAccessAllow] = useState<boolean>(true);
+export const useModalControl = (modalHeightDiff: number, autoHeight: boolean = false) => {
+
+  const blurRef = useRef<HTMLDivElement | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
   const openModal = () => {
-    setModalState(true);
-    setInitialMount(false);
+    const modal = modalRef.current;
+    const blur = blurRef.current;
+    if (modal && blur) {
+      modal.style.transform = 'translateY(0%)';
+      modal.style.transition = 'transform .4s ease';
+      blur.style.background = `rgba(0, 0, 0, .3)`;
+      blur.style.pointerEvents = `auto`;
+    }
   };
 
   const closeModal = () => {
-    setModalState(false);
-  };
-
-  useEffect(() => {
-    if (modalState) {
-      setAccessAllow(false);
-      const timer = setTimeout(() => {
-        setAnimationState(false);
-        setAccessAllow(true);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else if (!modalState) {
-      setAccessAllow(false);
-      const timer = setTimeout(() => {
-        setAnimationState(true);
-        setInitialMount(true);
-        setAccessAllow(true);
-      }, 1000);
-      return () => clearTimeout(timer);
+    const modal = modalRef.current;
+    const blur = blurRef.current;
+    if (modal && blur) {
+      modal.style.transform = 'translateY(100%)';
+      modal.style.transition = 'transform .4s ease-in';
+      blur.style.background = `rgba(0, 0, 0, 0)`
+      blur.style.pointerEvents = `none`;
     }
-  }, [modalState]);
+  };
 
   interface ModalComponentProps {
     children: React.ReactNode;
@@ -41,101 +34,29 @@ export const useModalControl = ( modalHeightDiff: number, autoHeight: boolean = 
 
   const ModalComponent: React.FC<ModalComponentProps> = ({ children }) => {
     return (
-      <WrapStyle accessAllow={accessAllow}>
-        {!initialMount && (
-          <>
-            <ModalBlur onClick={closeModal} modalState={modalState} animationState={animationState}></ModalBlur>
-            <ModalContainer modalState={modalState} animationState={animationState} modalHeightDiff={modalHeightDiff} autoHeight={autoHeight}>
-              <ModalContent>
-                <div className='bar'></div>
-                {children}
-              </ModalContent>
-            </ModalContainer>
-          </>
-        )}
-      </WrapStyle>
+      <>
+      <ModalBlur ref={blurRef} onClick={closeModal}></ModalBlur>
+      <ModalContainer ref={modalRef} modalHeightDiff={modalHeightDiff} autoHeight={autoHeight}>
+        <ModalContent>
+          <div className='bar'></div>
+          {children}
+        </ModalContent>
+      </ModalContainer>
+      </>
     );
   };
 
   return { openModal, closeModal, ModalComponent };
 };
 
-const fadePause = keyframes`
-  from {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
-  to {
-    background-color: rgba(0, 0, 0, 0.3); 
-  }
-`;
-
-const fadeIn = keyframes`
-  from {
-    background-color: rgba(0, 0, 0, 0);
-  }
-  to {
-    background-color: rgba(0, 0, 0, 0.3); 
-  }
-`;
-
-const fadeOut = keyframes`
-  from {
-    background-color: rgba(0, 0, 0, 0.3); 
-  }
-  to {
-    background-color: rgba(0, 0, 0, 0); 
-  }
-`;
-
-const movePause = keyframes`
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(0);
-  }
-`;
-
-const moveTop = keyframes`
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-`;
-
-const moveDown = keyframes`
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(100%);
-  }
-`;
-
-const WrapStyle = styled.div<{ accessAllow: boolean }>`
-  pointer-events: ${({ accessAllow }) => accessAllow ? 'auto' : 'none'};
-`;
-
-const ModalContainer = styled.div<{ modalState: boolean, animationState: boolean, modalHeightDiff: number, autoHeight: boolean }>`
+const ModalContainer = styled.div<{ modalHeightDiff: number, autoHeight: boolean }>`
   position: fixed;
   left: 0;
   top: ${(props) => !!props.autoHeight ? "" : props.modalHeightDiff}px;
   bottom: ${(props) => !!props.autoHeight && 0};
   height: ${(props) => !!props.autoHeight ? "" : `calc(100% - ${props.modalHeightDiff}px)`};
-  /* top: 54px; */
-  /* height: calc(100% - 54px);  */
+  transform: translateY(100%);
   width: 100%;
-  animation: ${({ modalState, animationState }) =>
-    modalState ?
-    animationState ?
-    moveTop :
-    movePause :
-    moveDown
-  } 0.6s 
-    ${({ modalState }) => modalState ? 'ease' : 'ease-in'} 
-    forwards;
   z-index: 9999;
   `;
 
@@ -159,7 +80,8 @@ const ModalContent = styled.div`
   }
 `;
 
-const ModalBlur = styled.div<{ modalState: boolean, animationState: boolean }>`
+const ModalBlur = styled.div`
+  pointer-events: none;
   position: fixed;
   cursor: pointer;
   width: 100vw;
@@ -167,14 +89,5 @@ const ModalBlur = styled.div<{ modalState: boolean, animationState: boolean }>`
   /* margin-left: -20px; */
   top: -54px;
   left: 0;
-  animation: ${({ modalState, animationState }) => 
-    modalState ? 
-    animationState ? 
-    fadeIn : 
-    fadePause : 
-    fadeOut} 
-    0.6s 
-    ease 
-    forwards;
-  z-index: 9999;
+  transition: .6s;
 `;

@@ -4,9 +4,9 @@ import styled, { css } from "styled-components";
 import IconCheck from "../../assets/icon/icon-check.svg";
 
 interface CheckBoxProps {
-  id: number;
-  checkedBox: number[];
-  setCheckedBox?: React.Dispatch<React.SetStateAction<number[]>>;
+  id: any;
+  checkedBox: any;
+  setCheckedBox?: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export const CountCheckBox: React.FC<CheckBoxProps> = ({ id, checkedBox, setCheckedBox }) => {

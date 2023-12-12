@@ -37,6 +37,18 @@ export const Test = () => {
       <Link to="/mainpostview">
           <TestButton>(메인 게시글 뷰)</TestButton>
       </Link>
+      <Link to="/createdata">
+          <TestButton>데이터 생성</TestButton>
+      </Link>
+      <Link to="/readdata">
+          <TestButton>데이터 조회</TestButton>
+      </Link>
+      <Link to="/updatedata">
+          <TestButton>데이터 수정</TestButton>
+      </Link>
+      <Link to="/deletedata">
+          <TestButton>데이터 삭제</TestButton>
+      </Link>
     </div>
   );
 };

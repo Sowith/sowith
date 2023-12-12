@@ -1,21 +1,15 @@
 import { useState } from "react";
 import { styled } from "styled-components";
 
+import { useRecoilState } from "recoil";
+import postFormState from "recoil/postFormState";
+
 import { SearchBar } from "../../components/post/PostSearchBar";
 import { Button } from "../../components/common/Button"
 
 import IconHashTag from "../../assets/icon/icon-hash-tag.svg";
 
-interface PostInfo {
-  phrase: string,
-  location: string,
-  folder: string,
-  hashtag: string[],
-  usertag: string[],
-}
-
 interface SelectHashTagProps {
-  setPostInfo: React.Dispatch<React.SetStateAction<PostInfo>>
   closeModal: () => void; 
 }
 
@@ -24,43 +18,42 @@ interface TagData {
   postCount?: number;
 }
 
-export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ setPostInfo, closeModal }) => {
+const tagData: TagData[] = [
+  {
+    tagName: '당근노맛'
+  },
+  {
+    tagName: '당근',
+    postCount: 4300
+  },
+  {
+    tagName: '당근케이크',
+    postCount: 2100
+  },
+  {
+    tagName: '당근마켓',
+    postCount: 1000
+  },
+  {
+    tagName: '당근라페',
+    postCount: 938
+  },
+  {
+    tagName: '당근김밥',
+    postCount: 500
+  },
+  {
+    tagName: '당근요리',
+    postCount: 416
+  },
+];
 
-  const tagData: TagData[] = [
-    {
-      tagName: '당근노맛'
-    },
-    {
-      tagName: '당근',
-      postCount: 4300
-    },
-    {
-      tagName: '당근케이크',
-      postCount: 2100
-    },
-    {
-      tagName: '당근마켓',
-      postCount: 1000
-    },
-    {
-      tagName: '당근라페',
-      postCount: 938
-    },
-    {
-      tagName: '당근김밥',
-      postCount: 500
-    },
-    {
-      tagName: '당근요리',
-      postCount: 416
-    },
-  ];
+export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ closeModal }) => {
 
-  // const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [searchKeyword, setSearchKeyword] = useState<string | string[]>("");
-  const [selectTag, setSelectTag] = useState<string[]>([]);
+  const [postForm, setPostForm] = useRecoilState(postFormState)  
+  const [selectTag, setSelectTag] = useState<string[]>(postForm.hashtag);
+  const [searchKeyword, setSearchKeyword] = useState<any>();
   const [archiveTagData, setArchiveTagData] = useState<TagData[]>(tagData);
-  
 
   const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.currentTarget.dataset.id;
@@ -75,11 +68,13 @@ export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ setPostInf
 
   const handleCloseModal = () => {
     closeModal();
-    setPostInfo(Prev => {
-      const updatedPostInfo = { ...Prev };
-      updatedPostInfo.hashtag = selectTag;
-      return updatedPostInfo;
-    });
+    setTimeout(() => {
+      setPostForm(Prev => {
+        const updatedPostInfo = { ...Prev };
+        updatedPostInfo.hashtag = selectTag;
+        return updatedPostInfo;
+      });
+    }, 400)
   }
 
   return (
@@ -124,7 +119,7 @@ const TagList = styled.ul`
   height: calc(100% - 170px);
   padding: 16px 13px 0;
   padding-right: 13px;
-  margin-right: -5px;
+  /* margin-right: -5px; */
   overflow-y: scroll;
 
   &::-webkit-scrollbar-corner {

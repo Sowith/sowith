@@ -5,15 +5,22 @@ const sessionStorage = typeof window !== 'undefined' ? window.sessionStorage : u
 
 const { persistAtom } = recoilPersist(
   {
-    key: 'token',
+    key: 'postForm',
     storage: sessionStorage,
   }
 );
 
-const loginToken = atom({
-  key: 'uid',
-  default: {},
+const postFormState = atom({
+  key: 'data',
+  default: {
+    picture: [] as any,
+    phrase: "",
+    location: "",
+    folder: [] as string[],
+    hashtag: [] as string[],
+    usertag: [] as string[],
+  },
   effects_UNSTABLE: [persistAtom],
 });
 
-export default loginToken;
+export default postFormState;
