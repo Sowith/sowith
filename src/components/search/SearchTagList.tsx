@@ -1,32 +1,54 @@
+import { useState, useEffect } from 'react';
+import { useFirestoreRead } from 'hooks/useFirestoreRead';
+
 import { styled } from 'styled-components';
+
 import { TagItem, TagItemProps } from './SearchTagItem';
 
-interface TagData extends TagItemProps {
-  id: number;
+interface SearchTagListProps {
+	searchKeyword: string;
 }
 
-const sampleTags: TagData[] = [
-  { id: 1, tagTitle: '#태그1', tagNumber: 100 },
-  { id: 2, tagTitle: '#태그2', tagNumber: 200 },
-  { id: 3, tagTitle: '#태그3', tagNumber: 150 },
-  { id: 4, tagTitle: '#태그4', tagNumber: 250 },
-];
+export const TagList: React.FC<SearchTagListProps> = ({ searchKeyword }) => {
+	const [archiveTagData, setArchiveTagData] = useState<TagItemProps[]>([]);
 
-export const TagList = () => {
-  return (
-    <TagItemContainer>
-      {sampleTags.map((tag) => (
-        <TagItem
-          key={tag.id}
-          tagTitle={tag.tagTitle}
-          tagNumber={tag.tagNumber}
-        />
-      ))}
-    </TagItemContainer>
-  );
+	const firestoreReader = useFirestoreRead('tags');
+
+	useEffect(() => {
+		const fetchFilteredTags = async () => {
+			const response = await firestoreReader.ReadField(
+				'tagName',
+				'==',
+				searchKeyword
+			);
+
+			const tagData: TagItemProps[] = response.map((item) => {
+				const taggedFolderCount = item.data.taggedFolderIDs.length;
+				const taggedGroupCount = item.data.taggedGroupIDs.length;
+				const taggedPostCount = item.data.taggedPostIDs.length;
+
+				return {
+					tagTitle: item.data.tagName,
+					tagNumber: taggedFolderCount + taggedGroupCount + taggedPostCount,
+				};
+			});
+
+			setArchiveTagData(tagData);
+		};
+
+		fetchFilteredTags();
+	}, []);
+
+	return (
+		<TagItemContainer>
+			{archiveTagData.map((tag) => (
+				<TagItem tagTitle={tag.tagTitle} tagNumber={tag.tagNumber} />
+			))}
+		</TagItemContainer>
+	);
 };
 
 const TagItemContainer = styled.div`
-  width: 100%;
-  margin: 30px auto;
+	width: 100%;
+	margin: 30px auto;
 `;
