@@ -15,11 +15,15 @@ interface FolderListProps {
   archiveFolderData: FolderDataItem[];
   setArchiveFolderData: React.Dispatch<React.SetStateAction<FolderDataItem[]>>;
   isAddButton?: boolean;
-  setSearchKeyword?: React.Dispatch<React.SetStateAction<string[] | string>>;
+  searchKeyword?: any;
+  setSearchKeyword?: React.Dispatch<React.SetStateAction<any>>;
   setModalIndex?: React.Dispatch<React.SetStateAction<number>>;
+  closeModal?: () => void;
 }
 
-export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setArchiveFolderData, isAddButton = false, setSearchKeyword, setModalIndex }) => {
+export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setArchiveFolderData, isAddButton = false, searchKeyword, setSearchKeyword, setModalIndex, closeModal }) => {
+
+  const [seletedFolder, setSeletedFolder] = useState<any>();
 
   const handleBookMark = (id: number) => {
     const updatedImageData = archiveFolderData.map((item) => {
@@ -34,21 +38,27 @@ export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setAr
   const handleFolder = (foldName) => {
     setSearchKeyword && setSearchKeyword((Prev) => {
       if (Array.isArray(Prev)) {
-        if (!Prev.includes(foldName)) { // Prev에 foldName이 없을 때만 추가
+        if (!Prev.includes(foldName)) {
           return [...Prev, foldName];
+        } else if (Prev.includes(foldName)) {
+          return Prev.filter(item => item !== foldName);
         }
-      } else if (Prev !== foldName) { // Prev가 문자열이면서 foldName과 다를 때만 배열로 변환
-        return [Prev, foldName];
+      } else if (Prev !== foldName) {
+        return [foldName];
       }
-      return Prev; // 중복된 값이 이미 있을 경우 변경 없음
+      return Prev;
     });
   }
-  
+
 
   return (
     <Container>
       {archiveFolderData?.map((items, index) => (
-        <FolderContainer key={index} onClick={() => handleFolder(items.name)}>
+        <FolderContainer
+          key={index}
+          onClick={() => handleFolder(items.name)}
+          searchKeyword={searchKeyword?.includes(items.name)}
+        >
           <FolderCover>
             {items.src.map((item, itemIndex) => (
               <img key={itemIndex} src={item} alt="" />
@@ -60,18 +70,23 @@ export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setAr
           </FolderContent>
           <BookmarkBtnPosition onClick={() => handleBookMark(items.folderId)}>
             <IconBookmark
-              fill={items.bookmark ? '#FFDF44' : '#C4C4C4'}
-              stroke={items.bookmark ? '#FFDF44' : 'rgba(0, 0, 0, 0)'}
+              fill={items.bookmark ? 'rgba(0, 0, 0, 0)' : '#FFDF44'}
+              stroke={items.bookmark ? '#C4C4C4' : '#FFDF44'}
             />
           </BookmarkBtnPosition>
         </FolderContainer>
       ))}
 
       {isAddButton &&
-        <AddFolderBtn onClick={()=> setModalIndex && setModalIndex(5)}>
+        <AddFolderBtn onClick={() => {
+          closeModal && closeModal();
+          setTimeout(() => {
+            setModalIndex && setModalIndex(5)
+          }, 400)
+        }}>
         </AddFolderBtn>
       }
-        
+
     </Container>
   );
 };
@@ -79,7 +94,7 @@ export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setAr
 const Container = styled.div`
   max-height: calc(100% - 170px);
   padding: 16px 13px 20px;
-  margin-right: -5px;
+  /* margin-right: -5px; */
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
@@ -109,15 +124,12 @@ const Container = styled.div`
   } */
 `;
 
-const FolderContainer = styled.a`
+const FolderContainer = styled.a<{ searchKeyword: any }>`
   position: relative;
   height: auto;
   padding: 10px;
   border-radius: 20px;
-
-  &:hover {
-    outline: 2px solid var(--main-color);
-  }
+  outline: ${(props) => props.searchKeyword ? "2px solid var(--main-color)" : ""};
 `;
 
 const FolderCover = styled.div`

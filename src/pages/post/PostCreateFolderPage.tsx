@@ -5,7 +5,7 @@ import { Button } from "../../components/common/Button";
 import { SquareCheckBox } from "components/common/CheckBox";
 import { SearchBar } from "../../components/post/PostSearchBar";
 
-import { ReactComponent as IconCreateFolder } from "../../assets/icon/icon-create-folder.svg";
+import iconCreateFolder from "../../assets/icon/icon-create-folder.svg";
 import IconHashTag from "../../assets/icon/icon-hash-tag.svg";
 
 interface TagData {
@@ -64,9 +64,8 @@ export const PostCreateFolderPage: React.FC<CreateFolderProps> = ({ closeModal }
   return (
     <>
         <FolderWrap>
-          <IconCreateFolderPosition>
-            <IconCreateFolder width={80} height={80} />
-          </IconCreateFolderPosition>
+          <IconCreateFolder>
+          </IconCreateFolder>
 
           <FolderInfo>
             <InputStyle>
@@ -126,6 +125,7 @@ const FolderWrap = styled.div`
   margin: 50px 0 30px;
   width: 90%;
   display: flex;
+  gap: 30px;
   justify-content: space-between;
 `;
 
@@ -133,13 +133,11 @@ const FolderInfo = styled.div`
   width: 100%;
 `;
 
-const IconCreateFolderPosition = styled.div`
-  padding: 33px 30px 33px 40px;
-  box-sizing: border-box;
-  border-radius: 40px;
-  background-color: rgba(231, 231, 231, 1);
-  /* margin-top: 65px; */
-  margin-right: 30px;
+const IconCreateFolder = styled.div`
+  width: 40%;
+  aspect-ratio: 1 / 1;
+  background: url(${iconCreateFolder}) no-repeat center;
+  background-size: contain;
 `;
 
 const InputStyle = styled.div`
@@ -174,7 +172,7 @@ const TagList = styled.ul`
   height: calc(100% - 170px);
   padding: 16px 13px 0;
   padding-right: 13px;
-  margin-right: -5px;
+  /* margin-right: -5px; */
   overflow-y: scroll;
 
   &::-webkit-scrollbar-corner {

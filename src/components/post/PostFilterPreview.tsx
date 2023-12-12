@@ -13,40 +13,35 @@ const filterData = [
   // { filterName: "그림자", filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5))" },
 ];
 
-interface Photo {
-  src: string;
-  filter: string;
-}
-
-interface FilterDataItem {
-  src: string;
-  filter: string;
-}
+// interface FilterDataItem {
+//   src: string;
+//   filter: string;
+// }
 
 interface FilterPreviewProps {
+  filterStorage: any;
+  setFilterStorage: React.Dispatch<React.SetStateAction<any>>;
   selectedPicture?: string;
-  filterStorage: Photo[];
-  setFilterStorage: React.Dispatch<React.SetStateAction<FilterDataItem[]>>;
 }
 
-export const FilterPreview: React.FC<FilterPreviewProps> = ({ selectedPicture, filterStorage, setFilterStorage }) => {
+export const FilterPreview: React.FC<FilterPreviewProps> = ({ filterStorage, setFilterStorage, selectedPicture }) => {
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [startXPoint, setStartXPoint] = useState<number>(0);
-  const [isScroll, setIsScroll] = useState<boolean>(false);
+  const [isScroll, setIsScroll] = useState<boolean>(true);
   const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setFilterStorage((Prev) => {
-      const updatedPrev = [...Prev];
+    setFilterStorage((prev) => {
+      const updatedPrev = [...prev];
       const targetIndex = updatedPrev.findIndex((item) => item.src === selectedPicture);
       if (targetIndex !== -1) {
-        updatedPrev[targetIndex].filter = filterData[currentIndex].filter;
+        updatedPrev[targetIndex] = { ...updatedPrev[targetIndex], filter: filterData[currentIndex].filter };
       }
       return updatedPrev;
     });
   }, [currentIndex]);
-
+  
   useEffect(() => {
     const targetIndex = filterStorage.findIndex((item) => item.src === selectedPicture)
     if (targetIndex !== -1) {
