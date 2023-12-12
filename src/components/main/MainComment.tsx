@@ -14,6 +14,8 @@ export const MainComment: React.FC<MainCommentProps> = ({ currentComments }) => 
   const [inptValue, setInptValue] = useState('');
   const [prevInpt, setPrevInpt] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [commentSectionHeight, setCommentSectionHeight] = useState<number>(0);
+  
 
   const handleTextareaChange = (event) => {
     setInptValue(event.target.value);
@@ -21,19 +23,21 @@ export const MainComment: React.FC<MainCommentProps> = ({ currentComments }) => 
   };
 
   useEffect(() => {
-    if (textareaRef.current) {
+    const textareaRefCurrent = textareaRef.current
+    if (textareaRefCurrent) {
       if (inptValue.length < prevInpt.length) {
-        textareaRef.current.style.height = "auto";
+        textareaRefCurrent.style.height = "auto";
       }
-      const newHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = `${newHeight}px`;
-      textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
+      const newHeight = textareaRefCurrent.scrollHeight;
+      setCommentSectionHeight(newHeight)
+      textareaRefCurrent.style.height = `${newHeight}px`;
+      textareaRefCurrent.scrollTop = textareaRefCurrent.scrollHeight;
     }
   }, [inptValue])
 
   return (
     <>
-      <WraperStyle>
+      <WraperStyle commentSectionHeight={commentSectionHeight}>
         <span className="modal-title">댓글</span>
         {currentComments.map((item) => (
           <MainUserItem item={item} />
@@ -59,12 +63,12 @@ export const MainComment: React.FC<MainCommentProps> = ({ currentComments }) => 
   )
 }
 
-const WraperStyle = styled.div`
+const WraperStyle = styled.div<{commentSectionHeight: number}>`
   width: inherit;
   margin-top: 25px;
-  padding-bottom: 70px;
   overflow-y: scroll;
-
+  padding-bottom: ${(props) => (props.commentSectionHeight - 40) + 72}px;
+  
   &::-webkit-scrollbar {
     width: 0;
   }
