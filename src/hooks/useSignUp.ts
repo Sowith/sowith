@@ -47,6 +47,7 @@ export const useSignUpHook = (): SignUpHook => {
 		const myName = signUpData.userName;
 		const myAccountID = signUpData.accountID;
 
+		// 들여쓰기 테스트를 위한 주석 추가
 		try {
 			const userCredential = await createUserWithEmailAndPassword(
 				appAuth,
