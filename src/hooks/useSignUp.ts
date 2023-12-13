@@ -12,7 +12,6 @@ interface UserProfileDocument {
 	bookmarkedFolders: string[];
 	followers: string[];
 	following: string[];
-	groups: string[];
 	posts: string[];
 	profileImageURL: string;
 	searchHistories: {
@@ -74,7 +73,6 @@ export const useSignUpHook = (): SignUpHook => {
 				bookmarkedFolders: [],
 				followers: [],
 				following: [],
-				groups: [],
 				posts: [],
 				profileImageURL: '',
 				searchHistories: [],
