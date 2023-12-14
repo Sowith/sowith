@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { appAuth, appFireStore } from '../firebase/config';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { useFirestoreCreate } from './useFirestoreCreate';
 
 interface UserProfileDocument {
 	uid: string;
@@ -38,6 +38,7 @@ interface SignUpHook {
 export const useSignUpHook = (): SignUpHook => {
 	const [error, setError] = useState<string | null>(null);
 	const [isPending, setIsPending] = useState<boolean>(false);
+	const { CreateDocumentWithCustomID } = useFirestoreCreate('users');
 
 	const signUpHook = async (signUpData: SignUpData) => {
 		setError(null);
@@ -47,7 +48,6 @@ export const useSignUpHook = (): SignUpHook => {
 		const myName = signUpData.userName;
 		const myAccountID = signUpData.accountID;
 
-		// 들여쓰기 테스트를 위한 주석 추가
 		try {
 			const userCredential = await createUserWithEmailAndPassword(
 				appAuth,
@@ -55,15 +55,11 @@ export const useSignUpHook = (): SignUpHook => {
 				myPassword
 			);
 			const user = userCredential.user;
+			console.log(user);
 
 			if (!user) {
 				throw new Error('회원가입에 실패했습니다.');
 			}
-
-			const customUserData = {
-				displayName: myAccountID,
-				userRealName: myName,
-			};
 
 			const customUserDocument: UserProfileDocument = {
 				uid: user.uid,
@@ -79,10 +75,9 @@ export const useSignUpHook = (): SignUpHook => {
 				searchHistories: [],
 			};
 
-			const userProfileDocRef = doc(appFireStore, 'users', user.uid);
-			await setDoc(userProfileDocRef, customUserDocument);
+			CreateDocumentWithCustomID(user.uid, customUserDocument);
 
-			await updateProfile(appAuth.currentUser, customUserData);
+			await updateProfile(appAuth.currentUser, { displayName: myAccountID });
 
 			setError(null);
 			setIsPending(false);
