@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 
+import { useFirestoreRead } from "hooks/useFirestoreRead";
 import { useRecoilState } from "recoil";
 import postFormState from "recoil/postFormState";
 
@@ -24,58 +25,16 @@ interface SelectFolderProps {
   setSearchKeyword?: React.Dispatch<React.SetStateAction<string>>
 }
 
-interface FolderData {
-  folderId: number;
-  name: string;
-  totalpost: number;
-  bookmark: boolean;
-  src: string[];
-}
-
-const folderData: FolderData[] = [
-  {
-    folderId: 1,
-    name: "빠니보틀의 로드맵",
-    totalpost: 10,
-    bookmark: true,
-    src: [
-      "https://picsum.photos/200/191",
-      "https://picsum.photos/200/192",
-      "https://picsum.photos/200/193",
-      "https://picsum.photos/200/194",
-    ],
-  },
-  {
-    folderId: 2,
-    name: "용리단길 맛집 모음",
-    totalpost: 78,
-    bookmark: true,
-    src: [
-      "https://picsum.photos/200/195",
-      "https://picsum.photos/200/196",
-      "https://picsum.photos/200/197",
-      "https://picsum.photos/200/198",
-    ],
-  },
-  {
-    folderId: 3,
-    name: "내 2023년 여름",
-    totalpost: 10,
-    bookmark: false,
-    src: [
-      "https://picsum.photos/200/199",
-      "https://picsum.photos/200/200",
-      "https://picsum.photos/200/201",
-      "https://picsum.photos/200/202",
-    ],
-  },
-];
-
 export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ closeModal, setModalIndex }) => {
-  
+
+  const { ReadField } = useFirestoreRead('folders');
+
+  const token = sessionStorage.getItem('token');
+  const uid = token !== null ? JSON.parse(token).uid : null;
+
   const [postForm, setPostForm] = useRecoilState(postFormState)
   const [searchKeyword, setSearchKeyword] = useState<any>(postForm.folder);
-  const [archiveFolderData, setArchiveFolderData] = useState<FolderData[]>(folderData);
+  const [archiveFolderData, setArchiveFolderData] = useState<any>([]);
 
 
   const handleCloseModal = () => {
@@ -83,11 +42,27 @@ export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ closeModal, 
     setTimeout(() => {
       setPostForm((Prev) => {
         const updatedPostInfo = { ...Prev };
-          updatedPostInfo.folder = searchKeyword || [];
+        updatedPostInfo.folder = searchKeyword || [];
         return updatedPostInfo;
       });
     }, 400)
-  }  
+  }
+
+  const fetchData = async () => {
+    return await ReadField('userId', '==', uid).then(response => setArchiveFolderData(response))
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const openCreateFolderModal = () => {
+    closeModal && closeModal();
+    setTimeout(() => {
+      setModalIndex && setModalIndex(5)
+    }, 400)
+  }
+
 
   return (
     <>
@@ -99,12 +74,12 @@ export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ closeModal, 
         setSearchKeyword={setSearchKeyword}
       />
 
-      <FolderList archiveFolderData={archiveFolderData} setArchiveFolderData={setArchiveFolderData} isAddButton={true} searchKeyword={searchKeyword} setSearchKeyword={setSearchKeyword} setModalIndex={setModalIndex && setModalIndex} closeModal={closeModal}/>
+      <FolderList fetchData={fetchData} archiveFolderData={archiveFolderData} setArchiveFolderData={setArchiveFolderData} isAddButton={true} searchKeyword={searchKeyword} setSearchKeyword={setSearchKeyword} setModalIndex={setModalIndex && setModalIndex} closeModal={closeModal} />
 
       {archiveFolderData.length === 0 &&
         <NonFolderContainer>
           <p className="alert-msg">폴더가 존재하지 않습니다</p>
-          <Button type="button" text={"폴더생성하기"} width={'112px'} height={'41px'} fontSize={'12px'} fontFamily={'var(--font--Bold)'} borderRadius={'30px'} />
+          <Button type="button" text={"폴더생성하기"} width={'112px'} height={'41px'} fontSize={'12px'} fontFamily={'var(--font--Bold)'} borderRadius={'30px'} onClick={openCreateFolderModal} />
         </NonFolderContainer>
       }
 
