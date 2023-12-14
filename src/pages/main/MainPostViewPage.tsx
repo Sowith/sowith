@@ -9,26 +9,32 @@ import { MainComment } from 'components/main/MainComment';
 
 export const MainPostViewPage: React.FC = () => {
 
-  const [isCommentModal, setIsCommentModal] = useState<boolean>(true);
-  const { openModal, closeModal, ModalComponent } = useModalControl(200, isCommentModal ? false : true);
+  const [isCommentModal, setIsCommentModal] = useState<string>("");
+  const isCommentModalBoolean = isCommentModal.split(",")[0];
+  const { openModal, closeModal, ModalComponent } = useModalControl(200, isCommentModalBoolean === "true" ? false : true);
   const [currentComments, setCurrentComments] = useState<any>([]);
   const [PostItemData, setPostItemData] = useState<any>([]);
-  const [comments, setComments] = useState<any>([]);
 
-  const { ReadAllField } = useFirestoreRead('posts');
+  const { ReadAllDocument } = useFirestoreRead('posts');
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await ReadAllField()
+      const response = await ReadAllDocument()
       response && setPostItemData(response)
     }
     fetchData()
   }, [])
-  
+
+  useEffect(() => {
+    if (isCommentModalBoolean === "true" || isCommentModalBoolean === "false") {
+      openModal();
+    }
+  }, [isCommentModal])
+
   useEffect(() => {
     if (currentComments.length > 0) {
-      setIsCommentModal(true);
-      openModal();
+      const time = new Date();
+      setIsCommentModal("true," + String(time.getTime()));
     }
   }, [currentComments]);
 
@@ -43,10 +49,8 @@ export const MainPostViewPage: React.FC = () => {
           ))
           }
           <ModalComponent>
-            {isCommentModal ?
-              <MainComment currentComments={currentComments}/> :
-              <MainPostMoreMenu closeModal={closeModal} />
-            }
+            {isCommentModalBoolean === "true" && <MainComment currentComments={currentComments}/>}
+            {isCommentModalBoolean === "false" && <MainPostMoreMenu closeModal={closeModal} />}
           </ModalComponent>
         </>
       </ViewContainer>
