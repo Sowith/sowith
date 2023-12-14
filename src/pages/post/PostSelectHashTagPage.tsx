@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 
 import { useRecoilState } from "recoil";
@@ -8,52 +8,20 @@ import { SearchBar } from "../../components/post/PostSearchBar";
 import { Button } from "../../components/common/Button"
 
 import IconHashTag from "../../assets/icon/icon-hash-tag.svg";
+import { useFirestoreRead } from "hooks/useFirestoreRead";
 
 interface SelectHashTagProps {
-  closeModal: () => void; 
+  closeModal: () => void;
 }
-
-interface TagData {
-  tagName: string;
-  postCount?: number;
-}
-
-const tagData: TagData[] = [
-  {
-    tagName: '당근노맛'
-  },
-  {
-    tagName: '당근',
-    postCount: 4300
-  },
-  {
-    tagName: '당근케이크',
-    postCount: 2100
-  },
-  {
-    tagName: '당근마켓',
-    postCount: 1000
-  },
-  {
-    tagName: '당근라페',
-    postCount: 938
-  },
-  {
-    tagName: '당근김밥',
-    postCount: 500
-  },
-  {
-    tagName: '당근요리',
-    postCount: 416
-  },
-];
 
 export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ closeModal }) => {
 
-  const [postForm, setPostForm] = useRecoilState(postFormState)  
+  const { ReadField } = useFirestoreRead('tags')
+
+  const [postForm, setPostForm] = useRecoilState(postFormState)
   const [selectTag, setSelectTag] = useState<string[]>(postForm.hashtag);
-  const [searchKeyword, setSearchKeyword] = useState<any>();
-  const [archiveTagData, setArchiveTagData] = useState<TagData[]>(tagData);
+  const [searchKeyword, setSearchKeyword] = useState<any>('');
+  const [archiveTagData, setArchiveTagData] = useState<any>([]);
 
   const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.currentTarget.dataset.id;
@@ -77,6 +45,13 @@ export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ closeModal
     }, 400)
   }
 
+  useEffect(() => {
+    const fetchData = async () => {
+      return await ReadField('tagNameKeywords', 'array-contains', searchKeyword);
+    }
+    fetchData().then(response => setArchiveTagData(response));
+  }, [searchKeyword])
+
   return (
     <>
       <SearchBar
@@ -93,9 +68,9 @@ export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ closeModal
       <TagList>
         <>
           {archiveTagData.map((item, index) =>
-            <Tag onClick={handleTag} key={index} data-id={item.tagName}>
-              <p>{item.tagName}</p>
-              <span>{item.postCount}</span>
+            <Tag onClick={handleTag} key={index} data-id={item.id}>
+              <p>{item.id}</p>
+              <span>{item.data.taggedPostIDs}</span>
             </Tag>
           )}
         </>
