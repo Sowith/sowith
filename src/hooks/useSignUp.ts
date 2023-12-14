@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { appAuth, appFireStore } from '../firebase/config';
+import { appAuth } from '../firebase/config';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useFirestoreCreate } from './useFirestoreCreate';
 
