@@ -21,6 +21,7 @@ import { CreateData } from 'components/crud/CreateData';
 import { ReadData } from 'components/crud/ReadData';
 import { UpdateData } from 'components/crud/UpdateData';
 import { DeleteData } from 'components/crud/DeleteData';
+import { ChatRoomPage } from 'pages/chat/ChatRoomPage';
 
 export function App(): JSX.Element {
 	return (
@@ -49,6 +50,7 @@ export function App(): JSX.Element {
 					<Route path='/readdata' element={<ReadData />} />
 					<Route path='/updatedata' element={<UpdateData />} />
 					<Route path='/deletedata' element={<DeleteData />} />
+					<Route path='/chatRoom' element={<ChatRoomPage />} />
 				</Routes>
 			</BrowserRouter>
 		</RecoilRoot>
