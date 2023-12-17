@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFirestoreRead } from 'hooks/useFirestoreRead';
+import { useDeleteSearchHistory } from 'hooks/useDeleteSearchHistory';
 import styled from 'styled-components';
 
 import {
@@ -13,66 +14,49 @@ import soWithLogo from '../../assets/icon/icon-sowith-heart.svg';
 
 interface SearchHistoryProps {}
 
-const sampleData: HistoryItemProps[] = [
-	{
-		historyCategory: 'text',
-		title: '상도동 맛집',
-	},
-	{
-		historyCategory: 'tag',
-		title: '상도동',
-		relatedPosts: 3000,
-	},
-	{
-		historyCategory: 'user',
-		title: '꼬마유령 캐스퍼',
-		followers: 130000,
-	},
-	{
-		historyCategory: 'folder',
-		title: '게임 폴더',
-		likes: 1800000,
-		folderTag: '게임',
-	},
-	{
-		historyCategory: 'group',
-		title: '여행 그룹',
-		likes: 5600,
-		groupTag: '여행',
-	},
-];
-
-export default sampleData;
-
 export const SearchHistory: React.FC<SearchHistoryProps> = () => {
-	const [searchHistoryData, setSearchHistoryData] = useState(sampleData);
+	const [searchHistoryData, setSearchHistoryData] = useState([]);
 	const [userSearchHistory, setUserSearchHistory] = useState<boolean>(true);
 	const [searchKeyword, setSearchKeyword] = useState('');
 	const navigate = useNavigate();
 
 	const firestoreReader = useFirestoreRead('users');
+	const { deleteSearchHistory } = useDeleteSearchHistory();
+	const token = sessionStorage.getItem('token');
+	const uid = token !== null ? JSON.parse(token).uid : null;
+	// uid는 가져왔고, 이제 이 uid와 일치하는 사용자의 검색 기록을 가져오면 된다.
 
 	useEffect(() => {
 		const fetchUserSearchHistory = async () => {
-			const response = await firestoreReader.ReadField(
-				'uid',
-				'==',
-				'QyMtIaMqjzv2kjlQlbHf'
-			);
-
+			const response = await firestoreReader.ReadDocument(uid);
 			console.log(response);
+
+			if (response && response.data.searchHistories.length > 0) {
+				setSearchHistoryData(response.data.searchHistories || []);
+				setUserSearchHistory(true);
+			} else {
+				setUserSearchHistory(false);
+			}
+
+			console.log(response?.data.searchHistories);
+			console.log(searchHistoryData, userSearchHistory);
 		};
 
 		fetchUserSearchHistory();
-		if (searchHistoryData.length === 0) {
+	}, [searchHistoryData.length]);
+
+	const handleDeleteHistoryItem = async (index: number) => {
+		if (index >= 0 && index < searchHistoryData.length) {
+			await deleteSearchHistory(uid, index);
+		}
+		const updatedResponse = await firestoreReader.ReadDocument(uid);
+
+		if (updatedResponse) {
+			setSearchHistoryData(updatedResponse.data.searchHistories || []);
+			setUserSearchHistory(true);
+		} else {
 			setUserSearchHistory(false);
 		}
-	}, []);
-
-	const handleDeleteHistoryItem = (index: number) => {
-		const updatedData = [...searchHistoryData];
-		updatedData.splice(index, 1);
-		setSearchHistoryData(updatedData);
 	};
 
 	const handleSearchKeywordChange = (value: string) => {

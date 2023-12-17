@@ -39,9 +39,7 @@ interface SignUpHook {
 }
 
 export const useSignUpHook = (): SignUpHook => {
-
   const { generateKeywordCombinations } = useCreateKeywords();
-
 	const [error, setError] = useState<string | null>(null);
 	const [isPending, setIsPending] = useState<boolean>(false);
 	const { CreateDocumentWithCustomID } = useFirestoreCreate('users');
@@ -68,7 +66,6 @@ export const useSignUpHook = (): SignUpHook => {
 			}
 
 			const customUserDocument: UserProfileDocument = {
-				// uid: user.uid,
 				accountId: myAccountID,
 				accountName: myName,
         accountIdKeywords: generateKeywordCombinations(myAccountID),
@@ -76,6 +73,12 @@ export const useSignUpHook = (): SignUpHook => {
 				description: '',
 				createdFolders: [],
 				// bookmarkedFolders: [],
+				uid: user.uid,
+				userId: myAccountID,
+				userName: myName,
+				description: '',
+				createdFolders: [],
+				bookmarkedFolders: [],
 				followers: [],
 				following: [],
 				posts: [],

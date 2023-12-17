@@ -21,8 +21,8 @@ type HistoryCategory = 'text' | 'tag' | 'user' | 'folder' | 'group';
 export interface HistoryItemProps {
 	historyCategory: HistoryCategory;
 	title: string;
-	relatedPosts?: number;
-	followers?: number;
+	relatedPost?: number;
+	followerCount?: number;
 	likes?: number;
 	folderTag?: string;
 	groupTag?: string;
@@ -33,8 +33,8 @@ export interface HistoryItemProps {
 export const HistoryItem: React.FC<HistoryItemProps> = ({
 	historyCategory,
 	title,
-	relatedPosts,
-	followers,
+	relatedPost,
+	followerCount,
 	likes,
 	folderTag,
 	groupTag,
@@ -65,7 +65,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
 					{historyCategory === 'text' && <></>}
 
 					{historyCategory === 'tag' && (
-						<span className='description-tag'>게시물 {relatedPosts}+개</span>
+						<span className='description-tag'>게시물 {relatedPost}+개</span>
 					)}
 
 					{historyCategory === 'user' && (
@@ -76,7 +76,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
 							{isFollowing ? (
 								<span className='user-state'>팔로잉</span>
 							) : (
-								<span className='user-state'>팔로워 {followers}명</span>
+								<span className='user-state'>팔로워 {followerCount}명</span>
 							)}
 						</>
 					)}
