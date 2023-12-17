@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { styled } from 'styled-components';
 
+import { useFirestoreUpdate } from "hooks/useFirestoreUpdate";
+
 import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark-post-only.svg';
 
 interface FolderDataItem {
@@ -12,8 +14,9 @@ interface FolderDataItem {
 }
 
 interface FolderListProps {
-  archiveFolderData: FolderDataItem[];
-  setArchiveFolderData: React.Dispatch<React.SetStateAction<FolderDataItem[]>>;
+  fetchData?: () => void;
+  archiveFolderData: any;
+  setArchiveFolderData: React.Dispatch<React.SetStateAction<any>>;
   isAddButton?: boolean;
   searchKeyword?: any;
   setSearchKeyword?: React.Dispatch<React.SetStateAction<any>>;
@@ -21,19 +24,17 @@ interface FolderListProps {
   closeModal?: () => void;
 }
 
-export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setArchiveFolderData, isAddButton = false, searchKeyword, setSearchKeyword, setModalIndex, closeModal }) => {
+export const FolderList: React.FC<FolderListProps> = ({ fetchData, archiveFolderData, setArchiveFolderData, isAddButton = false, searchKeyword, setSearchKeyword, setModalIndex, closeModal }) => {
 
-  const [seletedFolder, setSeletedFolder] = useState<any>();
+  const { UpdateField } = useFirestoreUpdate('folders')
 
-  const handleBookMark = (id: number) => {
-    const updatedImageData = archiveFolderData.map((item) => {
-      if (item.folderId === id) {
-        return { ...item, bookmark: !item.bookmark };
-      }
-      return item;
-    });
-    setArchiveFolderData(updatedImageData);
-  };
+  const handleBookMark = (id: string, isBookmark: boolean) => {
+    UpdateField(id,
+      {
+        bookmark: !isBookmark
+      });
+    fetchData && fetchData();
+  }
 
   const handleFolder = (foldName) => {
     setSearchKeyword && setSearchKeyword((Prev) => {
@@ -50,28 +51,30 @@ export const FolderList: React.FC<FolderListProps> = ({ archiveFolderData, setAr
     });
   }
 
-
   return (
     <Container>
-      {archiveFolderData?.map((items, index) => (
+      {archiveFolderData.length > 0 && archiveFolderData?.map((item, index) => (
         <FolderContainer
           key={index}
-          onClick={() => handleFolder(items.name)}
-          searchKeyword={searchKeyword?.includes(items.name)}
+          onClick={() => handleFolder(item.data.folderName)}
+          searchKeyword={searchKeyword?.includes(item.data.folderName)}
         >
           <FolderCover>
-            {items.src.map((item, itemIndex) => (
-              <img key={itemIndex} src={item} alt="" />
+            {item.data.folderImages.map((i, index) => (
+              <img key={index} src={i} alt="" />
             ))}
           </FolderCover>
           <FolderContent>
-            <p className="folder-name">{items.name}</p>
-            <span className="folder-totalpost">{`게시물 ${items.totalpost}개`}</span>
+            <p className="folder-name">{item.data.folderName}</p>
+            <span className="folder-totalpost">{`게시물 ${item.data.uidContainers.length}개`}</span>
           </FolderContent>
-          <BookmarkBtnPosition onClick={() => handleBookMark(items.folderId)}>
+          <BookmarkBtnPosition onClick={(event) => {
+            event.stopPropagation();
+            handleBookMark(item.id, item.data.bookmark)
+          }}>
             <IconBookmark
-              fill={items.bookmark ? 'rgba(0, 0, 0, 0)' : '#FFDF44'}
-              stroke={items.bookmark ? '#C4C4C4' : '#FFDF44'}
+              fill={item.data.bookmark ? 'rgba(0, 0, 0, 0)' : '#FFDF44'}
+              stroke={item.data.bookmark ? '#C4C4C4' : '#FFDF44'}
             />
           </BookmarkBtnPosition>
         </FolderContainer>

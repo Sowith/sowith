@@ -15,9 +15,10 @@ interface UserItemProps {
   setSelectTag: React.Dispatch<React.SetStateAction<any>>;
 }
 
-export const UserItem: React.FC<UserItemProps> = ({profile, userId, userName, isFollow, index, selectTag, setSelectTag}) => {
+export const UserItem: React.FC<UserItemProps> = ({ profile, userId, userName, isFollow, index, selectTag, setSelectTag }) => {
 
   const handleCheckBox = (e) => {
+    e.stopPropagation();
     setSelectTag && setSelectTag(prevData => {
       if (prevData.includes(userId)) {
         return prevData.filter(item => item !== userId);
@@ -27,26 +28,40 @@ export const UserItem: React.FC<UserItemProps> = ({profile, userId, userName, is
     });
   };
 
+
+  // const handleCheckBox = (e) => {
+  //   // setSelectTag && setSelectTag(prevData => {
+  //   //   if (prevData.includes(userId)) {
+  //   //     return prevData.filter(item => item !== userId);
+  //   //   } else {
+  //   //     return [...prevData, userId];
+  //   //   }
+  //   // });
+  //   setSelectTag && setSelectTag(
+
+  //   })
+  // };
+
   return (
     <>
-    <Container onClick={handleCheckBox} key={index} data-id={userId}>
-      <img className="icon-user" src={profile} alt="" />
-      <div className="user-info">
-        <span className="user-id">{userId}</span>
-        <div className="user-description">
-          <span className="user-name">{userName}</span>
-          {isFollow && (
-            <>
-              <img src={dotIcon} alt="spacing dot" />
-              <span>팔로잉</span>
-            </>
-          )}
+      <Container onClick={handleCheckBox} key={index} data-id={userId}>
+        <img className="icon-user" src={profile} alt="" />
+        <div className="user-info">
+          <span className="user-id">{userId}</span>
+          <div className="user-description">
+            <span className="user-name">{userName}</span>
+            {isFollow && (
+              <>
+                <img src={dotIcon} alt="spacing dot" />
+                <span>팔로잉</span>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      <CheckBoxPosition>
-        <CircleCheckBox id={userId} checkedBox={selectTag} setCheckedBox={setSelectTag}/>
-      </CheckBoxPosition>
-    </Container>
+        <CheckBoxPosition>
+          <CircleCheckBox id={userId} checkedBox={selectTag} setCheckedBox={setSelectTag} />
+        </CheckBoxPosition>
+      </Container>
     </>
   );
 };

@@ -43,9 +43,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     setInputValue(event.target.value);
   };
 
-  // const handleOnBlur = () => {
-  //   setSearchKeyword && setSearchKeyword(inputValue);
-  // };
+  const handleOnBlur = () => {
+    setSearchKeyword && setSearchKeyword(inputValue);
+  };
 
   const handleDeleteTag = (index: number) => {
     setSelectTag && setSelectTag((prevData) => prevData.filter((item, i) => i !== index));
@@ -61,7 +61,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <WrapStyle ref={wrapRef}>
-    {/* <WrapStyle onBlur={handleInputBlur} ref={wrapRef}> */}
+      {/* <WrapStyle onBlur={handleInputBlur} ref={wrapRef}> */}
       {selectTag?.map((tag, index) =>
         tagname === "hashtag" ? (
           <HashTag key={index} index={index} tag={tag} handleDeleteTag={handleDeleteTag} />
@@ -76,7 +76,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           type="text"
           value={inputValue || value}
           onChange={handleInputChange}
-          // onBlur={handleOnBlur}
+          onBlur={handleOnBlur}
           placeholder={placeholder}
         />
         <IconHashTagPosition>
