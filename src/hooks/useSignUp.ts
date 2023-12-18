@@ -5,18 +5,17 @@ import { useFirestoreCreate } from './useFirestoreCreate';
 import { useCreateKeywords } from './useCreateKeywords';
 
 interface UserProfileDocument {
-	// uid: string;
 	accountId: string;
 	accountName: string;
-  accountIdKeywords: string[];
-  accountNameKeywords: string[];
+	accountIdKeywords: string[];
+	accountNameKeywords: string[];
 	description: string;
 	createdFolders: string[];
-	// bookmarkedFolders: string[];
 	followers: string[];
 	following: string[];
 	posts: string[];
 	profileImageURL: string;
+	bookmarkedFolders: string[];
 	searchHistories: {
 		title: string;
 		relatedPost?: number;
@@ -39,7 +38,7 @@ interface SignUpHook {
 }
 
 export const useSignUpHook = (): SignUpHook => {
-  const { generateKeywordCombinations } = useCreateKeywords();
+	const { generateKeywordCombinations } = useCreateKeywords();
 	const [error, setError] = useState<string | null>(null);
 	const [isPending, setIsPending] = useState<boolean>(false);
 	const { CreateDocumentWithCustomID } = useFirestoreCreate('users');
@@ -68,14 +67,8 @@ export const useSignUpHook = (): SignUpHook => {
 			const customUserDocument: UserProfileDocument = {
 				accountId: myAccountID,
 				accountName: myName,
-        accountIdKeywords: generateKeywordCombinations(myAccountID),
-        accountNameKeywords: generateKeywordCombinations(myName),
-				description: '',
-				createdFolders: [],
-				// bookmarkedFolders: [],
-				uid: user.uid,
-				userId: myAccountID,
-				userName: myName,
+				accountIdKeywords: generateKeywordCombinations(myAccountID),
+				accountNameKeywords: generateKeywordCombinations(myName),
 				description: '',
 				createdFolders: [],
 				bookmarkedFolders: [],
