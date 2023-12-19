@@ -13,11 +13,6 @@ const filterData = [
   // { filterName: "그림자", filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5))" },
 ];
 
-// interface FilterDataItem {
-//   src: string;
-//   filter: string;
-// }
-
 interface FilterPreviewProps {
   filterStorage: any;
   setFilterStorage: React.Dispatch<React.SetStateAction<any>>;
@@ -32,16 +27,18 @@ export const FilterPreview: React.FC<FilterPreviewProps> = ({ filterStorage, set
   const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setFilterStorage((prev) => {
-      const updatedPrev = [...prev];
-      const targetIndex = updatedPrev.findIndex((item) => item.src === selectedPicture);
-      if (targetIndex !== -1) {
-        updatedPrev[targetIndex] = { ...updatedPrev[targetIndex], filter: filterData[currentIndex].filter };
-      }
-      return updatedPrev;
-    });
+    if (currentIndex !== 0) {
+      setFilterStorage((prev) => {
+        const updatedPrev = [...prev];
+        const targetIndex = updatedPrev.findIndex((item) => item.src === selectedPicture);
+        if (targetIndex !== -1) {
+          updatedPrev[targetIndex] = { ...updatedPrev[targetIndex], filter: filterData[currentIndex].filter };
+        }
+        return updatedPrev;
+      });
+    }
   }, [currentIndex]);
-  
+
   useEffect(() => {
     const targetIndex = filterStorage.findIndex((item) => item.src === selectedPicture)
     if (targetIndex !== -1) {

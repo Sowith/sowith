@@ -2,10 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-// interface FilterDataItem {
-//   src: string;
-//   filter: string;
-// }
+import { useSetRecoilState } from "recoil";
+import postFormState from "recoil/postFormState";
 
 interface SelectedFilterProps {
   filterStorage: any;
@@ -13,6 +11,7 @@ interface SelectedFilterProps {
 }
 
 export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, setSelectedPicture }) => {
+  const setPostForm = useSetRecoilState(postFormState)
   const [currentIndex, setCurrentIndex] = useState(0);
   const [startX, setStartX] = useState<number | null>(null);
   const imageSliderRef = useRef<HTMLDivElement | null>(null);
@@ -43,19 +42,19 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
     const currentX = e.touches[0].clientX;
     const subtract = Math.abs(startX - currentX);
     // const difference = subtract >= 100 ? 100 : subtract;
-  
+
     const imageSliderRefCurrent = imageSliderRef.current;
     if (imageSliderRefCurrent) {
-      const pixelsToMove = subtract; 
-      const transformPercentage = (pixelsToMove / imageSliderRefCurrent.clientWidth) * 100; 
-  
+      const pixelsToMove = subtract;
+      const transformPercentage = (pixelsToMove / imageSliderRefCurrent.clientWidth) * 100;
+
       if (startX < currentX) {
         imageSliderRefCurrent.style.transform = `translateX(${currentIndex * -100 + transformPercentage}%)`;
       } else if (startX > currentX) {
         imageSliderRefCurrent.style.transform = `translateX(${currentIndex * -100 - transformPercentage}%)`;
       }
     }
-  };  
+  };
 
   // const handleTouchMove = (e: React.TouchEvent) => {
   //   if (startX === null) return;
@@ -83,7 +82,7 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
   };
 
   return (
-    <WrapperStyle isMainPostView={location.pathname==="/mainpostview"} selectedLength={filterStorage.length}>
+    <WrapperStyle isMainPostView={location.pathname === "/mainpostview"} selectedLength={filterStorage.length}>
       <div
         className="photo-navigator"
         onTouchStart={handleTouchStart}
@@ -99,7 +98,7 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
             ></div>
           ))}
         </div>
-        <ImageSliderWrapper isMainPostView={location.pathname==="/mainpostview"}>
+        <ImageSliderWrapper isMainPostView={location.pathname === "/mainpostview"}>
           <ImageSlider ref={imageSliderRef} currentIndex={currentIndex}>
             {filterStorage.map((photo, index) => (
               <ImageStyle
@@ -107,20 +106,26 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
                 // src={photo}
                 // src={photo.src ? URL.createObjectURL(photo.src) : photo}
                 src={photo.src}
+                onError={() => {
+                  setPostForm((Prev) => ({
+                    ...Prev,
+                    picture: []
+                  }))
+                }}
                 alt={`사진 ${index + 1}`}
                 filter={photo.filter}
               />
             ))}
           </ImageSlider>
         </ImageSliderWrapper>
-          <button className="previous-btn" onClick={goToPrevious}></button>
-          <button className="next-btn" onClick={goToNext}></button>
+        <button className="previous-btn" onClick={goToPrevious}></button>
+        <button className="next-btn" onClick={goToNext}></button>
       </div>
     </WrapperStyle>
   );
 };
 
-const WrapperStyle = styled.div<{isMainPostView : boolean, selectedLength: number}>`
+const WrapperStyle = styled.div<{ isMainPostView: boolean, selectedLength: number }>`
   position: relative;
   min-height: 70%;
   
@@ -171,7 +176,7 @@ const WrapperStyle = styled.div<{isMainPostView : boolean, selectedLength: numbe
   }
 `;
 
-const ImageSliderWrapper = styled.div<{isMainPostView : boolean}>`
+const ImageSliderWrapper = styled.div<{ isMainPostView: boolean }>`
   overflow: hidden;
   width: 100%;
   border-radius: ${(props) => props.isMainPostView ? "0px" : "5px"};
