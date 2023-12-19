@@ -27,7 +27,7 @@ interface InputProps {
 
 export const WritableTextarea: React.FC<InputProps> = (props) => {
 
-  const [inputKeyword, setInputKeyword] = useState<string>("");
+  const [inputKeyword, setInputKeyword] = useState<string>(props.value);
 
   const setPostForm = useSetRecoilState(postFormState)
 
