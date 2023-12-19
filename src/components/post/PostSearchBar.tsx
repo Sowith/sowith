@@ -32,6 +32,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const [inputValue, setInputValue] = useState<any>(value);
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   const handleInputBlur = () => {
     if (wrapRef.current) {
@@ -41,10 +42,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-  };
 
-  const handleOnBlur = () => {
-    setSearchKeyword && setSearchKeyword(inputValue);
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      setSearchKeyword && setSearchKeyword(event.target.value);
+    }, 300);
   };
 
   const handleDeleteTag = (index: number) => {
@@ -76,7 +81,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           type="text"
           value={inputValue || value}
           onChange={handleInputChange}
-          onBlur={handleOnBlur}
+          // onBlur={handleOnBlur}
           placeholder={placeholder}
         />
         <IconHashTagPosition>
