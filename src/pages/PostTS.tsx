@@ -24,7 +24,7 @@ export const PostTS: React.FC = () => {
   useEffect(() => {
     setPostForm((Prev) => {
       const data = { ...Prev };
-        data.picture = filterStorage;
+      data.picture = filterStorage;
       return data;
     });
   }, [filterStorage])
@@ -32,7 +32,7 @@ export const PostTS: React.FC = () => {
   return (
     <AppContainer>
       <ViewContainer>
-        <Header content={'다음'} step={step} setStep={setStep} filterStorageLength={filterStorage.length} />
+        <Header content={'다음'} step={step} setStep={setStep} filterStorageLength={postForm.picture.length} />
         <MainWrap>
           {[
             // <PostSelectPicturePage

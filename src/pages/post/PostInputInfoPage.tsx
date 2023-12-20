@@ -84,7 +84,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
           onClick={() => handleModal(1)}
         />
         <ReadonlyTextarea
-          value={postForm.folder.join(' / ')}
+          value={postForm.folder.map(item => item.data.folderName).join(' / ')}
           type="text"
           id="addFolder"
           label={'폴더 지정'}

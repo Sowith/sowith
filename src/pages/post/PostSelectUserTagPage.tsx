@@ -47,8 +47,8 @@ export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ closeModal 
   }, [])
 
   useEffect(() => {
-    const fetchData = async () => {
-      return await ReadField('accountIdKeywords', 'array-contains', searchKeyword);
+    const fetchData = () => {
+      return ReadField('accountIdKeywords', 'array-contains', searchKeyword);
     }
     !firstMount && fetchData().then(response => setTagItem(response));
   }, [searchKeyword])
