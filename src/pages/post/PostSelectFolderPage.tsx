@@ -33,7 +33,8 @@ export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ closeModal, 
   const uid = token !== null ? JSON.parse(token).uid : null;
 
   const [postForm, setPostForm] = useRecoilState(postFormState)
-  const [searchKeyword, setSearchKeyword] = useState<any>(postForm.folder);
+  const [searchKeyword, setSearchKeyword] = useState<any>('');
+  const [seletedFolder, setSeletedFolder] = useState<any>(postForm.folder);
   const [archiveFolderData, setArchiveFolderData] = useState<any>([]);
 
 
@@ -42,19 +43,11 @@ export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ closeModal, 
     setTimeout(() => {
       setPostForm((Prev) => {
         const updatedPostInfo = { ...Prev };
-        updatedPostInfo.folder = searchKeyword || [];
+        updatedPostInfo.folder = seletedFolder;
         return updatedPostInfo;
       });
     }, 400)
   }
-
-  const fetchData = async () => {
-    return await ReadField('userId', '==', uid).then(response => setArchiveFolderData(response))
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
 
   const openCreateFolderModal = () => {
     closeModal && closeModal();
@@ -63,6 +56,17 @@ export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ closeModal, 
     }, 400)
   }
 
+  const AllFolderData = () => {
+    return ReadField('userId', '==', uid).then(response => setArchiveFolderData(response))
+  }
+
+  useEffect(() => {
+    const fetchData = () => {
+      return ReadField('folderNameKeywords', 'array-contains', searchKeyword);
+    }
+    searchKeyword.length > 0 && fetchData().then(response => setArchiveFolderData(response));
+    searchKeyword.length === 0 && AllFolderData()
+  }, [searchKeyword])
 
   return (
     <>
@@ -74,7 +78,17 @@ export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ closeModal, 
         setSearchKeyword={setSearchKeyword}
       />
 
-      <FolderList fetchData={fetchData} archiveFolderData={archiveFolderData} setArchiveFolderData={setArchiveFolderData} isAddButton={true} searchKeyword={searchKeyword} setSearchKeyword={setSearchKeyword} setModalIndex={setModalIndex && setModalIndex} closeModal={closeModal} />
+      <FolderList
+        AllFolderData={AllFolderData}
+        archiveFolderData={archiveFolderData}
+        setArchiveFolderData={setArchiveFolderData}
+        isAddButton={true}
+        seletedFolder={seletedFolder}
+        setSeletedFolder={setSeletedFolder}
+        searchKeyword={searchKeyword}
+        setSearchKeyword={setSearchKeyword}
+        setModalIndex={setModalIndex && setModalIndex}
+        closeModal={closeModal} />
 
       {archiveFolderData.length === 0 &&
         <NonFolderContainer>
@@ -89,7 +103,7 @@ export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ closeModal, 
         width={'90%'}
         height={'41px'}
         fontSize={'12px'}
-        margin={'auto 0 16px'}
+        margin={'16px 0 16px'}
         fontFamily={'var(--font--Bold)'}
         onClick={handleCloseModal}
       />
