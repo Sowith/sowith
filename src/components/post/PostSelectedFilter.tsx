@@ -7,10 +7,11 @@ import postFormState from "recoil/postFormState";
 
 interface SelectedFilterProps {
   filterStorage: any;
+  setFilterStorage?: React.Dispatch<React.SetStateAction<any>>;
   setSelectedPicture?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, setSelectedPicture }) => {
+export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, setFilterStorage, setSelectedPicture }) => {
   const setPostForm = useSetRecoilState(postFormState)
   const [currentIndex, setCurrentIndex] = useState(0);
   const [startX, setStartX] = useState<number | null>(null);
@@ -81,13 +82,14 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
     setStartX(null);
   };
 
+
   return (
     <WrapperStyle isMainPostView={location.pathname === "/mainpostview"} selectedLength={filterStorage.length}>
       <div
         className="photo-navigator"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+        onTouchStart={(e) => filterStorage.length > 1 && handleTouchStart(e)}
+        onTouchMove={(e) => filterStorage.length > 1 && handleTouchMove(e)}
+        onTouchEnd={(e) => filterStorage.length > 1 && handleTouchEnd(e)}
       >
         <div className="dots">
           {filterStorage.map((_, index) => (
@@ -103,14 +105,13 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
             {filterStorage.map((photo, index) => (
               <ImageStyle
                 key={index}
-                // src={photo}
-                // src={photo.src ? URL.createObjectURL(photo.src) : photo}
-                src={photo.src}
+                src={photo.src || photo}
                 onError={() => {
                   setPostForm((Prev) => ({
                     ...Prev,
                     picture: []
                   }))
+                  setFilterStorage && setFilterStorage([]);
                 }}
                 alt={`사진 ${index + 1}`}
                 filter={photo.filter}
@@ -127,7 +128,7 @@ export const SelectedFilter: React.FC<SelectedFilterProps> = ({ filterStorage, s
 
 const WrapperStyle = styled.div<{ isMainPostView: boolean, selectedLength: number }>`
   position: relative;
-  min-height: 70%;
+  min-height: 60%;
   
   .previous-btn,
   .next-btn {
@@ -180,7 +181,6 @@ const ImageSliderWrapper = styled.div<{ isMainPostView: boolean }>`
   overflow: hidden;
   width: 100%;
   border-radius: ${(props) => props.isMainPostView ? "0px" : "5px"};
-  /* width: 90%; */
   height: inherit;
 `;
 
@@ -193,5 +193,6 @@ const ImageSlider = styled.div<{ currentIndex: number }>`
 const ImageStyle = styled.img<{ filter: string }>`
   filter: ${(props) => props.filter};
   min-width: 100%;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
 `;

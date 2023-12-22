@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { SelectedFilter } from 'components/post/PostSelectedFilter'
@@ -49,7 +48,7 @@ export const PostFilterPage: React.FC<FilterProps> = ({ filterStorage, setFilter
         </ImageUploadArea>
       ) : (
         <>
-          <SelectedFilter filterStorage={filterStorage} setSelectedPicture={setSelectedPicture} />
+          <SelectedFilter filterStorage={filterStorage} setFilterStorage={setFilterStorage} setSelectedPicture={setSelectedPicture} />
           <FilterPreview selectedPicture={selectedPicture} filterStorage={filterStorage} setFilterStorage={setFilterStorage} />
         </>
       )
@@ -62,15 +61,13 @@ const WrapperStyle = styled.div`
   height: inherit;  
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 40px;
 `;
 
 const ImageUploadArea = styled.div`
   position: relative;
   text-align: center;
   display: inline-block;
-  min-height: 70%;
+  min-height: 60%;
   width: 100%;
   border-radius: 5px;
   box-sizing: border-box;
