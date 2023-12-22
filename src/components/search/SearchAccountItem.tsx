@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFirestoreUpdate } from 'hooks/useFirestoreUpdate';
 import styled from 'styled-components';
 
+import formatNumber from 'utils/formatNumber';
 import { arrayUnion } from 'firebase/firestore';
 
 import dotIcon from '../../assets/icon/icon-dot.svg';
@@ -64,7 +65,9 @@ export const AccountItem: React.FC<AccountItemProps> = ({
 					{isFollowing ? (
 						<span className='user-state'>팔로잉</span>
 					) : (
-						<span className='user-state'>팔로워 {followers?.length} 명</span>
+						<span className='user-state'>{`팔로워 ${formatNumber(
+							followers?.length
+						)} 명`}</span>
 					)}
 				</div>
 			</div>
