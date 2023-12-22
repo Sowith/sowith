@@ -20,7 +20,7 @@ export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ closeModal 
   const { ReadField } = useFirestoreRead('users');
 
   const token = sessionStorage.getItem('token');
-  const uid = token !== null ? JSON.parse(token).uid : null;
+  const uid = token !== null ? JSON.parse(token).userInfo.uid : null;
 
   const [postForm, setPostForm] = useRecoilState(postFormState)
   const [selectTag, setSelectTag] = useState<any>(postForm.usertag.map(item => item.data.accountId));
@@ -47,8 +47,8 @@ export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ closeModal 
   }, [])
 
   useEffect(() => {
-    const fetchData = async () => {
-      return await ReadField('accountIdKeywords', 'array-contains', searchKeyword);
+    const fetchData = () => {
+      return ReadField('accountIdKeywords', 'array-contains', searchKeyword);
     }
     !firstMount && fetchData().then(response => setTagItem(response));
   }, [searchKeyword])
