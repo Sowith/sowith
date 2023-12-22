@@ -16,7 +16,7 @@ import { AlertBox } from "components/common/AlertBox";
 import { Button } from "../common/Button";
 
 import { ReactComponent as IconArrow } from "../../assets/icon/icon-back-arrow.svg";
-import { ReactComponent as IconCamera } from "../../assets/icon/icon-camera.svg";
+import { ReactComponent as IconReupload } from "../../assets/icon/icon-reupload.svg";
 import { useEffect } from "react";
 
 interface HeaderProps {
@@ -144,15 +144,21 @@ export const Header: React.FC<HeaderProps> = (props) => {
   return (
     <>
       <AlertComponent>
-        {props.step === 0 && postForm.picture.length === 0 && <AlertBox alertMsg={"사진 선택은 필수입니다."} choice={["확인"]} />}
+        {props.step === 0 && props.filterStorageLength === 0 && <AlertBox alertMsg={"사진 선택은 필수입니다."} choice={["확인"]} />}
         {props.step === 0 && !isEmpty(postForm) && <AlertBox alertMsg={"이전에 작성하던 데이터가 있습니다."} choice={["불러오기", "새로작성"]} handleFunc={() => resetPostForm()} />}
-        {props.step === 1 && !postForm.location && <AlertBox alertMsg={"사진 선택은 필수입니다."} choice={["확인"]} />}
+        {props.step === 1 && !postForm.location && <AlertBox alertMsg={"위치 선택은 필수입니다."} choice={["확인"]} />}
       </AlertComponent>
       <WrapStyle>
         <IconArrow width={30} onClick={handleGoBack} />
-        <CameraStyle step={props.step}>
-          <IconCamera />
-        </CameraStyle>
+        {props.step === 0 && props.filterStorageLength > 0 &&
+          <CameraStyle onClick={() =>
+            setPostForm((Prev) => ({
+              ...Prev,
+              picture: []
+            }))}>
+            <IconReupload />
+          </CameraStyle>
+        }
         <Button
           onClick={handleGoForward}
           type="button"
@@ -169,25 +175,28 @@ export const Header: React.FC<HeaderProps> = (props) => {
 };
 
 const WrapStyle = styled.div`
-  width: 100%;
+  width: calc(100% - 40px);
+  z-index: 99;
+  background-color: #FFF;
   /* min-width: 320px;
   max-width: 768px; */
-  position: relative;
+  position: fixed;
+  top: 0;
   margin: auto;
-  padding-bottom: 24px;
+  padding-top: 25px;
+  padding-bottom: 25px;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-const CameraStyle = styled.div<{ step: number }>`
-  display: ${(props) => props.step !== 0 ? "none" : "block"};
+const CameraStyle = styled.div`
   position: absolute;
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  padding: 6px;
+  padding: 6px 6px 6px 8px;
   box-sizing: border-box;
   background-color: var(--main-color);
   right: 65px;
