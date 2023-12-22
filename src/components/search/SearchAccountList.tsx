@@ -18,18 +18,33 @@ export const AccountList: React.FC<AccountListProps> = ({
 
 	useEffect(() => {
 		const fetchFilteredUsers = async () => {
-			const response = await firestoreReader.ReadField(
-				'userId',
-				'==',
+			const responseIdQuery = await firestoreReader.ReadField(
+				'accountIdKeywords',
+				'array-contains',
+				searchKeyword
+			);
+			const responseNameQuery = await firestoreReader.ReadField(
+				'accountNameKeywords',
+				'array-contains',
 				searchKeyword
 			);
 
-			const userData: AccountItemProps[] = response.map((item) => ({
+			const combinedResponse = [
+				...responseIdQuery,
+				...responseNameQuery,
+			].reduce((acc, current) => {
+				if (!acc.find((item) => item.id === current.id)) {
+					acc.push(current);
+				}
+				return acc;
+			}, [] as { id: string; data: any }[]);
+
+			const userData: AccountItemProps[] = combinedResponse.map((item) => ({
 				id: item.id,
-				accountName: item.data.userId,
-				userName: item.data.userName,
-				follower: item.data.followers,
-				profileImageURL: item.data.profile,
+				accountId: item.data.accountId,
+				accountName: item.data.accountName,
+				followers: item.data.followers,
+				profileImageURL: item.data.profileImageURL,
 			}));
 
 			setArchiveUserData(userData);
