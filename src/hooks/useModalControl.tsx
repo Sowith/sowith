@@ -1,8 +1,9 @@
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 import styled from 'styled-components';
 
 export const useModalControl = (modalHeightDiff: number, autoHeight: boolean = false) => {
 
+  const [isModalOff, setIsModalOff] = useState<boolean>(false);
   const blurRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -15,6 +16,7 @@ export const useModalControl = (modalHeightDiff: number, autoHeight: boolean = f
       blur.style.background = `rgba(0, 0, 0, .3)`;
       blur.style.pointerEvents = `auto`;
     }
+
   };
 
   const closeModal = () => {
@@ -26,6 +28,10 @@ export const useModalControl = (modalHeightDiff: number, autoHeight: boolean = f
       blur.style.background = `rgba(0, 0, 0, 0)`
       blur.style.pointerEvents = `none`;
     }
+    setTimeout(() => {
+      setIsModalOff(true)
+      setIsModalOff(false)
+    }, 400)
   };
 
   interface ModalComponentProps {
@@ -35,18 +41,18 @@ export const useModalControl = (modalHeightDiff: number, autoHeight: boolean = f
   const ModalComponent: React.FC<ModalComponentProps> = ({ children }) => {
     return (
       <>
-      <ModalBlur ref={blurRef} onClick={closeModal}></ModalBlur>
-      <ModalContainer ref={modalRef} modalHeightDiff={modalHeightDiff} autoHeight={autoHeight}>
-        <ModalContent>
-          <div className='bar'></div>
-          {children}
-        </ModalContent>
-      </ModalContainer>
+        <ModalBlur ref={blurRef} onClick={closeModal}></ModalBlur>
+        <ModalContainer ref={modalRef} modalHeightDiff={modalHeightDiff} autoHeight={autoHeight}>
+          <ModalContent>
+            <div className='bar'></div>
+            {children}
+          </ModalContent>
+        </ModalContainer>
       </>
     );
   };
 
-  return { openModal, closeModal, ModalComponent };
+  return { openModal, closeModal, ModalComponent, isModalOff };
 };
 
 const ModalContainer = styled.div<{ modalHeightDiff: number, autoHeight: boolean }>`
@@ -90,4 +96,5 @@ const ModalBlur = styled.div`
   top: -54px;
   left: 0;
   transition: .6s;
+  z-index: 999;
 `;
