@@ -11,8 +11,13 @@ const { persistAtom } = recoilPersist(
 );
 
 const loginToken = atom({
-  key: 'uid',
-  default: {},
+  key: 'userInfo',
+  default: {
+    uid: "",
+    accountId: "",
+    accountName: "",
+    profileImageURL: "",
+  },
   effects_UNSTABLE: [persistAtom],
 });
 
