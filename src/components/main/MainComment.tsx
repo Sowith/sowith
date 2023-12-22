@@ -1,21 +1,32 @@
 import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 
+import { useFirestoreRead } from "hooks/useFirestoreRead";
+import { useFirestoreUpdate } from "hooks/useFirestoreUpdate";
 import { MainUserItem } from "./MainUserItem"
-
-import profile from "../../assets/testImg/profile_2.jpg"
+import { arrayUnion } from "firebase/firestore";
+import { Timestamp } from 'firebase/firestore';
 
 interface MainCommentProps {
-  currentComments: any;
+  selectedPostId: string;
 }
 
-export const MainComment: React.FC<MainCommentProps> = ({ currentComments }) => {
+export const MainComment: React.FC<MainCommentProps> = ({ selectedPostId }) => {
+
+  const token = sessionStorage.getItem('token');
+  const userInfo = token !== null ? JSON.parse(token).userInfo : null;
+
+  const { UpdateField } = useFirestoreUpdate('posts');
+  const useFirestoreReadPosts = useFirestoreRead('posts');
+  const useFirestoreReadUsers = useFirestoreRead('users');
 
   const [inptValue, setInptValue] = useState('');
   const [prevInpt, setPrevInpt] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [commentSectionHeight, setCommentSectionHeight] = useState<number>(0);
-  
+  const [comments, setComments] = useState<any>([]);
+
+  const createdAt = Timestamp.fromDate(new Date());
 
   const handleTextareaChange = (event) => {
     setInptValue(event.target.value);
@@ -35,15 +46,57 @@ export const MainComment: React.FC<MainCommentProps> = ({ currentComments }) => 
     }
   }, [inptValue])
 
+  const AllCommentData = async () => {
+    try {
+      const allComments = await useFirestoreReadPosts.ReadDocument(selectedPostId)
+      if (!allComments || !allComments.data.comments) {
+        console.error('Invalid data:', allComments);
+        return;
+      }
+
+      const commentsPromises = allComments.data.comments.map(comment => {
+        return useFirestoreReadUsers.ReadDocument(comment.userId);
+      });
+
+      const users = await Promise.all(commentsPromises);
+      const mergedData = allComments.data.comments.map((comment, index) => {
+        return { ...comment, ...users[index] };
+      });
+
+      setComments(mergedData);
+
+    } catch (error) {
+      console.error('error', error);
+    }
+  }
+
+  useEffect(() => {
+    AllCommentData()
+  }, [])
+
+  const submitPost = async () => {
+    await UpdateField({
+      comments: arrayUnion({
+        userId: userInfo.uid,
+        likedUsers: [],
+        content: inptValue,
+        createdAt: createdAt,
+      })
+    }, selectedPostId)
+    setInptValue('');
+    AllCommentData();
+  }
+
+
   return (
     <>
       <WraperStyle commentSectionHeight={commentSectionHeight}>
         <span className="modal-title">댓글</span>
-        {currentComments.map((item) => (
-          <MainUserItem item={item} />
+        {comments.length > 0 && comments.map((item) => (
+          <MainUserItem postData={item} selectedPostId={selectedPostId} AllCommentData={AllCommentData} />
         ))}
         <InputCommentContainer>
-          <img src={profile} className="profile-img" />
+          <img src={userInfo.profileImageURL} className="profile-img" />
           <InputBox>
             <textarea
               rows={1}
@@ -55,7 +108,7 @@ export const MainComment: React.FC<MainCommentProps> = ({ currentComments }) => 
               placeholder="댓글달기"
               ref={textareaRef}
             ></textarea>
-            <button className="submit-btn">게시</button>
+            <button className="submit-btn" onClick={submitPost}>게시</button>
           </InputBox>
         </InputCommentContainer>
       </WraperStyle>
@@ -63,7 +116,7 @@ export const MainComment: React.FC<MainCommentProps> = ({ currentComments }) => 
   )
 }
 
-const WraperStyle = styled.div<{commentSectionHeight: number}>`
+const WraperStyle = styled.div<{ commentSectionHeight: number }>`
   width: inherit;
   margin-top: 25px;
   overflow-y: scroll;
@@ -103,8 +156,8 @@ const InputCommentContainer = styled.div`
     border-radius: 50%;
     border: 1px solid var(--gray200-color);
     margin-left: 10px;
-    min-width: 40px;
-    height: 40px;
+    width: 40px;
+    aspect-ratio: 1 / 1;
   }
 `;
 
@@ -115,6 +168,7 @@ const InputBox = styled.div`
   width: calc(100% - 75px);
   display: flex;
   align-content: center;
+  
   
   .input-comment {
     width: 100%;
@@ -127,7 +181,7 @@ const InputBox = styled.div`
     border: none;
     resize: none;
     overflow-y: scroll;
-    font-size: .9rem;
+    font-size: 1rem;
     transition: .3s;
     &::-webkit-scrollbar {
       width: 0;
