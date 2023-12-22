@@ -7,10 +7,6 @@ export const useImageUpload = () => {
   const imagesUpload = async (pathToSave, selectedFile, filterValue = "") => {
     return new Promise(async (resolve, reject) => {
       const fileRef = ref(storage, `${pathToSave}/${uuidv4()}`);
-
-      const auth = getAuth();
-      const user = auth.currentUser;
-
       const img = new Image();
       img.src = selectedFile;
 
