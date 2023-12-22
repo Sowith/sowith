@@ -16,9 +16,9 @@ export const PostList: React.FC<SearchPostListProps> = ({ searchKeyword }) => {
 	useEffect(() => {
 		const fetchFilteredPosts = async () => {
 			const response = await firestoreReader.ReadField(
-				'content',
-				'==',
-				searchKeyword
+				'hashtags',
+				'array-contains-any',
+				[searchKeyword]
 			);
 
 			const postData: PostItemProps[] = response.map((item) => ({
@@ -40,6 +40,7 @@ export const PostList: React.FC<SearchPostListProps> = ({ searchKeyword }) => {
 					key={index}
 					isMultiplePhotos={post.imageUrl.length > 1}
 					imageUrl={post.imageUrl[0]}
+					postId={post.postId}
 				/>
 			))}
 		</Container>
