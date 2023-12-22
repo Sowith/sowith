@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import { useFirestoreUpdate } from 'hooks/useFirestoreUpdate';
 import styled from 'styled-components';
 
+import { arrayUnion } from 'firebase/firestore';
 import { BackButton } from 'components/common/BackButton';
 
 import search from '../../assets/icon/icon-search.svg';
@@ -23,6 +24,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 	const currentPath = location.pathname;
 	const [placeholderText, SetPlaceHolderText] = useState('');
 	const [searchKeyword, setSearchKeyword] = useState('');
+	const { UpdateFieldUid } = useFirestoreUpdate('users'); // 검색 기록을 업데이트할 컬렉션명
+	const token = sessionStorage.getItem('token');
+	const currentUserUid = token !== null ? JSON.parse(token).uid : null;
 
 	useEffect(() => {
 		if (currentPath === '/profiledetailPage/1') {
@@ -64,9 +68,25 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 		}
 	};
 
-	const handleSearchButtonClick = (): void => {
+	const handleSearchButtonClick = async () => {
 		if (onSearchButtonClick) {
 			onSearchButtonClick();
+		}
+
+		// 검색 기록 객체 생성
+		const newHistory = {
+			title: searchKeyword,
+			historyCategory: 'text',
+		};
+
+		// Firestore에 검색 기록 추가
+		try {
+			await UpdateFieldUid(currentUserUid, {
+				searchHistories: arrayUnion(newHistory),
+			});
+			console.log('검색 기록이 추가되었습니다');
+		} catch (error) {
+			console.error('검색 기록 추가 실패:', error);
 		}
 	};
 
