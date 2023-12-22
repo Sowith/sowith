@@ -17,19 +17,19 @@ export const TagList: React.FC<SearchTagListProps> = ({ searchKeyword }) => {
 	useEffect(() => {
 		const fetchFilteredTags = async () => {
 			const response = await firestoreReader.ReadField(
-				'tagName',
-				'==',
-				searchKeyword
+				'tagNameKeywords',
+				'array-contains-any',
+				[searchKeyword]
 			);
 
 			const tagData: TagItemProps[] = response.map((item) => {
 				const taggedFolderCount = item.data.taggedFolderIDs.length;
-				const taggedGroupCount = item.data.taggedGroupIDs.length;
+				// const taggedGroupCount = item.data.taggedGroupIDs.length;
 				const taggedPostCount = item.data.taggedPostIDs.length;
 
 				return {
-					tagTitle: item.data.tagName,
-					tagNumber: taggedFolderCount + taggedGroupCount + taggedPostCount,
+					tagTitle: item.id,
+					tagNumber: taggedFolderCount + taggedPostCount,
 				};
 			});
 
@@ -37,7 +37,7 @@ export const TagList: React.FC<SearchTagListProps> = ({ searchKeyword }) => {
 		};
 
 		fetchFilteredTags();
-	}, []);
+	}, [searchKeyword]);
 
 	return (
 		<TagItemContainer>
