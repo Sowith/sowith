@@ -27,16 +27,14 @@ export const FilterPreview: React.FC<FilterPreviewProps> = ({ filterStorage, set
   const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (currentIndex !== 0) {
-      setFilterStorage((prev) => {
-        const updatedPrev = [...prev];
-        const targetIndex = updatedPrev.findIndex((item) => item.src === selectedPicture);
-        if (targetIndex !== -1) {
-          updatedPrev[targetIndex] = { ...updatedPrev[targetIndex], filter: filterData[currentIndex].filter };
-        }
-        return updatedPrev;
-      });
-    }
+    setFilterStorage((prev) => {
+      const updatedPrev = [...prev];
+      const targetIndex = updatedPrev.findIndex((item) => item.src === selectedPicture);
+      if (targetIndex !== -1) {
+        updatedPrev[targetIndex] = { ...updatedPrev[targetIndex], filter: filterData[currentIndex].filter };
+      }
+      return updatedPrev;
+    });
   }, [currentIndex]);
 
   useEffect(() => {
@@ -52,7 +50,9 @@ export const FilterPreview: React.FC<FilterPreviewProps> = ({ filterStorage, set
     if (sliderRef.current) {
       const scrollPosition = sliderRef.current.scrollLeft;
       const itemWidth = 135;
-      const newIndex = Math.floor(scrollPosition / itemWidth);
+      const minIndex = 0;
+      const maxIndex = filterData.length - 1;
+      const newIndex = Math.min(Math.max(Math.floor(scrollPosition / itemWidth), minIndex), maxIndex);
       setCurrentIndex(newIndex);
       setStartXPoint(scrollPosition)
     }
@@ -99,6 +99,7 @@ export const FilterPreview: React.FC<FilterPreviewProps> = ({ filterStorage, set
 
 const WrapperStyle = styled.div`
   position: relative;
+  margin-top: 35px;
 
   &::before {
     content: "";
@@ -116,8 +117,9 @@ const WrapperStyle = styled.div`
 
 const SliderContainer = styled.div`
   overflow-x: scroll;
+  /* scroll-behavior: smooth; */
   padding-top: 2px;
-  height: 165px;
+  min-height: 170px;
 
   &::-webkit-scrollbar {
     width: 0;
@@ -162,6 +164,7 @@ const FilterName = styled.div`
   color: #FFF;
   font-family: var(--font--Bold);
   background-color: rgba(0, 0, 0, 0.5);
+  
 `;
 
 const Image = styled.img<{ filter: string }>`
