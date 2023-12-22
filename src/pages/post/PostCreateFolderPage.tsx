@@ -7,6 +7,8 @@ import { useFirestoreCreate } from "hooks/useFirestoreCreate";
 import { useCreateKeywords } from "hooks/useCreateKeywords";
 import { arrayUnion } from "firebase/firestore";
 import { Timestamp } from 'firebase/firestore';
+import { useAlertControl } from "hooks/useAlertControl";
+import { AlertBox } from "components/common/AlertBox";
 
 import { Button } from "../../components/common/Button";
 import { SquareCheckBox } from "components/common/CheckBox";
@@ -16,11 +18,14 @@ import iconCreateFolder from "../../assets/icon/icon-create-folder.svg";
 import IconHashTag from "../../assets/icon/icon-hash-tag.svg";
 
 interface CreateFolderProps {
+  openModal: () => void;
   closeModal: () => void;
+  setModalIndex?: React.Dispatch<React.SetStateAction<number>>
 }
 
-export const PostCreateFolderPage: React.FC<CreateFolderProps> = ({ closeModal }) => {
+export const PostCreateFolderPage: React.FC<CreateFolderProps> = ({ openModal, closeModal, setModalIndex }) => {
 
+  const { openAlert, AlertComponent } = useAlertControl();
   const { ReadField, ReadDocument } = useFirestoreRead('tags')
   const { UpdateField } = useFirestoreUpdate('tags');
   const { CreateDocumentWithCustomID } = useFirestoreCreate('tags')
@@ -31,7 +36,7 @@ export const PostCreateFolderPage: React.FC<CreateFolderProps> = ({ closeModal }
   const [archiveTagData, setArchiveTagData] = useState<any>([]);
   const [checkedBox, setCheckedBox] = useState<number[]>([]);
   const [isMatched, setIsMatched] = useState<boolean>();
-  const [inputValue, setInputValue] = useState<any>();
+  const [inputValue, setInputValue] = useState<any>('');
 
   const createdAt = Timestamp.fromDate(new Date());
 
@@ -47,13 +52,18 @@ export const PostCreateFolderPage: React.FC<CreateFolderProps> = ({ closeModal }
   };
 
   const handleCloseModal = () => {
+    if (inputValue === '') {
+      openAlert()
+      return
+    }
+
     closeModal();
     setTimeout(async () => {
       const folderUid = await CreateDocument({
         bookmarkedUsers: [],
         folderImages: [],
         folderName: inputValue,
-        folderNameKeywords: generateKeywordCombinations(inputValue),
+        folderNameKeywords: generateKeywordCombinations(inputValue) || [],
         hashtags: selectTag,
         likedUsers: [],
         postUids: [],
@@ -71,6 +81,8 @@ export const PostCreateFolderPage: React.FC<CreateFolderProps> = ({ closeModal }
           taggedPostIDs: [],
         })
       })
+      setModalIndex && setModalIndex(2)
+      setTimeout(() => openModal(), 50)
     }, 400)
   }
 
@@ -86,6 +98,9 @@ export const PostCreateFolderPage: React.FC<CreateFolderProps> = ({ closeModal }
   return (
     <>
       <FolderWrap>
+        <AlertComponent>
+          <AlertBox alertMsg={"폴더명을 반드시 입력해주세요."} choice={["확인"]} />
+        </AlertComponent>
         <IconCreateFolder>
         </IconCreateFolder>
 
