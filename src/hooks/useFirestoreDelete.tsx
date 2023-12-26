@@ -1,9 +1,10 @@
 import { appFireStore } from '../firebase/config';
 import { doc, deleteDoc, getDoc, updateDoc } from 'firebase/firestore';
+import getUserInfo from 'utils/getUserInfo';
 
 export const useFirestoreDelete = (collectionName) => {
-	const token = sessionStorage.getItem('token');
-	const uid = token !== null ? JSON.parse(token).userInfo.uid : null;
+
+	const uid = getUserInfo();
 
 	const DeleteDocument = async (documentId) => {
 		try {

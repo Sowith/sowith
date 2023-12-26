@@ -8,6 +8,7 @@ import { useformatRelativeTime } from 'hooks/useformatRelativeTime';
 import { useFirestoreRead } from 'hooks/useFirestoreRead';
 import { MainUserItem } from '../../components/main/MainUserItem';
 import { SelectedFilter } from "../../components/post/PostSelectedFilter"
+import getUserInfo from 'utils/getUserInfo';
 
 import { ReactComponent as IconLike } from "../../assets/icon/icon-like-heart.svg"
 import { ReactComponent as IconComment } from "../../assets/icon/icon-comment.svg"
@@ -21,8 +22,7 @@ interface PostItemProps {
 
 export const MainPostItem: React.FC<PostItemProps> = ({ item, setIsCommentModal, setSelectedPostId }) => {
 
-  const token = sessionStorage.getItem('token');
-  const uid = token !== null ? JSON.parse(token).userInfo.uid : null;
+  const uid = getUserInfo();
 
   const { ReadDocument } = useFirestoreRead('users');
   const { UpdateField } = useFirestoreUpdate('posts');

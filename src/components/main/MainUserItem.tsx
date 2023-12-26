@@ -6,6 +6,8 @@ import { useFirestoreDelete } from 'hooks/useFirestoreDelete';
 import { useformatRelativeTime } from 'hooks/useformatRelativeTime';
 import { useAlertControl } from 'hooks/useAlertControl';
 import { AlertBox } from 'components/common/AlertBox';
+import getUserInfo from 'utils/getUserInfo';
+
 import { ReactComponent as IconDotMore } from '../../assets/icon/icon-dot-more.svg';
 import { ReactComponent as IconSTrash } from '../../assets/icon/icon-s-trash-delete.svg';
 import { ReactComponent as IconSReport } from '../../assets/icon/icon-s-report-message.svg';
@@ -21,8 +23,7 @@ interface MainUserItemProps {
 
 export const MainUserItem: React.FC<MainUserItemProps> = ({ postData, savePostId, setIsCommentModal, selectedPostId, AllCommentData }) => {
 
-  const token = sessionStorage.getItem('token');
-  const uid = token !== null ? JSON.parse(token).userInfo.uid : null;
+  const uid = getUserInfo();
 
   const { UpdateFieldAttribute } = useFirestoreUpdate('posts')
   const { DeleteField } = useFirestoreDelete('posts')

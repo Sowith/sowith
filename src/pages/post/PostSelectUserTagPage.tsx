@@ -8,6 +8,7 @@ import postFormState from "recoil/postFormState";
 import { SearchBar } from "../../components/post/PostSearchBar";
 import { UserItem } from "../../components/post/PostUserItem";
 import { Button } from "../../components/common/Button"
+import getUserInfo from "utils/getUserInfo";
 
 import IconUserTag from "../../assets/icon/icon-user-tag.svg";
 
@@ -19,8 +20,7 @@ export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ closeModal 
 
   const { ReadField } = useFirestoreRead('users');
 
-  const token = sessionStorage.getItem('token');
-  const uid = token !== null ? JSON.parse(token).userInfo.uid : null;
+  const uid = getUserInfo();
 
   const [postForm, setPostForm] = useRecoilState(postFormState)
   const [selectTag, setSelectTag] = useState<any>(postForm.usertag.map(item => item.data.accountId));

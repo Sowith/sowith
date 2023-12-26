@@ -1,11 +1,11 @@
 import { appFireStore, timestamp } from '../firebase/config';
 // import { collection, addDoc } from 'firebase/firestore';
 import { collection, doc, setDoc, addDoc } from 'firebase/firestore';
+import getUserInfo from 'utils/getUserInfo';
 
 export const useFirestoreCreate = (collectionName) => {
 
-  const token = sessionStorage.getItem('token');
-  const uid = token !== null ? JSON.parse(token).userInfo.uid : null;
+  const uid = getUserInfo();
 
   const CreateDocument = async (data) => {
     try {

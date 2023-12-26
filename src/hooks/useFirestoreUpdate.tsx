@@ -1,10 +1,10 @@
 import { appFireStore } from '../firebase/config';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import getUserInfo from 'utils/getUserInfo';
 
 export const useFirestoreUpdate = (collectionName) => {
 
-  const token = sessionStorage.getItem('token');
-  const uid = token !== null ? JSON.parse(token).userInfo.uid : null;
+  const uid = getUserInfo();
 
   const UpdateField = async (data, documentId, authorized = true) => {
     try {

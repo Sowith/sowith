@@ -8,6 +8,7 @@ import postFormState from "recoil/postFormState";
 import { SearchBar } from "../../components/post/PostSearchBar";
 import { FolderList } from "../../components/common/FolderList";
 import { Button } from "../../components/common/Button"
+import getUserInfo from "utils/getUserInfo";
 
 import IconFolder from "../../assets/icon/icon-folder-post-only.svg";
 
@@ -29,8 +30,7 @@ export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ closeModal, 
 
   const { ReadField } = useFirestoreRead('folders');
 
-  const token = sessionStorage.getItem('token');
-  const uid = token !== null ? JSON.parse(token).userInfo.uid : null;
+  const uid = getUserInfo();
 
   const [postForm, setPostForm] = useRecoilState(postFormState)
   const [searchKeyword, setSearchKeyword] = useState<any>('');

@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useAlertControl } from "hooks/useAlertControl";
 import { AlertBox } from "components/common/AlertBox";
 import { Button } from "../common/Button";
+import getUserInfo from "utils/getUserInfo";
 
 import { ReactComponent as IconArrow } from "../../assets/icon/icon-back-arrow.svg";
 import { ReactComponent as IconCamera } from "../../assets/icon/icon-camera.svg";
@@ -28,8 +29,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
 
   const randomDoc = uuidv4()
 
-  const token = sessionStorage.getItem('token');
-  const uid = token !== null ? JSON.parse(token).uid : null;
+  const uid = getUserInfo();
 
   const { openAlert, AlertComponent } = useAlertControl();
 
