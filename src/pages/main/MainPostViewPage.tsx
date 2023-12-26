@@ -26,7 +26,7 @@ export const MainPostViewPage: React.FC = () => {
   }, [isCommentModal])
 
   const AllPostData = async () => {
-    const response = await ReadAllDocument();
+    const response = await ReadAllDocument('createdAt', 'desc');
 
     response && setPostItemData(response)
   }

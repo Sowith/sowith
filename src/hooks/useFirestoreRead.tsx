@@ -3,14 +3,18 @@ import { collection, query, orderBy, where, getDocs, doc, getDoc } from 'firebas
 
 export const useFirestoreRead = (collectionName) => {
 
-  const ReadAllDocument = async () => {
-    const querySnapshot = await getDocs(query(collection(appFireStore, collectionName), orderBy('createdAt', 'desc')));
+  const ReadAllDocument = async (fieldName: any = false, sortOrder: any = false) => {
+
+    const collectionRef = collection(appFireStore, collectionName);
+    const querySnapshot = fieldName ? await getDocs(collectionRef) : await getDocs(query(collectionRef, orderBy(fieldName, sortOrder)))
+
     const result = querySnapshot.docs.map(doc => ({
       id: doc.id,
       data: doc.data()
     }));
     return result;
   }
+
 
   const ReadDocument = async (documentName) => {
     const docRef = doc(appFireStore, collectionName, documentName);
