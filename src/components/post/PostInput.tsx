@@ -19,7 +19,7 @@ interface InputProps {
   height?: string;
   radius?: string;
   tagname?: string;
-  selectTag?: string[];
+  selectTag?: any;
   isUserTagSelected?: boolean;
   isHashTagSelected?: boolean;
   onClick?: () => void;
@@ -29,7 +29,7 @@ export const WritableTextarea: React.FC<InputProps> = (props) => {
 
   const [inputKeyword, setInputKeyword] = useState<string>("");
 
-  const setPostForm = useSetRecoilState(postFormState)  
+  const setPostForm = useSetRecoilState(postFormState)
 
   const handleTextareaBlur = (event: React.FocusEvent<HTMLTextAreaElement>) => {
     const textarea = event.target;
@@ -64,15 +64,15 @@ export const ReadonlyTextarea: React.FC<InputProps> = (props) => {
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    useEffect(() => {
-      const textareaRefCurrent = textareaRef.current;
-      if (textareaRefCurrent) {
-        textareaRefCurrent.style.height = "auto";
-        const newHeight = textareaRefCurrent.scrollHeight;
-        textareaRefCurrent.style.height = `${newHeight}px`;
-        textareaRefCurrent.scrollTop = textareaRefCurrent.scrollHeight;
-      }
-    }, [props.value])
+  useEffect(() => {
+    const textareaRefCurrent = textareaRef.current;
+    if (textareaRefCurrent) {
+      textareaRefCurrent.style.height = "auto";
+      const newHeight = textareaRefCurrent.scrollHeight;
+      textareaRefCurrent.style.height = `${newHeight}px`;
+      textareaRefCurrent.scrollTop = textareaRefCurrent.scrollHeight;
+    }
+  }, [props.value])
 
   return (
     <WrapStyle>

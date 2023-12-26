@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { useImageUpload } from "hooks/useImageUpload";
 import { useFirestoreCreate } from "hooks/useFirestoreCreate";
+import { useFirestoreUpdate } from "hooks/useFirestoreUpdate";
+import { useCreateKeywords } from "hooks/useCreateKeywords";
+import { useImageUpload } from "hooks/useImageUpload";
 import { useRecoilValue } from "recoil";
 import postFormState from "recoil/postFormState";
+import { v4 as uuidv4 } from 'uuid';
 
 import { useAlertControl } from "hooks/useAlertControl";
 import { AlertBox } from "components/common/AlertBox";
@@ -23,6 +26,11 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = (props) => {
 
+  const randomDoc = uuidv4()
+
+  const token = sessionStorage.getItem('token');
+  const uid = token !== null ? JSON.parse(token).uid : null;
+
   const { openAlert, AlertComponent } = useAlertControl();
 
   const postForm = useRecoilValue(postFormState);
@@ -30,18 +38,38 @@ export const Header: React.FC<HeaderProps> = (props) => {
   const navigate = useNavigate();
 
   const { imagesUpload } = useImageUpload()
-  const { CreateDocument } = useFirestoreCreate('posts');
+  const { CreateDocumentManual } = useFirestoreCreate('posts');
+  const { generateKeywordCombinations } = useCreateKeywords();
+
+  // const updateTags = () => {
+  //   const { UpdateField } = useFirestoreUpdate('tags');
+  //   UpdateField(postForm.hashtag, 
+  //   {
+  //     tagNameKeywords: generateKeywordCombinations(),
+  //     taggedFolderIDs: null,
+  //     taggedPostIDs: randomDoc,
+  //   });
+  // }
+
+  // const updateField = () => {
+  //   const { UpdateField } = useFirestoreUpdate('folders');
+  //   UpdateField('', 
+  //   {
+  //     uidContainers: uid,
+  //   });
+  // }
 
   const handleUpload = async () => {
     const uploadPromises = postForm.picture.map((item) => {
       return imagesUpload("post", item.src, item.filter);
     });
 
+
     try {
       // 모든 이미지 업로드를 기다림
       const downloadURLs = await Promise.all(uploadPromises);
 
-      CreateDocument({
+      CreateDocumentManual({
         comments: [],
         content: postForm.phrase,
         images: downloadURLs,
@@ -49,27 +77,14 @@ export const Header: React.FC<HeaderProps> = (props) => {
         location: postForm.location,
         hashtags: postForm.hashtag,
         tagUsers: postForm.usertag,
-      });
+        uuidv4
+      }, randomDoc);
 
     } catch (error) {
       console.error("이미지 업로드 중 오류 발생:", error);
       // 오류 처리
     }
   };
-
-
-
-  // CreateDocument({
-  //   images: uploadPromises
-  // });
-
-  // const uploadPromises = await Promise.all(
-  //   postForm.picture.map((item) => {
-  //     return imagesUpload("post", item.src, item.filter);
-  //   })
-  // );
-
-
 
   const handleGoForward = () => {
     if (props.step === 1 && !postForm.location) {

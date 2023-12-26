@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import { useFirestoreRead } from "hooks/useFirestoreRead";
 import { useRecoilState } from "recoil";
 import postFormState from "recoil/postFormState";
 
@@ -9,123 +10,98 @@ import { UserItem } from "../../components/post/PostUserItem";
 import { Button } from "../../components/common/Button"
 
 import IconUserTag from "../../assets/icon/icon-user-tag.svg";
-import profile_1 from "../../assets/testImg/profile_1.jpg";
-import profile_2 from "../../assets/testImg/profile_2.jpg";
-import profile_3 from "../../assets/testImg/profile_3.jpg";
-import profile_4 from "../../assets/testImg/profile_4.jpg";
-import profile_5 from "../../assets/testImg/profile_5.jpg";
 
 interface SelectFolderProps {
-  closeModal: () => void; 
+  closeModal: () => void;
 }
 
-interface TagData {
-  userId: string;
-  userName: string;
-  isFollow?: boolean;
-  profile: string;
-}
-
-const tagData: TagData[] = [
-  {
-    userId: 'starseeker_h00n',
-    userName: '강동훈',
-    isFollow: true,
-    profile: profile_1
-  },
-  {
-    userId: '__hoon__99',
-    userName: '이정훈',
-    isFollow: true,
-    profile: profile_2
-  },
-  {
-    userId: 'dong_hoon',
-    userName: '한동훈',
-    isFollow: true,
-    profile: profile_3
-  },
-  {
-    userId: 'kang_hoon',
-    userName: '이강훈',
-    isFollow: true,
-    profile: profile_4
-  },
-  {
-    userId: 'hoon_1297319',
-    userName: '미스터훈',
-    isFollow: true,
-    profile: profile_5
-  },
-];
 export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ closeModal }) => {
 
-  const [postForm, setPostForm] = useRecoilState(postFormState)  
-  const [selectTag, setSelectTag] = useState<any>(postForm.usertag);
-  const [searchKeyword, setSearchKeyword] = useState<any>();
-  const [tagItem, setTagItem] = useState<TagData[]>(tagData);
+  const { ReadField } = useFirestoreRead('users');
 
+  const token = sessionStorage.getItem('token');
+  const uid = token !== null ? JSON.parse(token).uid : null;
+
+  const [postForm, setPostForm] = useRecoilState(postFormState)
+  const [selectTag, setSelectTag] = useState<any>(postForm.usertag.map(item => item.data.accountId));
+  const [searchKeyword, setSearchKeyword] = useState<any>('');
+  const [tagItem, setTagItem] = useState<any>(postForm.usertag);
+  const [selectResultTags, setSelectResultTags] = useState<any>([]);
+  const [searchResultTags, setSearchResultTags] = useState<any>([]);
+  const [firstMount, setFirstMount] = useState<boolean>(true);
 
   const handleCloseModal = () => {
     closeModal();
     setTimeout(() => {
       setPostForm(Prev => {
         const updatedPostInfo = { ...Prev };
-        updatedPostInfo.usertag = selectTag;
+        updatedPostInfo.usertag = selectResultTags;
         return updatedPostInfo;
       });
     }, 600)
-    }
-    
-    // const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
-    //   const targetElement = event.currentTarget.dataset.id;
-    //   if (targetElement) {
-    //     const newTags = [...selectTag];
-    //     if (!newTags.includes(targetElement)) {
-    //       newTags.push(targetElement);
-    //       setSelectTag(newTags);
-    //     }
-    //   }
-    // };
+  }
 
-    useEffect(() => {
-      const selectedItems = tagItem.filter(item => selectTag.includes(item.userId));
-      const unselectedItems = tagItem.filter(item => !selectTag.includes(item.userId));
-      const sortedTagItems = [...selectedItems, ...unselectedItems];
-      setTagItem(sortedTagItems);
-    }, [selectTag])
+  useEffect(() => {
+    firstMount && setSelectResultTags(postForm.usertag)
+    setFirstMount(false)
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      return await ReadField('accountIdKeywords', 'array-contains', searchKeyword);
+    }
+    !firstMount && fetchData().then(response => setTagItem(response));
+  }, [searchKeyword])
+
+  useEffect(() => {
+    const selectedItems = tagItem.filter(item => selectTag.includes(item.data.accountId));
+    const unselectedItems = tagItem.filter(item => !selectTag.includes(item.data.accountId));
+    setSelectResultTags([...selectedItems])
+    setSearchResultTags([...unselectedItems]);
+  }, [selectTag, tagItem])
 
   return (
     <>
-        <SearchBar
-          id={'UserTagSearch'}
-          icon={IconUserTag}
-          placeholder={'유저 검색...'}
-          searchKeyword={searchKeyword}
-          setSearchKeyword={setSearchKeyword}
-        />
-
-        <Container>
-          {tagItem.map((item, index) => (
-            <ul>
-              <UserItem
-                // handleFunc={handleTag}
-                key={index}
-                profile={item.profile}
-                userId={item.userId}
-                userName={item.userName}
-                isFollow={item.isFollow}
-                index={index}
-                // checkedBox={checkedBox}
-                // setCheckedBox={setCheckedBox}
-                selectTag={selectTag}
-                setSelectTag={setSelectTag}
-              />
-            </ul>
-          )
-          )}
-        </Container>
-        <Button
+      <SearchBar
+        id={'UserTagSearch'}
+        icon={IconUserTag}
+        placeholder={'유저 검색...'}
+        searchKeyword={searchKeyword}
+        setSearchKeyword={setSearchKeyword}
+      />
+      <Container>
+        {selectResultTags.map((item, index) => (
+          <ul>
+            <UserItem
+              key={index}
+              profile={item.data.profileImageURL}
+              userId={item.data.accountId}
+              userName={item.data.accountName}
+              isFollow={item.data.followers.includes(uid)}
+              index={index}
+              selectTag={selectTag}
+              setSelectTag={setSelectTag}
+            />
+          </ul>
+        )
+        )}
+        {searchResultTags.map((item, index) => (
+          <ul>
+            <UserItem
+              key={index}
+              profile={item.data.profileImageURL}
+              userId={item.data.accountId}
+              userName={item.data.accountName}
+              isFollow={item.data.followers.includes(uid)}
+              index={index}
+              selectTag={selectTag}
+              setSelectTag={setSelectTag}
+            />
+          </ul>
+        )
+        )}
+      </Container>
+      <Button
         type="button"
         text={"완료"}
         width={'90%'}

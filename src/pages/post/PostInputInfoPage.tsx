@@ -44,13 +44,13 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
       setIsModalOn(false);
     }
     firstMount && setFirstMount(false)
-  }, [isModalOn])  
+  }, [isModalOn])
 
   const handleModal = (index) => {
     setModalIndex(index);
     setIsModalOn(true)
   }
-  
+
   useEffect(() => {
     postForm.hashtag.length !== 0 ? setIsHashTagSelected(true) : setIsHashTagSelected(false);
     postForm.usertag.length !== 0 ? setIsUserTagSelected(true) : setIsUserTagSelected(false);
@@ -63,7 +63,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
   return (
     <>
       <WrapStyle>
-        <SelectedPicture filterStorage={filterStorage}/>
+        <SelectedPicture filterStorage={filterStorage} />
         <WritableTextarea
           value={postForm.phrase}
           type="text"
@@ -104,7 +104,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
           onClick={() => handleModal(3)}
         />
         <ReadonlyInput
-          selectTag={postForm.usertag}
+          selectTag={postForm.usertag.map(item => item.data.accountId)}
           isUserTagSelected={isUserTagSelected}
           tagname={"usertag"}
           type="text"
@@ -122,13 +122,13 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
               case 1:
                 return <PostSelectLocationPage closeModal={closeModal} />;
               case 2:
-                return <PostSelectFolderPage closeModal={closeModal} setModalIndex={setModalIndex}/>;
+                return <PostSelectFolderPage closeModal={closeModal} setModalIndex={setModalIndex} />;
               case 3:
                 return <PostSelectHashTagPage closeModal={closeModal} />;
               case 4:
                 return <PostSelectUserTagPage closeModal={closeModal} />;
               case 5:
-                return <PostCreateFolderPage closeModal={closeModal}/>;
+                return <PostCreateFolderPage closeModal={closeModal} />;
             }
           })()
         }

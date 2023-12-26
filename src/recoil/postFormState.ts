@@ -18,7 +18,7 @@ const postFormState = atom({
     location: "",
     folder: [] as string[],
     hashtag: [] as string[],
-    usertag: [] as string[],
+    usertag: [] as any[]
   },
   effects_UNSTABLE: [persistAtom],
 });
