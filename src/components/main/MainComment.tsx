@@ -14,7 +14,7 @@ interface MainCommentProps {
 
 export const MainComment: React.FC<MainCommentProps> = ({ selectedPostId }) => {
 
-  const uid = getUserInfo();
+  const userInfo = getUserInfo();
 
   const { UpdateField } = useFirestoreUpdate('posts');
   const useFirestoreReadPosts = useFirestoreRead('posts');
