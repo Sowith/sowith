@@ -9,10 +9,11 @@ import {
 	HistoryItemProps,
 } from 'components/search/SearchHistoryItem';
 import { SearchBar } from 'components/search/SearchBar';
+import getUserInfo from 'utils/getUserInfo';
 
 import soWithLogo from '../../assets/icon/icon-sowith-heart.svg';
 
-interface SearchHistoryProps {}
+interface SearchHistoryProps { }
 
 export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 	const [searchHistoryData, setSearchHistoryData] = useState([]);
@@ -22,8 +23,8 @@ export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 
 	const firestoreReader = useFirestoreRead('users');
 	const { deleteSearchHistory } = useDeleteSearchHistory();
-	const token = sessionStorage.getItem('token');
-	const uid = token !== null ? JSON.parse(token).uid : null;
+
+	const uid = getUserInfo();
 	// uid는 가져왔고, 이제 이 uid와 일치하는 사용자의 검색 기록을 가져오면 된다.
 
 	useEffect(() => {
