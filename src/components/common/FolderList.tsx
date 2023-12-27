@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { styled } from 'styled-components';
 
 import { useFirestoreUpdate } from "hooks/useFirestoreUpdate";
+import { arrayUnion } from "firebase/firestore";
+import { arrayRemove } from "firebase/firestore";
 
 import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark-post-only.svg';
+import logo from "../../assets/logo/logo-heart.svg"
 
 interface FolderDataItem {
   folderId: number;
@@ -14,73 +17,79 @@ interface FolderDataItem {
 }
 
 interface FolderListProps {
-  fetchData?: () => void;
+  AllFolderData?: () => void;
   archiveFolderData: any;
   setArchiveFolderData: React.Dispatch<React.SetStateAction<any>>;
   isAddButton?: boolean;
+  seletedFolder?: any;
+  setSeletedFolder?: React.Dispatch<React.SetStateAction<any>>;
   searchKeyword?: any;
   setSearchKeyword?: React.Dispatch<React.SetStateAction<any>>;
   setModalIndex?: React.Dispatch<React.SetStateAction<number>>;
   closeModal?: () => void;
 }
 
-export const FolderList: React.FC<FolderListProps> = ({ fetchData, archiveFolderData, setArchiveFolderData, isAddButton = false, searchKeyword, setSearchKeyword, setModalIndex, closeModal }) => {
+
+export const FolderList: React.FC<FolderListProps> = ({ AllFolderData, archiveFolderData, setArchiveFolderData, isAddButton = false, seletedFolder, setSeletedFolder, setModalIndex, closeModal }) => {
+
+  const token = sessionStorage.getItem('token');
+  const uid = token !== null ? JSON.parse(token).uid : null;
 
   const { UpdateField } = useFirestoreUpdate('folders')
 
-  const handleBookMark = (id: string, isBookmark: boolean) => {
+  const handleBookMark = (id: string, data: any) => {
     UpdateField(id,
       {
-        bookmark: !isBookmark
+        bookmarkedUsers: data.bookmarkedUsers.includes(uid) ? arrayRemove(uid) : arrayUnion(uid)
       });
-    fetchData && fetchData();
+    AllFolderData && AllFolderData();
   }
 
-  const handleFolder = (foldName) => {
-    setSearchKeyword && setSearchKeyword((Prev) => {
-      if (Array.isArray(Prev)) {
-        if (!Prev.includes(foldName)) {
-          return [...Prev, foldName];
-        } else if (Prev.includes(foldName)) {
-          return Prev.filter(item => item !== foldName);
-        }
-      } else if (Prev !== foldName) {
-        return [foldName];
+  const handleFolder = (foldItem) => {
+    setSeletedFolder && setSeletedFolder((Prev) => {
+      const isDuplicate = Prev.some(item => item.id === foldItem.id);
+
+      if (!isDuplicate) {
+        return [...Prev, foldItem];
       }
-      return Prev;
-    });
+      return Prev.filter(item => item.id !== foldItem.id);
+    })
   }
 
   return (
     <Container>
-      {archiveFolderData.length > 0 && archiveFolderData?.map((item, index) => (
-        <FolderContainer
-          key={index}
-          onClick={() => handleFolder(item.data.folderName)}
-          searchKeyword={searchKeyword?.includes(item.data.folderName)}
-        >
-          <FolderCover>
-            {item.data.folderImages.map((i, index) => (
-              <img key={index} src={i} alt="" />
-            ))}
-          </FolderCover>
-          <FolderContent>
-            <p className="folder-name">{item.data.folderName}</p>
-            <span className="folder-totalpost">{`게시물 ${item.data.uidContainers.length}개`}</span>
-          </FolderContent>
-          <BookmarkBtnPosition onClick={(event) => {
-            event.stopPropagation();
-            handleBookMark(item.id, item.data.bookmark)
-          }}>
-            <IconBookmark
-              fill={item.data.bookmark ? 'rgba(0, 0, 0, 0)' : '#FFDF44'}
-              stroke={item.data.bookmark ? '#C4C4C4' : '#FFDF44'}
-            />
-          </BookmarkBtnPosition>
-        </FolderContainer>
-      ))}
+      {archiveFolderData.length > 0 && archiveFolderData.map((item, index) => {
+        return (
+          <FolderContainer
+            key={index}
+            onClick={() => handleFolder(item)}
+            seletedFolder={seletedFolder.some(i => i.id === item.id)}
+          >
+            <FolderCover>
+              {
+                item.data.folderImages.concat(Array(4).fill(logo)).slice(0, 4).map((src, index) => (
+                  <img key={index} src={src} alt="" />
+                ))
+              }
+            </FolderCover>
+            <FolderContent>
+              <p className="folder-name">{item.data.folderName}</p>
+              <span className="folder-totalpost">{`게시물 ${item.data.postUids.length}개`}</span>
+            </FolderContent>
+            <BookmarkBtnPosition onClick={(event) => {
+              event.stopPropagation();
+              handleBookMark(item.id, item.data)
+            }}>
+              <IconBookmark
+                fill={item.data.bookmarkedUsers.includes(uid) ? '#FFDF44' : 'rgba(0, 0, 0, 0)'}
+                stroke={item.data.bookmarkedUsers.includes(uid) ? '#FFDF44' : '#C4C4C4'}
+              />
+            </BookmarkBtnPosition>
+          </FolderContainer>
+        );
+      })}
 
-      {isAddButton &&
+      {archiveFolderData.length > 0 && isAddButton &&
         <AddFolderBtn onClick={() => {
           closeModal && closeModal();
           setTimeout(() => {
@@ -89,10 +98,9 @@ export const FolderList: React.FC<FolderListProps> = ({ fetchData, archiveFolder
         }}>
         </AddFolderBtn>
       }
-
     </Container>
   );
-};
+}
 
 const Container = styled.div`
   max-height: calc(100% - 170px);
@@ -127,12 +135,12 @@ const Container = styled.div`
   } */
 `;
 
-const FolderContainer = styled.a<{ searchKeyword: any }>`
+const FolderContainer = styled.a<{ seletedFolder: any }>`
   position: relative;
   height: auto;
   padding: 10px;
   border-radius: 20px;
-  outline: ${(props) => props.searchKeyword ? "2px solid var(--main-color)" : ""};
+  outline: ${(props) => props.seletedFolder ? "2px solid var(--main-color)" : ""};
 `;
 
 const FolderCover = styled.div`
@@ -141,24 +149,27 @@ const FolderCover = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  aspect-ratio: 1 / 1;
+  min-width: calc(100vw / 2 - 43px);
   
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    aspect-ratio: 1 / 1;
   }
 `;
 
 const AddFolderBtn = styled.div`
   position: relative;
   margin: 10px;
-  height: calc(100% - 66px);
+  /* height: calc(100% - 66px); */
+  aspect-ratio: 1 / 1;
   border-radius: 20px;
   background-color: var(--gray200-color);
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 
   &::before {
     position: absolute;

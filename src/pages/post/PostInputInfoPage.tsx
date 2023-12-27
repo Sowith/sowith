@@ -76,6 +76,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
         <ReadonlyTextarea
           value={postForm.location}
           type="text"
+          readonly="readonly"
           id="addLocation"
           label={'위치 추가'}
           height={"50px"}
@@ -84,8 +85,9 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
           onClick={() => handleModal(1)}
         />
         <ReadonlyTextarea
-          value={postForm.folder.join(' / ')}
+          value={postForm.folder.map(item => item.data.folderName).join(' / ')}
           type="text"
+          readonly="readonly"
           id="addFolder"
           label={'폴더 지정'}
           placeholder="폴더 지정"
@@ -97,6 +99,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
           isHashTagSelected={isHashTagSelected}
           tagname={"hashtag"}
           type="text"
+          readonly="readonly"
           id="addHashTag"
           label={'해쉬 태그'}
           placeholder="해쉬 태그"
@@ -108,6 +111,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
           isUserTagSelected={isUserTagSelected}
           tagname={"usertag"}
           type="text"
+          readonly="readonly"
           id="addUserTag"
           label={'유저 태그'}
           placeholder="유저 태그"
@@ -128,7 +132,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
               case 4:
                 return <PostSelectUserTagPage closeModal={closeModal} />;
               case 5:
-                return <PostCreateFolderPage closeModal={closeModal} />;
+                return <PostCreateFolderPage closeModal={closeModal} openModal={openModal} setModalIndex={setModalIndex} />;
             }
           })()
         }
@@ -139,10 +143,10 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
 
 const WrapStyle = styled.div`
   position: relative;
-  width: 100%;
   margin: 0 auto;
-  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-bottom: 24px;
+  box-sizing: border-box;
 `;

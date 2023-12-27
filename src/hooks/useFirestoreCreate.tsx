@@ -23,7 +23,6 @@ export const useFirestoreCreate = (collectionName) => {
       console.error('데이터 생성을 실패했습니다:', error);
     }
   }
-
   const CreateDocumentWithCustomID = async (documentId, data) => {
     try {
       const documentRef = doc(appFireStore, collectionName, documentId);
@@ -34,6 +33,7 @@ export const useFirestoreCreate = (collectionName) => {
       console.error('데이터 생성에 실패했습니다: ', error);
     }
   };
+
 
   const CreateDocumentManual = async (data, documentId) => {
     try {

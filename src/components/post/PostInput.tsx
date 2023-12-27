@@ -12,6 +12,7 @@ import { ReactComponent as IconMoveArrow } from "../../assets/icon/icon-move-arr
 interface InputProps {
   value?: any;
   id: string;
+  readonly?: string;
   label: string;
   icon: string;
   type: string;
@@ -27,7 +28,7 @@ interface InputProps {
 
 export const WritableTextarea: React.FC<InputProps> = (props) => {
 
-  const [inputKeyword, setInputKeyword] = useState<string>("");
+  const [inputKeyword, setInputKeyword] = useState<string>(props.value);
 
   const setPostForm = useSetRecoilState(postFormState)
 
@@ -137,6 +138,7 @@ const CommonStyle = css`
   border-radius: 5px;
   font-size: 16px;
   line-height: 1.4;
+  overflow-y: hidden;
 
   &::placeholder {
     color: var(--gray200-color);

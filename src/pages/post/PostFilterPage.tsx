@@ -1,24 +1,23 @@
-import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { SelectedFilter } from 'components/post/PostSelectedFilter'
 import { FilterPreview } from 'components/post/PostFilterPreview'
 
-import iconImageUpload from '../../assets/icon/icon-image-upload.svg'
+import { useRecoilValue } from 'recoil'
+import postFormState from 'recoil/postFormState'
 
-// interface FilterDataItem {
-//   src: string;
-//   filter: string;
-// }
+import iconImageUpload from '../../assets/icon/icon-image-upload.svg'
 
 interface FilterProps {
   filterStorage: any;
   setFilterStorage: React.Dispatch<React.SetStateAction<any>>;
-  selectedPicture : string;
+  selectedPicture: string;
   setSelectedPicture: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const PostFilterPage: React.FC<FilterProps> = ({ filterStorage, setFilterStorage, selectedPicture, setSelectedPicture }) => {
+
+  const postForm = useRecoilValue(postFormState)
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -29,16 +28,17 @@ export const PostFilterPage: React.FC<FilterProps> = ({ filterStorage, setFilter
       }));
       setFilterStorage(imageArray);
     }
-  }; 
+  };
 
   const handleUploadClick = () => {
     const fileInput = document.getElementById("fileInput") as HTMLInputElement;
-    fileInput && fileInput.click(); 
+    fileInput && fileInput.click();
   };
+
 
   return (
     <WrapperStyle>
-      {filterStorage.length === 0 ? (
+      {postForm.picture.length === 0 ? (
         <ImageUploadArea>
           <UploadBtn onClick={handleUploadClick}>
             <label htmlFor="fileInput" className="upload-area"></label>
@@ -48,7 +48,7 @@ export const PostFilterPage: React.FC<FilterProps> = ({ filterStorage, setFilter
         </ImageUploadArea>
       ) : (
         <>
-          <SelectedFilter filterStorage={filterStorage} setSelectedPicture={setSelectedPicture} />
+          <SelectedFilter filterStorage={filterStorage} setFilterStorage={setFilterStorage} setSelectedPicture={setSelectedPicture} />
           <FilterPreview selectedPicture={selectedPicture} filterStorage={filterStorage} setFilterStorage={setFilterStorage} />
         </>
       )
@@ -61,15 +61,13 @@ const WrapperStyle = styled.div`
   height: inherit;  
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 40px;
 `;
 
 const ImageUploadArea = styled.div`
   position: relative;
   text-align: center;
   display: inline-block;
-  min-height: 70%;
+  min-height: 60%;
   width: 100%;
   border-radius: 5px;
   box-sizing: border-box;

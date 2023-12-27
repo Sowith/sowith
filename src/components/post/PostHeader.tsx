@@ -5,17 +5,19 @@ import { useFirestoreCreate } from "hooks/useFirestoreCreate";
 import { useFirestoreUpdate } from "hooks/useFirestoreUpdate";
 import { useCreateKeywords } from "hooks/useCreateKeywords";
 import { useImageUpload } from "hooks/useImageUpload";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import postFormState from "recoil/postFormState";
-import { v4 as uuidv4 } from 'uuid';
+import { Timestamp } from 'firebase/firestore';
+import { arrayUnion } from "firebase/firestore";
+
 
 import { useAlertControl } from "hooks/useAlertControl";
 import { AlertBox } from "components/common/AlertBox";
 import { Button } from "../common/Button";
-import getUserInfo from "utils/getUserInfo";
 
 import { ReactComponent as IconArrow } from "../../assets/icon/icon-back-arrow.svg";
-import { ReactComponent as IconCamera } from "../../assets/icon/icon-camera.svg";
+import { ReactComponent as IconReupload } from "../../assets/icon/icon-reupload.svg";
+import { useEffect } from "react";
 
 interface HeaderProps {
   content: string;
@@ -27,62 +29,94 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = (props) => {
 
-  const randomDoc = uuidv4()
+  const [postForm, setPostForm] = useRecoilState(postFormState);
 
-  const uid = getUserInfo();
-
-  const { openAlert, AlertComponent } = useAlertControl();
-
-  const postForm = useRecoilValue(postFormState);
-
-  const navigate = useNavigate();
-
+  const { CreateDocument } = useFirestoreCreate('posts');
   const { imagesUpload } = useImageUpload()
-  const { CreateDocumentManual } = useFirestoreCreate('posts');
   const { generateKeywordCombinations } = useCreateKeywords();
+  const { openAlert, AlertComponent } = useAlertControl();
+  const navigate = useNavigate();
+  const createdAt = Timestamp.fromDate(new Date());
 
-  // const updateTags = () => {
-  //   const { UpdateField } = useFirestoreUpdate('tags');
-  //   UpdateField(postForm.hashtag, 
-  //   {
-  //     tagNameKeywords: generateKeywordCombinations(),
-  //     taggedFolderIDs: null,
-  //     taggedPostIDs: randomDoc,
-  //   });
-  // }
+  const UpdateTags = (postId) => {
+    const { UpdateField } = useFirestoreUpdate('tags');
+    const { CreateDocumentWithCustomID } = useFirestoreCreate('tags');
 
-  // const updateField = () => {
-  //   const { UpdateField } = useFirestoreUpdate('folders');
-  //   UpdateField('', 
-  //   {
-  //     uidContainers: uid,
-  //   });
-  // }
+    postForm.hashtag.map(async (item) => {
+      const isExistTag = await UpdateField(
+        {
+          taggedPostIDs: arrayUnion(postId),
+        }, item, false);
+      !isExistTag && CreateDocumentWithCustomID(item, {
+        createdAt: createdAt,
+        tagNameKeywords: generateKeywordCombinations(item),
+        taggedFolderIDs: [],
+        taggedPostIDs: arrayUnion(postId),
+      })
+    })
+  }
+
+  const UpdateFolders = (postId) => {
+    const { UpdateField } = useFirestoreUpdate('folders');
+    postForm.folder.map((item) => {
+      UpdateField(
+        {
+          postUids: arrayUnion(postId),
+        }, item.id);
+    })
+  }
+
+  const resetPostForm = () => {
+    setPostForm({
+      picture: [],
+      phrase: '',
+      location: '',
+      folder: [],
+      hashtag: [],
+      usertag: []
+    })
+  }
+
+  const isEmpty = (item) => {
+    for (let key in item) {
+      if (Array.isArray(item[key]) && item[key].length > 0) {
+        return false;
+      } else if (typeof item[key] === 'string' && item[key].trim() !== "") {
+        return false;
+      }
+      return true;
+    }
+  }
+
+  useEffect(() => {
+    !isEmpty(postForm) && openAlert();
+  }, [])
 
   const handleUpload = async () => {
     const uploadPromises = postForm.picture.map((item) => {
       return imagesUpload("post", item.src, item.filter);
     });
 
-
     try {
-      // 모든 이미지 업로드를 기다림
       const downloadURLs = await Promise.all(uploadPromises);
 
-      CreateDocumentManual({
+      const postId = await CreateDocument({
         comments: [],
         content: postForm.phrase,
         images: downloadURLs,
         likedUsers: [],
         location: postForm.location,
         hashtags: postForm.hashtag,
-        tagUsers: postForm.usertag,
-        uuidv4
-      }, randomDoc);
+        tagUsers: postForm.usertag.map(item => item.id),
+      });
+
+      UpdateTags(postId)
+      UpdateFolders(postId)
+
+      resetPostForm()
 
     } catch (error) {
       console.error("이미지 업로드 중 오류 발생:", error);
-      // 오류 처리
     }
   };
 
@@ -106,18 +140,25 @@ export const Header: React.FC<HeaderProps> = (props) => {
     props.setStep(Prev => Prev === 1 ? Prev - 1 : Prev)
   }
 
+
   return (
     <>
       <AlertComponent>
-        {props.step === 2 && !postForm.location ?
-          <AlertBox alertMsg={"위치 지정은 필수입니다."} choice={["확인"]} /> :
-          <AlertBox alertMsg={"사진 선택은 필수입니다."} choice={["확인"]} />}
+        {props.step === 0 && props.filterStorageLength === 0 && <AlertBox alertMsg={"사진 선택은 필수입니다."} choice={["확인"]} />}
+        {props.step === 0 && !isEmpty(postForm) && <AlertBox alertMsg={"이전에 작성하던 데이터가 있습니다."} choice={["불러오기", "새로작성"]} handleFunc={() => resetPostForm()} />}
+        {props.step === 1 && !postForm.location && <AlertBox alertMsg={"위치 선택은 필수입니다."} choice={["확인"]} />}
       </AlertComponent>
       <WrapStyle>
         <IconArrow width={30} onClick={handleGoBack} />
-        <CameraStyle step={props.step}>
-          <IconCamera />
-        </CameraStyle>
+        {props.step === 0 && props.filterStorageLength > 0 &&
+          <CameraStyle onClick={() =>
+            setPostForm((Prev) => ({
+              ...Prev,
+              picture: []
+            }))}>
+            <IconReupload />
+          </CameraStyle>
+        }
         <Button
           onClick={handleGoForward}
           type="button"
@@ -134,25 +175,28 @@ export const Header: React.FC<HeaderProps> = (props) => {
 };
 
 const WrapStyle = styled.div`
-  width: 100%;
+  width: calc(100% - 40px);
+  z-index: 99;
+  background-color: #FFF;
   /* min-width: 320px;
   max-width: 768px; */
-  position: relative;
+  position: fixed;
+  top: 0;
   margin: auto;
-  padding-bottom: 24px;
+  padding-top: 25px;
+  padding-bottom: 25px;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-const CameraStyle = styled.div<{ step: number }>`
-  display: ${(props) => props.step !== 0 ? "none" : "block"};
+const CameraStyle = styled.div`
   position: absolute;
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  padding: 6px;
+  padding: 6px 6px 6px 8px;
   box-sizing: border-box;
   background-color: var(--main-color);
   right: 65px;

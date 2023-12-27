@@ -16,12 +16,13 @@ interface SelectHashTagProps {
 
 export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ closeModal }) => {
 
-  const { ReadField } = useFirestoreRead('tags')
+  const { ReadField, ReadDocument } = useFirestoreRead('tags')
 
   const [postForm, setPostForm] = useRecoilState(postFormState)
   const [selectTag, setSelectTag] = useState<string[]>(postForm.hashtag);
   const [searchKeyword, setSearchKeyword] = useState<any>('');
   const [archiveTagData, setArchiveTagData] = useState<any>([]);
+  const [isMatched, setIsMatched] = useState<boolean>();
 
   const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.currentTarget.dataset.id;
@@ -46,11 +47,14 @@ export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ closeModal
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      return await ReadField('tagNameKeywords', 'array-contains', searchKeyword);
+    const searchCollectionData = async () => {
+      const data = await ReadDocument(searchKeyword === '' ? ' ' : searchKeyword);
+      setIsMatched(!!data ? true : false)
+      return ReadField('tagNameKeywords', 'array-contains', searchKeyword);
     }
-    fetchData().then(response => setArchiveTagData(response));
+    searchCollectionData().then(response => setArchiveTagData(response));
   }, [searchKeyword])
+
 
   return (
     <>
@@ -67,10 +71,16 @@ export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ closeModal
 
       <TagList>
         <>
+          {!isMatched && searchKeyword.length > 0 &&
+            <Tag onClick={handleTag} data-id={searchKeyword}>
+              <p>{searchKeyword}</p>
+              <span>태그 생성하기</span>
+            </Tag>
+          }
           {archiveTagData.map((item, index) =>
             <Tag onClick={handleTag} key={index} data-id={item.id}>
               <p>{item.id}</p>
-              <span>{item.data.taggedPostIDs}</span>
+              <span className='posts-length'>{item.data.taggedPostIDs.length}</span>
             </Tag>
           )}
         </>
@@ -155,7 +165,7 @@ const Tag = styled.li`
     font-size: 8px;
     color: #C4C4C4;
   }
-  span::before {
+  .posts-length::before {
     content: "게시물 ";
   }
 `;
