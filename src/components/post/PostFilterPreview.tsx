@@ -13,11 +13,6 @@ const filterData = [
   // { filterName: "그림자", filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5))" },
 ];
 
-// interface FilterDataItem {
-//   src: string;
-//   filter: string;
-// }
-
 interface FilterPreviewProps {
   filterStorage: any;
   setFilterStorage: React.Dispatch<React.SetStateAction<any>>;
@@ -41,7 +36,7 @@ export const FilterPreview: React.FC<FilterPreviewProps> = ({ filterStorage, set
       return updatedPrev;
     });
   }, [currentIndex]);
-  
+
   useEffect(() => {
     const targetIndex = filterStorage.findIndex((item) => item.src === selectedPicture)
     if (targetIndex !== -1) {
@@ -55,7 +50,9 @@ export const FilterPreview: React.FC<FilterPreviewProps> = ({ filterStorage, set
     if (sliderRef.current) {
       const scrollPosition = sliderRef.current.scrollLeft;
       const itemWidth = 135;
-      const newIndex = Math.floor(scrollPosition / itemWidth);
+      const minIndex = 0;
+      const maxIndex = filterData.length - 1;
+      const newIndex = Math.min(Math.max(Math.floor(scrollPosition / itemWidth), minIndex), maxIndex);
       setCurrentIndex(newIndex);
       setStartXPoint(scrollPosition)
     }
@@ -102,6 +99,7 @@ export const FilterPreview: React.FC<FilterPreviewProps> = ({ filterStorage, set
 
 const WrapperStyle = styled.div`
   position: relative;
+  margin-top: 35px;
 
   &::before {
     content: "";
@@ -119,8 +117,9 @@ const WrapperStyle = styled.div`
 
 const SliderContainer = styled.div`
   overflow-x: scroll;
+  /* scroll-behavior: smooth; */
   padding-top: 2px;
-  height: 165px;
+  min-height: 170px;
 
   &::-webkit-scrollbar {
     width: 0;
@@ -165,6 +164,7 @@ const FilterName = styled.div`
   color: #FFF;
   font-family: var(--font--Bold);
   background-color: rgba(0, 0, 0, 0.5);
+  
 `;
 
 const Image = styled.img<{ filter: string }>`

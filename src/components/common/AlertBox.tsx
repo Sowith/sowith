@@ -12,7 +12,7 @@ export const AlertBox: React.FC<AlertBoxProps> = ({ alertMsg, choice, handleFunc
       <AlertStyle>
         <p>{alertMsg}</p>
         <ButtonStyle>
-          <button className='cancel' onClick={handleFunc}>{choice[0]}</button>
+          <button className='cancel'>{choice[0]}</button>
           {choice[1] && <button className='confirm' onClick={handleFunc}>{choice[1]}</button>}
         </ButtonStyle>
       </AlertStyle>
