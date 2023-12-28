@@ -1,13 +1,38 @@
 import styled from "styled-components"
 
+import { useFirestoreDelete } from "hooks/useFirestoreDelete"
+
 import { ReactComponent as IconTrash } from "../../assets/icon/icon-trash-delete.svg"
 import { ReactComponent as IconShare } from "../../assets/icon/icon-share.svg"
 import { ReactComponent as IconLocation } from "../../assets/icon/icon-location-pin.svg"
+import { useEffect } from "react"
 
-export const MainPostMoreMenu = ({ closeModal }) => {
+interface MainPostMoreMenuProps {
+  closeModal: () => void;
+  selectedPostId: string;
+  setPostItemData: React.Dispatch<React.SetStateAction<any>>;
+}
+
+export const MainPostMoreMenu: React.FC<MainPostMoreMenuProps> = ({ closeModal, selectedPostId, setPostItemData }) => {
+
+  const { DeleteDocument } = useFirestoreDelete('posts');
+
+
+  const handleDeleteOrReport = async () => {
+
+    const isResponse = await DeleteDocument(selectedPostId)
+    isResponse && setPostItemData(prev => {
+      const response = prev.filter(item => item.id !== selectedPostId)
+      console.log('response', response);
+
+      return response
+    });
+    closeModal();
+  }
+
   return (
     <WrapStyle>
-      <button className="actions-btn" onClick={closeModal}>
+      <button className="actions-btn" onClick={handleDeleteOrReport}>
         <IconTrash height={30} />
         <span>삭제</span>
       </button>

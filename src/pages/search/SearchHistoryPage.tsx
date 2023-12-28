@@ -9,10 +9,11 @@ import {
 	HistoryItemProps,
 } from 'components/search/SearchHistoryItem';
 import { SearchBar } from 'components/search/SearchBar';
+import getUserInfo from 'utils/getUserInfo';
 
 import soWithLogo from '../../assets/icon/icon-sowith-heart.svg';
 
-interface SearchHistoryProps {}
+interface SearchHistoryProps { }
 
 export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 	const [searchHistoryData, setSearchHistoryData] = useState([]);
@@ -22,8 +23,8 @@ export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 
 	const firestoreReader = useFirestoreRead('users');
 	const { deleteSearchHistory } = useDeleteSearchHistory();
-	const token = sessionStorage.getItem('token');
-	const uid = token !== null ? JSON.parse(token).uid : null;
+
+	const uid = getUserInfo();
 
 	useEffect(() => {
 		const fetchUserSearchHistory = async () => {

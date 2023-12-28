@@ -2,18 +2,20 @@ import { useState } from 'react';
 import { appAuth } from '../firebase/config';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useFirestoreCreate } from './useFirestoreCreate';
+import { useCreateKeywords } from './useCreateKeywords';
 
 interface UserProfileDocument {
-	uid: string;
-	userId: string;
-	userName: string;
+	accountId: string;
+	accountName: string;
+	accountIdKeywords: string[];
+	accountNameKeywords: string[];
 	description: string;
 	createdFolders: string[];
-	bookmarkedFolders: string[];
 	followers: string[];
 	following: string[];
 	posts: string[];
 	profileImageURL: string;
+	bookmarkedFolders: string[];
 	searchHistories: {
 		title: string;
 		relatedPost?: number;
@@ -36,6 +38,7 @@ interface SignUpHook {
 }
 
 export const useSignUpHook = (): SignUpHook => {
+	const { generateKeywordCombinations } = useCreateKeywords();
 	const [error, setError] = useState<string | null>(null);
 	const [isPending, setIsPending] = useState<boolean>(false);
 	const { CreateDocumentWithCustomID } = useFirestoreCreate('users');
@@ -62,9 +65,10 @@ export const useSignUpHook = (): SignUpHook => {
 			}
 
 			const customUserDocument: UserProfileDocument = {
-				uid: user.uid,
-				userId: myAccountID,
-				userName: myName,
+				accountId: myAccountID,
+				accountName: myName,
+				accountIdKeywords: generateKeywordCombinations(myAccountID),
+				accountNameKeywords: generateKeywordCombinations(myName),
 				description: '',
 				createdFolders: [],
 				bookmarkedFolders: [],

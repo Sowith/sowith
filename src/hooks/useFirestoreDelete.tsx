@@ -1,9 +1,10 @@
 import { appFireStore } from '../firebase/config';
 import { doc, deleteDoc, getDoc, updateDoc } from 'firebase/firestore';
+import getUserInfo from 'utils/getUserInfo';
 
 export const useFirestoreDelete = (collectionName) => {
-	const token = sessionStorage.getItem('token');
-	const uid = token !== null ? JSON.parse(token).uid : null;
+
+	const uid = getUserInfo();
 
 	const DeleteDocument = async (documentId) => {
 		try {
@@ -15,8 +16,10 @@ export const useFirestoreDelete = (collectionName) => {
 					// 문서 삭제
 					await deleteDoc(docRef);
 					console.log('데이터가 성공적으로 삭제되었습니다');
+					return true
 				} else {
 					console.error('해당 문서를 찾을 수 없거나 권한이 없습니다');
+					return false
 				}
 			} else {
 				console.error('UID가 없습니다');
@@ -26,8 +29,13 @@ export const useFirestoreDelete = (collectionName) => {
 		}
 	};
 
-	const DeleteField = async (documentId, fieldName, elementToDelete = '') => {
-		console.log(documentId, fieldName, elementToDelete);
+	const DeleteField = async (
+		documentId: string,
+		fieldName: string,
+		elementsToDelete: any = [],
+		attributesToDelete: any = []
+	) => {
+
 		try {
 			if (uid !== null) {
 				const docRef = doc(appFireStore, collectionName, documentId);
@@ -38,23 +46,30 @@ export const useFirestoreDelete = (collectionName) => {
 					const arrayField = existingData[fieldName];
 
 					if (Array.isArray(arrayField)) {
-						if (arrayField.includes(elementToDelete)) {
-							const newArrayField = arrayField.filter(
-								(item) => item !== elementToDelete
-							);
+						const elementsToDeleteArray = Array.isArray(elementsToDelete) ? elementsToDelete : [elementsToDelete];
 
-							const updateData = {};
-							updateData[fieldName] = newArrayField;
+						const newArrayField = arrayField.filter(item => {
+							if (typeof item === 'object') {
+								return !attributesToDelete.every((attribute, index) => {
+									if (attribute === 'createdAt') {
+										const createdAtTimestamp = {
+											seconds: item[attribute].seconds,
+											nanoseconds: item[attribute].nanoseconds
+										};
+										return createdAtTimestamp.seconds === (elementsToDeleteArray[index] as any).seconds && createdAtTimestamp.nanoseconds === (elementsToDeleteArray[index] as any).nanoseconds;
+									}
+									return item[attribute] === elementsToDeleteArray[index];
+								});
+							}
+							return !elementsToDeleteArray.includes(item);
+						});
 
-							await updateDoc(docRef, updateData);
-							console.log(
-								`필드 '${fieldName}'의 '${elementToDelete}' 원소가 성공적으로 삭제되었습니다`
-							);
-						} else {
-							console.error(
-								`필드 '${fieldName}'에 '${elementToDelete}' 원소가 존재하지 않습니다.`
-							);
-						}
+						const updateData = {};
+						updateData[fieldName] = newArrayField;
+
+						await updateDoc(docRef, updateData);
+						console.log(`필드 '${fieldName}'의 일부 원소가 성공적으로 삭제되었습니다`);
+
 					} else {
 						const updateData = {};
 						updateData[fieldName] = null;
@@ -71,37 +86,10 @@ export const useFirestoreDelete = (collectionName) => {
 		} catch (error) {
 			console.error('원소 삭제를 실패했습니다:', error);
 		}
-	};
+	}
 
-	const DeleteSearchHistoryEntry = async (documentId, searchHistoryIndex) => {
-		try {
-			if (uid !== null) {
-				const docRef = doc(appFireStore, collectionName, documentId);
-				const docSnapshot = await getDoc(docRef);
-				if (docSnapshot.exists() && docSnapshot.data().uid === uid) {
-					const existingData = docSnapshot.data();
-					const searchHistories = existingData.searchHistories || [];
 
-					if (searchHistories.length > searchHistoryIndex) {
-						// 지정된 검색 기록 항목 삭제
-						searchHistories.splice(searchHistoryIndex, 1);
-
-						// 수정된 searchHistories 배열로 문서 업데이트
-						await updateDoc(docRef, { searchHistories });
-						console.log('검색 기록이 성공적으로 삭제되었습니다');
-					} else {
-						console.error('검색 기록을 찾을 수 없습니다');
-					}
-				} else {
-					console.error('해당 문서를 찾을 수 없거나 권한이 없습니다.');
-				}
-			} else {
-				console.error('UID가 없습니다.');
-			}
-		} catch (error) {
-			console.error('검색 기록 삭제를 실패했습니다:', error);
-		}
-	};
-
-	return { DeleteDocument, DeleteField, DeleteSearchHistoryEntry };
+	return { DeleteDocument, DeleteField };
 };
+
+

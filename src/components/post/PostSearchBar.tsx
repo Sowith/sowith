@@ -7,6 +7,7 @@ import { UserTag } from "../common/UserTag";
 import IconCurrentLocation from "../../assets/icon/icon-current-location-.svg";
 
 interface SearchBarProps {
+  value?: any;
   id: string;
   icon: string;
   tagname?: string;
@@ -18,6 +19,7 @@ interface SearchBarProps {
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
+  value,
   id,
   icon,
   tagname,
@@ -28,8 +30,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   setSearchKeyword,
 }) => {
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState<any>(value);
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   const handleInputBlur = () => {
     if (wrapRef.current) {
@@ -39,10 +42,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-  };
 
-  const handleOnBlur = () => {
-    setSearchKeyword && setSearchKeyword(inputValue);
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      setSearchKeyword && setSearchKeyword(event.target.value);
+    }, 300);
   };
 
   const handleDeleteTag = (index: number) => {
@@ -53,8 +60,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     handleInputBlur();
   }, [selectTag]);
 
+  useEffect(() => {
+    setInputValue(searchKeyword);
+  }, [searchKeyword])
+
   return (
-    <WrapStyle onBlur={handleInputBlur} ref={wrapRef}>
+    <WrapStyle ref={wrapRef}>
+      {/* <WrapStyle onBlur={handleInputBlur} ref={wrapRef}> */}
       {selectTag?.map((tag, index) =>
         tagname === "hashtag" ? (
           <HashTag key={index} index={index} tag={tag} handleDeleteTag={handleDeleteTag} />
@@ -67,9 +79,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         <input
           id={id}
           type="text"
-          value={inputValue || searchKeyword}
+          value={inputValue || value}
           onChange={handleInputChange}
-          onBlur={handleOnBlur}
+          // onBlur={handleOnBlur}
           placeholder={placeholder}
         />
         <IconHashTagPosition>

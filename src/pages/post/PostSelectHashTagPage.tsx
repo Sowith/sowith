@@ -1,66 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
+
+import { useRecoilState } from "recoil";
+import postFormState from "recoil/postFormState";
 
 import { SearchBar } from "../../components/post/PostSearchBar";
 import { Button } from "../../components/common/Button"
 
 import IconHashTag from "../../assets/icon/icon-hash-tag.svg";
-
-interface PostInfo {
-  phrase: string,
-  location: string,
-  folder: string,
-  hashtag: string[],
-  usertag: string[],
-}
+import { useFirestoreRead } from "hooks/useFirestoreRead";
 
 interface SelectHashTagProps {
-  setPostInfo: React.Dispatch<React.SetStateAction<PostInfo>>
-  closeModal: () => void; 
+  closeModal: () => void;
 }
 
-interface TagData {
-  tagName: string;
-  postCount?: number;
-}
+export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ closeModal }) => {
 
-export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ setPostInfo, closeModal }) => {
+  const { ReadField, ReadDocument } = useFirestoreRead('tags')
 
-  const tagData: TagData[] = [
-    {
-      tagName: '당근노맛'
-    },
-    {
-      tagName: '당근',
-      postCount: 4300
-    },
-    {
-      tagName: '당근케이크',
-      postCount: 2100
-    },
-    {
-      tagName: '당근마켓',
-      postCount: 1000
-    },
-    {
-      tagName: '당근라페',
-      postCount: 938
-    },
-    {
-      tagName: '당근김밥',
-      postCount: 500
-    },
-    {
-      tagName: '당근요리',
-      postCount: 416
-    },
-  ];
-
-  // const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [searchKeyword, setSearchKeyword] = useState<string | string[]>("");
-  const [selectTag, setSelectTag] = useState<string[]>([]);
-  const [archiveTagData, setArchiveTagData] = useState<TagData[]>(tagData);
-  
+  const [postForm, setPostForm] = useRecoilState(postFormState)
+  const [selectTag, setSelectTag] = useState<string[]>(postForm.hashtag);
+  const [searchKeyword, setSearchKeyword] = useState<any>('');
+  const [archiveTagData, setArchiveTagData] = useState<any>([]);
+  const [isMatched, setIsMatched] = useState<boolean>();
 
   const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.currentTarget.dataset.id;
@@ -75,12 +37,24 @@ export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ setPostInf
 
   const handleCloseModal = () => {
     closeModal();
-    setPostInfo(Prev => {
-      const updatedPostInfo = { ...Prev };
-      updatedPostInfo.hashtag = selectTag;
-      return updatedPostInfo;
-    });
+    setTimeout(() => {
+      setPostForm(Prev => {
+        const updatedPostInfo = { ...Prev };
+        updatedPostInfo.hashtag = selectTag;
+        return updatedPostInfo;
+      });
+    }, 400)
   }
+
+  useEffect(() => {
+    const searchCollectionData = async () => {
+      const data = await ReadDocument(searchKeyword === '' ? ' ' : searchKeyword);
+      setIsMatched(!!data ? true : false)
+      return ReadField('tagNameKeywords', 'array-contains', searchKeyword);
+    }
+    searchCollectionData().then(response => setArchiveTagData(response));
+  }, [searchKeyword])
+
 
   return (
     <>
@@ -97,10 +71,16 @@ export const PostSelectHashTagPage: React.FC<SelectHashTagProps> = ({ setPostInf
 
       <TagList>
         <>
+          {!isMatched && searchKeyword.length > 0 &&
+            <Tag onClick={handleTag} data-id={searchKeyword}>
+              <p>{searchKeyword}</p>
+              <span>태그 생성하기</span>
+            </Tag>
+          }
           {archiveTagData.map((item, index) =>
-            <Tag onClick={handleTag} key={index} data-id={item.tagName}>
-              <p>{item.tagName}</p>
-              <span>{item.postCount}</span>
+            <Tag onClick={handleTag} key={index} data-id={item.id}>
+              <p>{item.id}</p>
+              <span className='posts-length'>{item.data.taggedPostIDs.length}</span>
             </Tag>
           )}
         </>
@@ -124,7 +104,7 @@ const TagList = styled.ul`
   height: calc(100% - 170px);
   padding: 16px 13px 0;
   padding-right: 13px;
-  margin-right: -5px;
+  /* margin-right: -5px; */
   overflow-y: scroll;
 
   &::-webkit-scrollbar-corner {
@@ -185,7 +165,7 @@ const Tag = styled.li`
     font-size: 8px;
     color: #C4C4C4;
   }
-  span::before {
+  .posts-length::before {
     content: "게시물 ";
   }
 `;

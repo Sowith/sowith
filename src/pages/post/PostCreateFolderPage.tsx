@@ -1,122 +1,166 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { styled } from "styled-components";
+
+import { useFirestoreRead } from "hooks/useFirestoreRead";
+import { useFirestoreUpdate } from "hooks/useFirestoreUpdate";
+import { useFirestoreCreate } from "hooks/useFirestoreCreate";
+import { useCreateKeywords } from "hooks/useCreateKeywords";
+import { arrayUnion } from "firebase/firestore";
+import { Timestamp } from 'firebase/firestore';
+import { useAlertControl } from "hooks/useAlertControl";
+import { AlertBox } from "components/common/AlertBox";
 
 import { Button } from "../../components/common/Button";
 import { SquareCheckBox } from "components/common/CheckBox";
 import { SearchBar } from "../../components/post/PostSearchBar";
 
-import { ReactComponent as IconCreateFolder } from "../../assets/icon/icon-create-folder.svg";
+import iconCreateFolder from "../../assets/icon/icon-create-folder.svg";
 import IconHashTag from "../../assets/icon/icon-hash-tag.svg";
 
-interface TagData {
-  tagName: string;
-  postCount?: number;
-}
-
-const tagData: TagData[] = [
-  {
-    tagName: '당근노맛'
-  },
-  {
-    tagName: '당근',
-    postCount: 4300
-  },
-  {
-    tagName: '당근케이크',
-    postCount: 2100
-  },
-  {
-    tagName: '당근마켓',
-    postCount: 1000
-  },
-  {
-    tagName: '당근라페',
-    postCount: 938
-  },
-  {
-    tagName: '당근김밥',
-    postCount: 500
-  },
-  {
-    tagName: '당근요리',
-    postCount: 416
-  },
-];
-
 interface CreateFolderProps {
+  openModal: () => void;
   closeModal: () => void;
+  setModalIndex?: React.Dispatch<React.SetStateAction<number>>
 }
 
-export const PostCreateFolderPage: React.FC<CreateFolderProps> = ({ closeModal }) => {
+export const PostCreateFolderPage: React.FC<CreateFolderProps> = ({ openModal, closeModal, setModalIndex }) => {
 
-
+  const { openAlert, AlertComponent } = useAlertControl();
+  const { ReadField, ReadDocument } = useFirestoreRead('tags')
+  const { UpdateField } = useFirestoreUpdate('tags');
+  const { CreateDocumentWithCustomID } = useFirestoreCreate('tags')
+  const { CreateDocument } = useFirestoreCreate('folders')
+  const { generateKeywordCombinations } = useCreateKeywords();
   const [selectTag, setSelectTag] = useState<string[]>([]);
-  // const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [searchKeyword, setSearchKeyword] = useState<string | string[]>("");
-  const [archiveTagData, setArchiveTagData] = useState<TagData[]>(tagData);
+  const [searchKeyword, setSearchKeyword] = useState<any>('')
+  const [archiveTagData, setArchiveTagData] = useState<any>([]);
   const [checkedBox, setCheckedBox] = useState<number[]>([]);
+  const [isMatched, setIsMatched] = useState<boolean>();
+  const [inputValue, setInputValue] = useState<any>('');
+
+  const createdAt = Timestamp.fromDate(new Date());
 
   const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.currentTarget.dataset.id;
-    targetElement && setSelectTag([...selectTag, targetElement]);
+    if (targetElement) {
+      const newTags = [...selectTag];
+      if (!newTags.includes(targetElement)) {
+        newTags.push(targetElement);
+        setSelectTag(newTags);
+      }
+    }
   };
+
+  const handleCloseModal = () => {
+    if (inputValue === '') {
+      openAlert()
+      return
+    }
+
+    closeModal();
+    setTimeout(async () => {
+      const folderUid = await CreateDocument({
+        bookmarkedUsers: [],
+        folderImages: [],
+        folderName: inputValue,
+        folderNameKeywords: generateKeywordCombinations(inputValue) || [],
+        hashtags: selectTag,
+        likedUsers: [],
+        postUids: [],
+        private: checkedBox.length > 0 ? true : false
+      })
+      selectTag.map(async item => {
+        const isExistTag = await UpdateField(
+          {
+            taggedFolderIDs: arrayUnion(folderUid)
+          }, item, false);
+        !isExistTag && CreateDocumentWithCustomID(item, {
+          createdAt: createdAt,
+          tagNameKeywords: generateKeywordCombinations(item),
+          taggedFolderIDs: arrayUnion(folderUid),
+          taggedPostIDs: [],
+        })
+      })
+      setModalIndex && setModalIndex(2)
+      setTimeout(() => openModal(), 50)
+    }, 400)
+  }
+
+  useEffect(() => {
+    const searchCollectionData = async () => {
+      const data = await ReadDocument(searchKeyword === '' ? ' ' : searchKeyword);
+      setIsMatched(!!data ? true : false)
+      return ReadField('tagNameKeywords', 'array-contains', searchKeyword);
+    }
+    searchCollectionData().then(response => setArchiveTagData(response));
+  }, [searchKeyword])
 
   return (
     <>
-        <FolderWrap>
-          <IconCreateFolderPosition>
-            <IconCreateFolder width={80} height={80} />
-          </IconCreateFolderPosition>
+      <FolderWrap>
+        <AlertComponent>
+          <AlertBox alertMsg={"폴더명을 반드시 입력해주세요."} choice={["확인"]} />
+        </AlertComponent>
+        <IconCreateFolder>
+        </IconCreateFolder>
 
-          <FolderInfo>
-            <InputStyle>
-              <label htmlFor={""}></label>
-              <input
-                id={""}
-                type="text"
-                placeholder={"폴더명"}
-              />
-            </InputStyle>
-            
-            <CheckPoint>
-              <SquareCheckBox id={0} checkedBox={checkedBox} setCheckedBox={setCheckedBox}/>
-              <p>비밀 폴더로 유지</p>
-            </CheckPoint>
-          </FolderInfo>
-        </FolderWrap>
+        <FolderInfo>
+          <InputStyle>
+            <label htmlFor={""}></label>
+            <input
+              id={""}
+              type="text"
+              placeholder={"폴더명"}
+              onChange={(e) => setInputValue(e.target.value)}
+              value={inputValue}
+            />
+          </InputStyle>
 
-        <SearchBar
-          id={'hashTagSearch'}
-          icon={IconHashTag}
-          tagname={'hashtag'}
-          placeholder={'태그 검색...'}
-          selectTag={selectTag}
-          setSelectTag={setSelectTag}
-          searchKeyword={searchKeyword}
-          setSearchKeyword={setSearchKeyword}
-        />
+          <CheckPoint>
+            <SquareCheckBox id={0} checkedBox={checkedBox} setCheckedBox={setCheckedBox} />
+            <p>비밀 폴더로 유지</p>
+          </CheckPoint>
+        </FolderInfo>
+      </FolderWrap>
 
-        <TagList>
-          <>
-          {archiveTagData.map((item, index) => 
-            <Tag onClick={handleTag} key={index} data-id={item.tagName}>
-              <p>{item.tagName}</p>
-              <span>{item.postCount}</span>
+      <SearchBar
+        id={'hashTagSearch'}
+        icon={IconHashTag}
+        tagname={'hashtag'}
+        placeholder={'태그 검색...'}
+        selectTag={selectTag}
+        setSelectTag={setSelectTag}
+        searchKeyword={searchKeyword}
+        setSearchKeyword={setSearchKeyword}
+      />
+
+      <TagList>
+        <>
+          {!isMatched && searchKeyword.length > 0 &&
+            <Tag onClick={handleTag} data-id={searchKeyword}>
+              <p>{searchKeyword}</p>
+              <span>태그 생성하기</span>
+            </Tag>
+          }
+          {archiveTagData.map((item, index) =>
+            <Tag onClick={handleTag} key={index} data-id={item.id}>
+              <p>{item.id}</p>
+              <span className='posts-length'>{item.data.taggedPostIDs.length}</span>
             </Tag>
           )}
-          </>
-        </TagList>
+        </>
+      </TagList>
 
-        <Button
-          type="button"
-          text={"생성"}
-          width={'90%'}
-          height={'41px'}
-          fontSize={'12px'}
-          margin={'16px 0 16px'}
-          fontFamily={'var(--font--Bold)'}
-          onClick={closeModal}
-        />
+      <Button
+        type="button"
+        text={"생성"}
+        width={'90%'}
+        height={'41px'}
+        fontSize={'12px'}
+        margin={'16px 0 16px'}
+        fontFamily={'var(--font--Bold)'}
+        onClick={handleCloseModal}
+      />
     </>
   );
 };
@@ -126,6 +170,7 @@ const FolderWrap = styled.div`
   margin: 50px 0 30px;
   width: 90%;
   display: flex;
+  gap: 30px;
   justify-content: space-between;
 `;
 
@@ -133,13 +178,11 @@ const FolderInfo = styled.div`
   width: 100%;
 `;
 
-const IconCreateFolderPosition = styled.div`
-  padding: 33px 30px 33px 40px;
-  box-sizing: border-box;
-  border-radius: 40px;
-  background-color: rgba(231, 231, 231, 1);
-  /* margin-top: 65px; */
-  margin-right: 30px;
+const IconCreateFolder = styled.div`
+  width: 40%;
+  aspect-ratio: 1 / 1;
+  background: url(${iconCreateFolder}) no-repeat center;
+  background-size: contain;
 `;
 
 const InputStyle = styled.div`
@@ -174,7 +217,7 @@ const TagList = styled.ul`
   height: calc(100% - 170px);
   padding: 16px 13px 0;
   padding-right: 13px;
-  margin-right: -5px;
+  /* margin-right: -5px; */
   overflow-y: scroll;
 
   &::-webkit-scrollbar-corner {

@@ -1,22 +1,18 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import styled, { css } from "styled-components";
+
+import { useSetRecoilState } from "recoil";
+import postFormState from "recoil/postFormState";
 
 import { HashTag } from "components/common/HashTag";
 import { UserTag } from "components/common/UserTag";
 
 import { ReactComponent as IconMoveArrow } from "../../assets/icon/icon-move-arrow.svg";
 
-interface PostInfo {
-  phrase: string,
-  location: string,
-  folder: string,
-  hashtag: string[],
-  usertag: string[],
-}
-
 interface InputProps {
-  value?: string;
+  value?: any;
   id: string;
+  readonly?: string;
   label: string;
   icon: string;
   type: string;
@@ -24,22 +20,23 @@ interface InputProps {
   height?: string;
   radius?: string;
   tagname?: string;
-  selectTag?: string[];
+  selectTag?: any;
   isUserTagSelected?: boolean;
   isHashTagSelected?: boolean;
   onClick?: () => void;
-  setPostInfo?: React.Dispatch<React.SetStateAction<PostInfo>>
 }
 
-export const TextArea: React.FC<InputProps> = (props) => {
+export const WritableTextarea: React.FC<InputProps> = (props) => {
 
-  const [inputKeyword, setInputKeyword] = useState<string>("");
+  const [inputKeyword, setInputKeyword] = useState<string>(props.value);
+
+  const setPostForm = useSetRecoilState(postFormState)
 
   const handleTextareaBlur = (event: React.FocusEvent<HTMLTextAreaElement>) => {
     const textarea = event.target;
     textarea.scrollTop = 0;
 
-    props.setPostInfo && props.setPostInfo(Prev => {
+    setPostForm(Prev => {
       const updatedPostInfo = { ...Prev };
       updatedPostInfo.phrase = inputKeyword;
       return updatedPostInfo;
@@ -59,12 +56,42 @@ export const TextArea: React.FC<InputProps> = (props) => {
       <ImgPosition>
         <img src={props.icon} alt="Icon" />
       </ImgPosition>
-      <TextareaStyle {...props} value={inputKeyword} onChange={handleInput} onBlur={handleTextareaBlur}></TextareaStyle>
+      <WritableTextareaStyle {...props} value={inputKeyword} onChange={handleInput} onBlur={handleTextareaBlur}></WritableTextareaStyle>
     </WrapStyle>
   );
 };
 
-export const Input: React.FC<InputProps> = (props) => {
+export const ReadonlyTextarea: React.FC<InputProps> = (props) => {
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const textareaRefCurrent = textareaRef.current;
+    if (textareaRefCurrent) {
+      textareaRefCurrent.style.height = "auto";
+      const newHeight = textareaRefCurrent.scrollHeight;
+      textareaRefCurrent.style.height = `${newHeight}px`;
+      textareaRefCurrent.scrollTop = textareaRefCurrent.scrollHeight;
+    }
+  }, [props.value])
+
+  return (
+    <WrapStyle>
+      <label htmlFor={props.id} className="a11y-hidden">
+        {props.label}
+      </label>
+      <ImgPosition>
+        <img src={props.icon} alt="Icon" />
+      </ImgPosition>
+      <ReadonlyTextareaStyle {...props} ref={textareaRef} rows={1}></ReadonlyTextareaStyle>
+      <IconPosition>
+        <IconMoveArrow />
+      </IconPosition>
+    </WrapStyle>
+  );
+};
+
+export const ReadonlyInput: React.FC<InputProps> = (props) => {
 
   return (
     <WrapStyle>
@@ -75,8 +102,8 @@ export const Input: React.FC<InputProps> = (props) => {
         <img src={props.icon} alt="Icon" />
       </ImgPosition>
       {(!props.isHashTagSelected && !props.isUserTagSelected) &&
-        <InputStyle {...props} autoComplete="off">
-        </InputStyle>
+        <ReadonlyInputStyle {...props} autoComplete="off">
+        </ReadonlyInputStyle>
       }
       {props.isHashTagSelected && (
         <TagStyle {...props}>
@@ -99,20 +126,19 @@ export const Input: React.FC<InputProps> = (props) => {
   );
 };
 
-
-
 const WrapStyle = styled.div`
   position: relative;
 `;
 
 const CommonStyle = css`
   width: 100%;
-  box-sizing: border-box;
   padding: 16px 16px 16px 45px;
+  box-sizing: border-box;
   border: 1px solid var(--gray300-color);
   border-radius: 5px;
   font-size: 16px;
   line-height: 1.4;
+  overflow-y: hidden;
 
   &::placeholder {
     color: var(--gray200-color);
@@ -132,14 +158,7 @@ const TagStyle = styled.div`
   margin-top: -7px;
 `;
 
-const InputStyle = styled.input<InputProps>`
-  ${CommonStyle}
-  height: auto;
-  box-sizing: border-box;
-  vertical-align: top;
-  `;
-
-const TextareaStyle = styled.textarea<InputProps>`
+const WritableTextareaStyle = styled.textarea<InputProps>`
   ${CommonStyle}
   height: ${(props) => props.height};
   display: block;
@@ -151,6 +170,29 @@ const TextareaStyle = styled.textarea<InputProps>`
   &::-webkit-scrollbar {
     width: 0;
   }
+`;
+
+const ReadonlyTextareaStyle = styled.textarea<InputProps>`
+${CommonStyle}
+padding: 16px 30px 16px 45px;
+height: ${(props) => props.height};
+display: block;
+resize: none;
+
+&::-webkit-scrollbar-corner {
+  display: none;
+}
+&::-webkit-scrollbar {
+  width: 0;
+}
+`;
+
+const ReadonlyInputStyle = styled.input<InputProps>`
+  ${CommonStyle}
+  display: block;
+  height: auto;
+  box-sizing: border-box;
+  height: 54px;
 `;
 
 const ImgPosition = styled.div`

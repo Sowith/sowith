@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { Input, TextArea } from "../../components/post/PostInput";
+import { useRecoilValue } from "recoil";
+import postFormState from "recoil/postFormState";
+
+import { WritableTextarea, ReadonlyTextarea, ReadonlyInput } from "../../components/post/PostInput";
 import { SelectedPicture } from "../../components/post/PostSelectedPicture";
 
 import IconPhraseWrite from "../../assets/icon/icon-phrase-write.svg";
@@ -16,14 +19,6 @@ import { PostSelectHashTagPage } from "./PostSelectHashTagPage";
 import { PostSelectUserTagPage } from "./PostSelectUserTagPage";
 import { PostCreateFolderPage } from "./PostCreateFolderPage";
 
-interface PostInfo {
-  phrase: string,
-  location: string,
-  folder: string,
-  hashtag: string[],
-  usertag: string[],
-}
-
 interface FilterDataItem {
   src: string;
   filter: string;
@@ -31,43 +26,57 @@ interface FilterDataItem {
 
 interface PostInputInfoPageProps {
   filterStorage: FilterDataItem[];
-  postInfo: PostInfo;
-  setPostInfo: React.Dispatch<React.SetStateAction<PostInfo>>;
 }
 
-export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStorage, postInfo, setPostInfo }) => {
-
-  const { openModal, closeModal, ModalComponent } = useModalControl();
+export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStorage }) => {
+  const { openModal, closeModal, ModalComponent } = useModalControl(54);
   const [modalIndex, setModalIndex] = useState<number>(0);
+  const [isModalOn, setIsModalOn] = useState<boolean>(false);
+  const [firstMount, setFirstMount] = useState<boolean>(true);
   const [isHashTagSelected, setIsHashTagSelected] = useState<boolean>(false);
   const [isUserTagSelected, setIsUserTagSelected] = useState<boolean>(false);
 
+  const postForm = useRecoilValue(postFormState)
+
+  useEffect(() => {
+    if (!firstMount) {
+      openModal();
+      setIsModalOn(false);
+    }
+    firstMount && setFirstMount(false)
+  }, [isModalOn])
+
   const handleModal = (index) => {
-    openModal();
-    setModalIndex(index)
+    setModalIndex(index);
+    setIsModalOn(true)
   }
 
   useEffect(() => {
-    postInfo.hashtag.length !== 0 ? setIsHashTagSelected(true) : setIsHashTagSelected(false);
-    postInfo.usertag.length !== 0 ? setIsUserTagSelected(true) : setIsUserTagSelected(false);
-  }, [postInfo])
+    postForm.hashtag.length !== 0 ? setIsHashTagSelected(true) : setIsHashTagSelected(false);
+    postForm.usertag.length !== 0 ? setIsUserTagSelected(true) : setIsUserTagSelected(false);
+  }, [postForm])
+
+  useEffect(() => {
+    modalIndex === 5 && openModal();
+  }, [modalIndex])
 
   return (
     <>
       <WrapStyle>
-        <SelectedPicture filterStorage={filterStorage}/>
-        <TextArea
+        <SelectedPicture filterStorage={filterStorage} />
+        <WritableTextarea
+          value={postForm.phrase}
           type="text"
           id="addPhraseWrite"
           label={'문구 입력'}
           placeholder="문구 입력..."
           icon={IconPhraseWrite}
           height={"100px"}
-          setPostInfo={setPostInfo}
         />
-        <Input
-          value={postInfo.location}
+        <ReadonlyTextarea
+          value={postForm.location}
           type="text"
+          readonly="readonly"
           id="addLocation"
           label={'위치 추가'}
           height={"50px"}
@@ -75,31 +84,34 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
           icon={IconLocation}
           onClick={() => handleModal(1)}
         />
-        <Input
-          value={postInfo.folder}
+        <ReadonlyTextarea
+          value={postForm.folder.map(item => item.data.folderName).join(' / ')}
           type="text"
+          readonly="readonly"
           id="addFolder"
           label={'폴더 지정'}
           placeholder="폴더 지정"
           icon={IconFolder}
           onClick={() => handleModal(2)}
         />
-        <Input
-          selectTag={postInfo.hashtag}
+        <ReadonlyInput
+          selectTag={postForm.hashtag}
           isHashTagSelected={isHashTagSelected}
           tagname={"hashtag"}
           type="text"
+          readonly="readonly"
           id="addHashTag"
           label={'해쉬 태그'}
           placeholder="해쉬 태그"
           icon={IconHashTag}
           onClick={() => handleModal(3)}
         />
-        <Input
-          selectTag={postInfo.usertag}
+        <ReadonlyInput
+          selectTag={postForm.usertag.map(item => item.data.accountId)}
           isUserTagSelected={isUserTagSelected}
           tagname={"usertag"}
           type="text"
+          readonly="readonly"
           id="addUserTag"
           label={'유저 태그'}
           placeholder="유저 태그"
@@ -112,15 +124,15 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
           (() => {
             switch (modalIndex) {
               case 1:
-                return <PostSelectLocationPage setPostInfo={setPostInfo} closeModal={closeModal} />;
+                return <PostSelectLocationPage closeModal={closeModal} />;
               case 2:
-                return <PostSelectFolderPage setPostInfo={setPostInfo} closeModal={closeModal} setModalIndex={setModalIndex} />;
+                return <PostSelectFolderPage closeModal={closeModal} setModalIndex={setModalIndex} />;
               case 3:
-                return <PostSelectHashTagPage setPostInfo={setPostInfo} closeModal={closeModal} />;
+                return <PostSelectHashTagPage closeModal={closeModal} />;
               case 4:
-                return <PostSelectUserTagPage setPostInfo={setPostInfo} closeModal={closeModal} />;
+                return <PostSelectUserTagPage closeModal={closeModal} />;
               case 5:
-                return <PostCreateFolderPage closeModal={closeModal}/>;
+                return <PostCreateFolderPage closeModal={closeModal} openModal={openModal} setModalIndex={setModalIndex} />;
             }
           })()
         }
@@ -131,9 +143,10 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
 
 const WrapStyle = styled.div`
   position: relative;
-  width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-bottom: 24px;
+  box-sizing: border-box;
 `;

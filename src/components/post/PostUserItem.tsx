@@ -11,45 +11,57 @@ interface UserItemProps {
   userName: string;
   isFollow?: boolean;
   index: number;
-  checkedBox: number[];
-  setCheckedBox: React.Dispatch<React.SetStateAction<number[]>>;
-  handleFunc: (event: React.MouseEvent<HTMLLIElement>) => void;
+  selectTag: any;
+  setSelectTag: React.Dispatch<React.SetStateAction<any>>;
 }
 
-export const UserItem: React.FC<UserItemProps> = ({profile, userId, userName, isFollow, index, checkedBox, setCheckedBox, handleFunc}) => {
+export const UserItem: React.FC<UserItemProps> = ({ profile, userId, userName, isFollow, index, selectTag, setSelectTag }) => {
 
   const handleCheckBox = (e) => {
-    handleFunc(e)
-    setCheckedBox && setCheckedBox(prevData => {
-      if (prevData.includes(index)) {
-        return prevData.filter(item => item !== index);
+    e.stopPropagation();
+    setSelectTag && setSelectTag(prevData => {
+      if (prevData.includes(userId)) {
+        return prevData.filter(item => item !== userId);
       } else {
-        return [...prevData, index];
+        return [...prevData, userId];
       }
     });
   };
 
 
+  // const handleCheckBox = (e) => {
+  //   // setSelectTag && setSelectTag(prevData => {
+  //   //   if (prevData.includes(userId)) {
+  //   //     return prevData.filter(item => item !== userId);
+  //   //   } else {
+  //   //     return [...prevData, userId];
+  //   //   }
+  //   // });
+  //   setSelectTag && setSelectTag(
+
+  //   })
+  // };
+
   return (
     <>
-    <Container onClick={handleCheckBox} key={index} data-id={userId}>
-      <img className="icon-user" src={profile} alt="" />
-      <div className="user-info">
-        <span className="user-id">{userId}</span>
-        <div className="user-description">
-          <span className="user-name">{userName}</span>
-          {isFollow && (
-            <>
-              <img src={dotIcon} alt="spacing dot" />
-              <span>팔로잉</span>
-            </>
-          )}
+      <Container onClick={handleCheckBox} key={index} data-id={userId}>
+        <img className="icon-user" src={profile} alt="" />
+        <div className="user-info">
+          <span className="user-id">{userId}</span>
+          <div className="user-description">
+            <span className="user-name">{userName}</span>
+            {isFollow && (
+              <>
+                <img src={dotIcon} alt="spacing dot" />
+                <span>팔로잉</span>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      <CheckBoxPosition>
-        <CircleCheckBox id={index} checkedBox={checkedBox} setCheckedBox={setCheckedBox}/>
-      </CheckBoxPosition>
-    </Container>
+        <CheckBoxPosition>
+          <CircleCheckBox id={userId} checkedBox={selectTag} setCheckedBox={setSelectTag} />
+        </CheckBoxPosition>
+      </Container>
     </>
   );
 };

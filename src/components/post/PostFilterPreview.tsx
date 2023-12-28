@@ -13,35 +13,25 @@ const filterData = [
   // { filterName: "그림자", filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5))" },
 ];
 
-interface Photo {
-  src: string;
-  filter: string;
-}
-
-interface FilterDataItem {
-  src: string;
-  filter: string;
-}
-
 interface FilterPreviewProps {
+  filterStorage: any;
+  setFilterStorage: React.Dispatch<React.SetStateAction<any>>;
   selectedPicture?: string;
-  filterStorage: Photo[];
-  setFilterStorage: React.Dispatch<React.SetStateAction<FilterDataItem[]>>;
 }
 
-export const FilterPreview: React.FC<FilterPreviewProps> = ({ selectedPicture, filterStorage, setFilterStorage }) => {
+export const FilterPreview: React.FC<FilterPreviewProps> = ({ filterStorage, setFilterStorage, selectedPicture }) => {
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [startXPoint, setStartXPoint] = useState<number>(0);
-  const [isScroll, setIsScroll] = useState<boolean>(false);
+  const [isScroll, setIsScroll] = useState<boolean>(true);
   const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setFilterStorage((Prev) => {
-      const updatedPrev = [...Prev];
+    setFilterStorage((prev) => {
+      const updatedPrev = [...prev];
       const targetIndex = updatedPrev.findIndex((item) => item.src === selectedPicture);
       if (targetIndex !== -1) {
-        updatedPrev[targetIndex].filter = filterData[currentIndex].filter;
+        updatedPrev[targetIndex] = { ...updatedPrev[targetIndex], filter: filterData[currentIndex].filter };
       }
       return updatedPrev;
     });
@@ -60,7 +50,9 @@ export const FilterPreview: React.FC<FilterPreviewProps> = ({ selectedPicture, f
     if (sliderRef.current) {
       const scrollPosition = sliderRef.current.scrollLeft;
       const itemWidth = 135;
-      const newIndex = Math.floor(scrollPosition / itemWidth);
+      const minIndex = 0;
+      const maxIndex = filterData.length - 1;
+      const newIndex = Math.min(Math.max(Math.floor(scrollPosition / itemWidth), minIndex), maxIndex);
       setCurrentIndex(newIndex);
       setStartXPoint(scrollPosition)
     }
@@ -107,6 +99,7 @@ export const FilterPreview: React.FC<FilterPreviewProps> = ({ selectedPicture, f
 
 const WrapperStyle = styled.div`
   position: relative;
+  margin-top: 35px;
 
   &::before {
     content: "";
@@ -124,8 +117,9 @@ const WrapperStyle = styled.div`
 
 const SliderContainer = styled.div`
   overflow-x: scroll;
+  /* scroll-behavior: smooth; */
   padding-top: 2px;
-  height: 165px;
+  min-height: 170px;
 
   &::-webkit-scrollbar {
     width: 0;
@@ -170,6 +164,7 @@ const FilterName = styled.div`
   color: #FFF;
   font-family: var(--font--Bold);
   background-color: rgba(0, 0, 0, 0.5);
+  
 `;
 
 const Image = styled.img<{ filter: string }>`

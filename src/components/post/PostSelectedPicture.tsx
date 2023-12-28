@@ -9,10 +9,10 @@ interface FilterDataItem {
 
 interface SelectedPictureProps {
   filterStorage: FilterDataItem[];
-} 
+}
 
 export const SelectedPicture: React.FC<SelectedPictureProps> = ({ filterStorage }) => {
-  
+
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleMouseWheel = (event) => {
@@ -34,7 +34,7 @@ export const SelectedPicture: React.FC<SelectedPictureProps> = ({ filterStorage 
   return (
     <WrapStyle ref={scrollContainerRef}>
       {filterStorage.map((item, index) => (
-        <Image key={index} src={item.src} alt="" filter={item.filter}/>
+        <Image key={index} src={item.src} alt="" filter={item.filter} />
       ))}
       <PictureCountStyle>
         <IconPictureCount />
@@ -45,6 +45,7 @@ export const SelectedPicture: React.FC<SelectedPictureProps> = ({ filterStorage 
 };
 
 const WrapStyle = styled.div`
+  min-height: 130px;
   overflow-x: auto;
   display: flex;
   gap: 5px;
@@ -63,10 +64,10 @@ const WrapStyle = styled.div`
   }
 `;
 
-const Image = styled.img<{filter: string}>`
+const Image = styled.img<{ filter: string }>`
   filter: ${(props) => props.filter};
   width: 130px;
-  height: 130px;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
 `;
 
@@ -76,7 +77,7 @@ const PictureCountStyle = styled.div`
   left: 6px;
   width: 45px;
   height: 25px;
-  padding: 1px;
+  padding: 2px;
   box-sizing: border-box;
   text-align: center;
   background: rgba(0, 0, 0, 0.6);

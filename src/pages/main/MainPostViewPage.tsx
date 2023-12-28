@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components';
 
+import { useWindowHeight } from 'hooks/useWindowHeight';
 import { useFirestoreRead } from 'hooks/useFirestoreRead';
 import { useModalControl } from 'hooks/useModalControl';
 import { MainPostItem } from '../../components/main/MainPostItem';
@@ -9,44 +10,48 @@ import { MainComment } from 'components/main/MainComment';
 
 export const MainPostViewPage: React.FC = () => {
 
-  const [isCommentModal, setIsCommentModal] = useState<boolean>(true);
-  const { openModal, closeModal, ModalComponent } = useModalControl(200, isCommentModal ? false : true);
-  const [currentComments, setCurrentComments] = useState<any>([]);
+  const { ReadAllDocument } = useFirestoreRead('posts');
+
+  const [isCommentModal, setIsCommentModal] = useState<string>("");
+  const isCommentModalBoolean = isCommentModal.split(",")[0];
+  const { openModal, closeModal, ModalComponent, isModalOff } = useModalControl(200, isCommentModalBoolean === "true" ? false : true);
+  const [selectedPostId, setSelectedPostId] = useState<string>('');
   const [PostItemData, setPostItemData] = useState<any>([]);
-  const [comments, setComments] = useState<any>([]);
-
-  const { ReadAllField } = useFirestoreRead('posts');
+  const windowHeight = useWindowHeight();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await ReadAllField()
-      response && setPostItemData(response)
-    }
-    fetchData()
-  }, [])
-  
-  useEffect(() => {
-    if (currentComments.length > 0) {
-      setIsCommentModal(true);
+    if (isCommentModalBoolean === "true" || isCommentModalBoolean === "false") {
       openModal();
     }
-  }, [currentComments]);
+  }, [isCommentModal])
+
+  const AllPostData = async () => {
+    const response = await ReadAllDocument('createdAt', 'desc');
+
+    response && setPostItemData(response)
+  }
+
+  useEffect(() => {
+    AllPostData()
+  }, [])
+
+  useEffect(() => {
+    isModalOff === true && AllPostData();
+  }, [isModalOff])
 
   return (
-    <AppContainer>
+    <AppContainer style={{ height: `${windowHeight}px` }}>
       <ViewContainer>
         <>
-          {PostItemData.length > 0 && PostItemData.map((item, index) => (
+          {PostItemData.length > 0 && PostItemData.map((item) => (
             <>
-              <MainPostItem item={item} index={index} openModal={openModal} setIsCommentModal={setIsCommentModal} setCurrentComments={setCurrentComments} />
+              <MainPostItem key={item.id} item={item} setIsCommentModal={setIsCommentModal} setSelectedPostId={setSelectedPostId} />
             </>
           ))
           }
           <ModalComponent>
-            {isCommentModal ?
-              <MainComment currentComments={currentComments}/> :
-              <MainPostMoreMenu closeModal={closeModal} />
-            }
+            {isCommentModalBoolean === "true" && <MainComment selectedPostId={selectedPostId} />}
+            {isCommentModalBoolean === "false" && <MainPostMoreMenu closeModal={closeModal} selectedPostId={selectedPostId} setPostItemData={setPostItemData} />}
           </ModalComponent>
         </>
       </ViewContainer>
@@ -61,7 +66,6 @@ margin: auto;
 /* padding: 50px 0 10px; */
 box-sizing: border-box;
 overflow: hidden;
-height: 100vh;
 `;
 
 const ViewContainer = styled.div`

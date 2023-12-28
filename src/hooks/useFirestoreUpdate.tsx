@@ -1,116 +1,101 @@
 import { appFireStore } from '../firebase/config';
-import {
-	doc,
-	updateDoc,
-	getDoc,
-	arrayUnion,
-	arrayRemove,
-} from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import getUserInfo from 'utils/getUserInfo';
 
 export const useFirestoreUpdate = (collectionName) => {
-	const token = sessionStorage.getItem('token');
-	const uid = token !== null ? JSON.parse(token).uid : null;
 
-	const UpdateField = async (documentId, data) => {
-		try {
-			if (uid !== null) {
-				const docRef = doc(appFireStore, collectionName, documentId);
-				const docSnapshot = await getDoc(docRef);
+  const uid = getUserInfo();
 
-				console.log(docSnapshot.data());
+  const UpdateField = async (data, documentId, authorized = true) => {
+    try {
+      if (uid !== null) {
+        const docRef = doc(appFireStore, collectionName, documentId);
+        const docSnapshot = await getDoc(docRef);
 
-				if (docSnapshot.exists() && docSnapshot.data().userId === uid) {
-					const updateData = {};
-					// data 객체에서 수정할 필드를 동적으로 확인하고 업데이트 데이터에 추가
-					for (const key in data) {
-						if (data.hasOwnProperty(key)) {
-							updateData[key] = data[key];
-						}
-					}
-					await updateDoc(docRef, updateData);
-					console.log('데이터가 성공적으로 수정되었습니다');
-				} else {
-					console.error('해당 문서를 찾을 수 없거나 권한이 없습니다');
-				}
-			} else {
-				console.error('UID가 없습니다');
-			}
-		} catch (error) {
-			console.error('데이터 수정을 실패했습니다:', error);
-		}
-	};
+        if (docSnapshot.exists() && authorized ? docSnapshot.data().userId === uid : true) {
+          const updateData = {};
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              updateData[key] = data[key];
+            }
+          }
+          await updateDoc(docRef, updateData);
+          console.log('데이터가 성공적으로 수정되었습니다');
+        } else {
+          console.error('해당 문서를 찾을 수 없거나 권한이 없습니다');
+          return false;
+        }
+      } else {
+        console.error('UID가 없습니다');
+      }
+    } catch (error) {
+      console.error('데이터 수정을 실패했습니다:', error);
+    }
+  };
 
-	const UpdatePublicField = async (documentId, data) => {
-		try {
-			if (uid !== null) {
-				const docRef = doc(appFireStore, collectionName, documentId);
-				const docSnapshot = await getDoc(docRef);
+  const UpdateFieldAttribute = async (
+    documentId: any,
+    fieldName: string,
+    attributesToUpdate: any,
+    elementsToUpdate: any,
+    targetAttribute: string,
+    newValue: any
+  ) => {
+    try {
+      if (uid !== null) {
+        const docRef = doc(appFireStore, collectionName, documentId);
+        const docSnapshot = await getDoc(docRef);
 
-				if (docSnapshot.exists()) {
-					// 업데이트를 위한 객체 초기화
-					const updateData = {};
+        if (docSnapshot.exists() && docSnapshot.data().userId === uid) {
+          const existingData = docSnapshot.data();
+          const arrayField = existingData[fieldName];
 
-					// data 객체를 반복하여 필요한 업데이트를 updateData 객체에 추가
-					for (const key in data) {
-						if (
-							data.hasOwnProperty(key) &&
-							(key === 'likedUsers' || key === 'bookmarkedUsers')
-						) {
-							const value = data[key];
-							if (value.add) {
-								updateData[key] = arrayUnion(uid);
-							} else if (value.remove) {
-								updateData[key] = arrayRemove(uid);
-							}
-						}
-					}
+          if (Array.isArray(arrayField)) {
+            const elementsToUpdateArray = Array.isArray(elementsToUpdate) ? elementsToUpdate : [elementsToUpdate];
 
-					// 업데이트 데이터가 준비되면 Firestore 문서 업데이트
-					if (Object.keys(updateData).length > 0) {
-						await updateDoc(docRef, updateData);
-						console.log('데이터가 성공적으로 수정되었습니다');
-					} else {
-						console.error('유효한 업데이트 데이터가 없습니다');
-					}
-				} else {
-					console.error('해당 문서를 찾을 수 없습니다');
-				}
-			} else {
-				console.error('UID가 없습니다');
-			}
-		} catch (error) {
-			console.error('데이터 수정을 실패했습니다:', error);
-		}
-	};
+            const indexToUpdate = arrayField.findIndex(item =>
+              typeof item === 'object' &&
+              attributesToUpdate.every(attribute => {
+                if (attribute === 'createdAt') {
+                  const createdAtTimestamp = {
+                    seconds: item[attribute].seconds,
+                    nanoseconds: item[attribute].nanoseconds
+                  };
+                  return createdAtTimestamp.seconds === elementsToUpdateArray[1].seconds && createdAtTimestamp.nanoseconds === elementsToUpdateArray[1].nanoseconds;
+                }
+                return item[attribute] === elementsToUpdateArray[0];
+              })
+            );
 
-	const UpdateFieldUid = async (documentId, data) => {
-		try {
-			if (uid !== null) {
-				const docRef = doc(appFireStore, collectionName, documentId);
-				const docSnapshot = await getDoc(docRef);
+            if (indexToUpdate !== -1) {
+              const updatedItem = { ...arrayField[indexToUpdate], [targetAttribute]: newValue };
+              const updatedArrayField = [...arrayField];
+              updatedArrayField[indexToUpdate] = updatedItem;
 
-				console.log(docSnapshot.data());
+              const updateData = {};
+              updateData[fieldName] = updatedArrayField;
 
-				if (docSnapshot.exists() && docSnapshot.data().uid === uid) {
-					const updateData = {};
-					// data 객체에서 수정할 필드를 동적으로 확인하고 업데이트 데이터에 추가
-					for (const key in data) {
-						if (data.hasOwnProperty(key)) {
-							updateData[key] = data[key];
-						}
-					}
-					await updateDoc(docRef, updateData);
-					console.log('데이터가 성공적으로 수정되었습니다');
-				} else {
-					console.error('해당 문서를 찾을 수 없거나 권한이 없습니다');
-				}
-			} else {
-				console.error('UID가 없습니다');
-			}
-		} catch (error) {
-			console.error('데이터 수정을 실패했습니다:', error);
-		}
-	};
+              await updateDoc(docRef, updateData);
+              console.log(`'${fieldName}' 필드의 특정 객체의 '${targetAttribute}' 속성이 성공적으로 수정되었습니다.`);
+            } else {
+              console.error('원소를 찾을 수 없습니다.');
+            }
+          } else {
+            console.error(`'${fieldName}'는 배열이 아닙니다.`);
+          }
+        } else {
+          console.error('해당 문서를 찾을 수 없거나 권한이 없습니다.');
+        }
+      } else {
+        console.error('UID가 없습니다.');
+      }
+    } catch (error) {
+      console.error('원소 수정을 실패했습니다:', error);
+    }
+  };
 
-	return { UpdateField, UpdatePublicField, UpdateFieldUid };
+
+
+
+  return { UpdateField, UpdateFieldAttribute };
 };

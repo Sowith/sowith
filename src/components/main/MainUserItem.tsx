@@ -1,88 +1,104 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
+import { useFirestoreUpdate } from 'hooks/useFirestoreUpdate';
+import { useFirestoreDelete } from 'hooks/useFirestoreDelete';
+import { useformatRelativeTime } from 'hooks/useformatRelativeTime';
 import { useAlertControl } from 'hooks/useAlertControl';
 import { AlertBox } from 'components/common/AlertBox';
+import getUserInfo from 'utils/getUserInfo';
+
 import { ReactComponent as IconDotMore } from '../../assets/icon/icon-dot-more.svg';
 import { ReactComponent as IconSTrash } from '../../assets/icon/icon-s-trash-delete.svg';
 import { ReactComponent as IconSReport } from '../../assets/icon/icon-s-report-message.svg';
 import { ReactComponent as IconLike } from '../../assets/icon/icon-like-heart.svg';
 
 interface MainUserItemProps {
-  item: any;
-  openModal?: () => void;
-  setIsCommentModal?: React.Dispatch<React.SetStateAction<boolean>>;
+  postData: any;
+  savePostId?: () => void;
+  selectedPostId?: string;
+  setIsCommentModal?: React.Dispatch<React.SetStateAction<string>>;
+  AllCommentData?: () => void;
 }
 
-export const MainUserItem: React.FC<MainUserItemProps> = ({ item, openModal, setIsCommentModal }) => {
+export const MainUserItem: React.FC<MainUserItemProps> = ({ postData, savePostId, setIsCommentModal, selectedPostId, AllCommentData }) => {
 
-  const token = sessionStorage.getItem('token');
-  const loginUid = token !== null ? JSON.parse(token).uid : null;
+  const uid = getUserInfo();
+
+  const { UpdateFieldAttribute } = useFirestoreUpdate('posts')
+  const { DeleteField } = useFirestoreDelete('posts')
 
   const [alertMsg, setAlertMsg] = useState<string>("");
-  const [isLike, setIsLike] = useState<boolean>(item.likedUsers.includes(loginUid));
-  const isLiked = item.likedUsers?.includes(loginUid);
+  const isLiked = postData.likedUsers?.includes(uid);
 
   const { openAlert, AlertComponent } = useAlertControl(100);
+  const { convertToAgoFormat } = useformatRelativeTime();
 
   const handleModal = () => {
-    setIsCommentModal && setIsCommentModal(false)
-    openModal && openModal()
+    savePostId && savePostId();
+    const time = new Date();
+    setIsCommentModal && setIsCommentModal("false," + String(time.getTime()));
   }
 
   const handleAlert = () => {
-
-    if (loginUid === item.uid) {
+    if (uid === postData.userId) {
       setAlertMsg("댓글을 삭제하시겠습니까?")
     } else {
-      setAlertMsg(`${item.data.userId} 님을신고하시겠습니까?`)
+      setAlertMsg(`${postData.data.accountId} 님을신고하시겠습니까?`)
     }
     openAlert();
   }
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (!!item.likedUsers) {
-  //       setIsLike(item.likedUsers.includes(loginUid))
-  //     }
-  //   }
-  //   fetchData();
-  // }, [])
+  const handleDeleteOrReport = async () => {
+    if (alertMsg === "댓글을 삭제하시겠습니까?") {
+      selectedPostId && await DeleteField(selectedPostId, 'comments', [postData.userId, postData.createdAt], ['userId', 'createdAt']);
+    } else if (`${postData.data.accountId} 님을신고하시겠습니까?`) {
+      // ...
+    }
+    AllCommentData && AllCommentData();
+  }
+
+  const handleHeart = async () => {
+    let newLikedUsers;
+    if (postData.likedUsers.includes(uid)) {
+      newLikedUsers = postData.likedUsers.filter(userId => userId !== uid);
+    } else {
+      newLikedUsers = [...postData.likedUsers, uid];
+    }
+    await UpdateFieldAttribute(selectedPostId, 'comments', ['userId', 'createdAt'], [postData.userId, postData.createdAt], 'likedUsers', newLikedUsers);
+
+    AllCommentData && AllCommentData();
+  }
+
 
   return (
-      <>
+    <>
       <AlertComponent>
-        <AlertBox alertMsg={alertMsg} choice={["취소", alertMsg.includes("댓글") ? "삭제" : "신고"]} />
+        <AlertBox alertMsg={alertMsg} choice={["취소", alertMsg.includes("댓글") ? "삭제" : "신고"]} handleFunc={handleDeleteOrReport} />
       </AlertComponent>
       <Container>
-        <img className="icon-user" src={item.data.profile} alt="" />
+        <img className="icon-user" src={postData.data.profileImageURL} alt="" />
         <div className="user-info">
           <span className="user-id">
-            {item.data.userId}
-            {!!item.images && <span className="creat-post">{item.createdAt + " 일전"}</span>}
+            {postData.data.accountId}
+            {!postData.location && <span className="creat-post">{convertToAgoFormat(postData.createdAt.seconds)}</span>}
           </span>
-          <span className="description">{!!item.images ? item.location : item.content}</span>
-          {!item.images &&
+          <span className="description">{postData.location || postData.content}</span>
+          {!postData.location &&
             <button className="like-btn">
               <IconLike
                 width={15}
-                onClick={() => { setIsLike(Prev => !Prev) }}
-                fill={isLike ? "#FB004D" : "#FFF"}
-                stroke={isLike ? "#FB004D" : "#505050"}
+                onClick={handleHeart}
+                fill={isLiked ? "#FB004D" : "#FFF"}
+                stroke={isLiked ? "#FB004D" : "#505050"}
               />
-              {
-                isLiked ? (
-                  <span className='heart-count'>{isLike ? item.likedUsers.length : item.likedUsers.length - 1}</span>
-                ) : (
-                  <span className='heart-count'>{isLike ? item.likedUsers.length + 1 : item.likedUsers.length}</span>
-                )
-              }
+              <span className='heart-count'>{postData.likedUsers.length}</span>
             </button>
           }
         </div>
-        {!item.images ?
+        {!postData.location ?
           <button className="report-delete-area" onClick={handleAlert}>
-            {loginUid === item.data.uid ?
+            {uid === postData.userId ?
               <IconSTrash /> :
               <IconSReport />
             }
@@ -90,10 +106,9 @@ export const MainUserItem: React.FC<MainUserItemProps> = ({ item, openModal, set
           <button className="more-btn" onClick={handleModal}>
             <IconDotMore />
           </button>
-
         }
       </Container>
-      </>
+    </>
   );
 }
 

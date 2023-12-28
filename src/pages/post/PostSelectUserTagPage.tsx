@@ -1,145 +1,107 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+
+import { useFirestoreRead } from "hooks/useFirestoreRead";
+import { useRecoilState } from "recoil";
+import postFormState from "recoil/postFormState";
 
 import { SearchBar } from "../../components/post/PostSearchBar";
 import { UserItem } from "../../components/post/PostUserItem";
 import { Button } from "../../components/common/Button"
+import getUserInfo from "utils/getUserInfo";
 
 import IconUserTag from "../../assets/icon/icon-user-tag.svg";
-import profile_1 from "../../assets/testImg/profile_1.jpg";
-import profile_2 from "../../assets/testImg/profile_2.jpg";
-import profile_3 from "../../assets/testImg/profile_3.jpg";
-import profile_4 from "../../assets/testImg/profile_4.jpg";
-import profile_5 from "../../assets/testImg/profile_5.jpg";
-
-interface PostInfo {
-  phrase: string,
-  location: string,
-  folder: string,
-  hashtag: string[],
-  usertag: string[],
-}
 
 interface SelectFolderProps {
-  setPostInfo: React.Dispatch<React.SetStateAction<PostInfo>>
-  closeModal: () => void; 
+  closeModal: () => void;
 }
 
-interface TagData {
-  userId: string;
-  userName: string;
-  isFollow?: boolean;
-  profile: string;
-}
+export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ closeModal }) => {
 
-const tagData: TagData[] = [
-  {
-    userId: 'starseeker_h00n',
-    userName: '강동훈',
-    isFollow: true,
-    profile: profile_1
-  },
-  {
-    userId: '__hoon__99',
-    userName: '이정훈',
-    isFollow: true,
-    profile: profile_2
-  },
-  {
-    userId: 'kang_hoon',
-    userName: '한승훈',
-    isFollow: true,
-    profile: profile_3
-  },
-  {
-    userId: 'kang_hoon',
-    userName: '이강훈',
-    isFollow: true,
-    profile: profile_4
-  },
-  {
-    userId: 'hoon_1297319',
-    userName: '미스터훈',
-    isFollow: true,
-    profile: profile_5
-  },
-];
-export const PostSelectUserTagPage: React.FC<SelectFolderProps> = ({ setPostInfo, closeModal }) => {
+  const { ReadField } = useFirestoreRead('users');
 
-  // const [searchKeyword, setSearchKeyword] = useState("");
-  const [searchKeyword, setSearchKeyword] = useState<string | string[]>("");
-  const [checkedBox, setCheckedBox] = useState<number[]>([]);
-  const [tagItem, setTagItem] = useState<TagData[]>(tagData);
-  const [selectTag, setSelectTag] = useState<string[]>([]);
+  const uid = getUserInfo();
+
+  const [postForm, setPostForm] = useRecoilState(postFormState)
+  const [selectTag, setSelectTag] = useState<any>(postForm.usertag.map(item => item.data.accountId));
+  const [searchKeyword, setSearchKeyword] = useState<any>('');
+  const [tagItem, setTagItem] = useState<any>(postForm.usertag);
+  const [selectResultTags, setSelectResultTags] = useState<any>([]);
+  const [searchResultTags, setSearchResultTags] = useState<any>([]);
+  const [firstMount, setFirstMount] = useState<boolean>(true);
 
   const handleCloseModal = () => {
     closeModal();
-    setPostInfo(Prev => {
-      const updatedPostInfo = { ...Prev };
-      updatedPostInfo.usertag = selectTag;
-      return updatedPostInfo;
-    });
+    setTimeout(() => {
+      setPostForm(Prev => {
+        const updatedPostInfo = { ...Prev };
+        updatedPostInfo.usertag = selectResultTags;
+        return updatedPostInfo;
+      });
+    }, 600)
+  }
+
+  useEffect(() => {
+    firstMount && setSelectResultTags(postForm.usertag)
+    setFirstMount(false)
+  }, [])
+
+  useEffect(() => {
+    const fetchData = () => {
+      return ReadField('accountIdKeywords', 'array-contains', searchKeyword);
     }
-    
-    const handleTag = (event: React.MouseEvent<HTMLLIElement>) => {
-      const targetElement = event.currentTarget.dataset.id;
-      if (targetElement) {
-        const newTags = [...selectTag];
-        if (!newTags.includes(targetElement)) {
-          newTags.push(targetElement);
-          setSelectTag(newTags);
-        }
-      }
-    };
+    !firstMount && fetchData().then(response => setTagItem(response));
+  }, [searchKeyword])
 
-
-  // useEffect(() => {
-  //   const priorityElements = tagItem.filter((_, item) => checkedBox.includes(item));
-  //   const remainingElements = tagItem.filter((_, item) => !checkedBox.includes(item));
-  //   const result = [...priorityElements, ...remainingElements];
-  //   setTagItem(result);
-  // }, [checkedBox]);
+  useEffect(() => {
+    const selectedItems = tagItem.filter(item => selectTag.includes(item.data.accountId));
+    const unselectedItems = tagItem.filter(item => !selectTag.includes(item.data.accountId));
+    setSelectResultTags([...selectedItems])
+    setSearchResultTags([...unselectedItems]);
+  }, [selectTag, tagItem])
 
   return (
     <>
-        {/* <SearchBar
+      <SearchBar
         id={'UserTagSearch'}
         icon={IconUserTag}
-        tagname={'humantag'}
         placeholder={'유저 검색...'}
-        selectTag={selectId}
-        setSelectTag={setSelectId}
         searchKeyword={searchKeyword}
         setSearchKeyword={setSearchKeyword}
-        /> */}
-
-        <SearchBar
-          id={'UserTagSearch'}
-          icon={IconUserTag}
-          placeholder={'유저 검색...'}
-          searchKeyword={searchKeyword}
-          setSearchKeyword={setSearchKeyword}
-        />
-
-        <Container>
-          {tagItem.map((item, index) => (
-            <ul>
-              <UserItem
-                handleFunc={handleTag}
-                key={index}
-                profile={item.profile}
-                userId={item.userId}
-                userName={item.userName}
-                isFollow={item.isFollow}
-                index={index}
-                checkedBox={checkedBox}
-                setCheckedBox={setCheckedBox}
-              />
-            </ul>
-          )
-          )}
-        </Container>
-        <Button
+      />
+      <Container>
+        {selectResultTags.map((item, index) => (
+          <ul>
+            <UserItem
+              key={index}
+              profile={item.data.profileImageURL}
+              userId={item.data.accountId}
+              userName={item.data.accountName}
+              isFollow={item.data.followers.includes(uid)}
+              index={index}
+              selectTag={selectTag}
+              setSelectTag={setSelectTag}
+            />
+          </ul>
+        )
+        )}
+        {searchResultTags.map((item, index) => (
+          <ul>
+            <UserItem
+              key={index}
+              profile={item.data.profileImageURL}
+              userId={item.data.accountId}
+              userName={item.data.accountName}
+              isFollow={item.data.followers.includes(uid)}
+              index={index}
+              selectTag={selectTag}
+              setSelectTag={setSelectTag}
+            />
+          </ul>
+        )
+        )}
+      </Container>
+      <Button
         type="button"
         text={"완료"}
         width={'90%'}
@@ -157,7 +119,7 @@ const Container = styled.div`
   width: 90%;
   height: calc(100% - 170px);
   padding: 16px 13px 0;
-  margin-right: -5px;
+  /* margin-right: -5px; */
   overflow-y: scroll;
 
   &::-webkit-scrollbar-corner {

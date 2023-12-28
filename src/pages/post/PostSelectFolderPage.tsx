@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
+
+import { useFirestoreRead } from "hooks/useFirestoreRead";
+import { useRecoilState } from "recoil";
+import postFormState from "recoil/postFormState";
 
 import { SearchBar } from "../../components/post/PostSearchBar";
 import { FolderList } from "../../components/common/FolderList";
 import { Button } from "../../components/common/Button"
+import getUserInfo from "utils/getUserInfo";
 
 import IconFolder from "../../assets/icon/icon-folder-post-only.svg";
 
@@ -16,79 +21,52 @@ interface PostInfo {
 }
 
 interface SelectFolderProps {
-  setPostInfo: React.Dispatch<React.SetStateAction<PostInfo>>
   closeModal: () => void;
   setModalIndex?: React.Dispatch<React.SetStateAction<number>>
   setSearchKeyword?: React.Dispatch<React.SetStateAction<string>>
 }
 
-interface FolderData {
-  folderId: number;
-  name: string;
-  totalpost: number;
-  bookmark: boolean;
-  src: string[];
-}
+export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ closeModal, setModalIndex }) => {
 
-export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ setPostInfo, closeModal, setModalIndex }) => {
+  const { ReadField } = useFirestoreRead('folders');
 
-  const folderData: FolderData[] = [
-    {
-      folderId: 1,
-      name: "빠니보틀의 로드맵",
-      totalpost: 10,
-      bookmark: true,
-      src: [
-        "https://picsum.photos/200/191",
-        "https://picsum.photos/200/192",
-        "https://picsum.photos/200/193",
-        "https://picsum.photos/200/194",
-      ],
-    },
-    {
-      folderId: 2,
-      name: "용리단길 맛집 모음",
-      totalpost: 78,
-      bookmark: true,
-      src: [
-        "https://picsum.photos/200/195",
-        "https://picsum.photos/200/196",
-        "https://picsum.photos/200/197",
-        "https://picsum.photos/200/198",
-      ],
-    },
-    {
-      folderId: 3,
-      name: "내 2023년 여름",
-      totalpost: 10,
-      bookmark: false,
-      src: [
-        "https://picsum.photos/200/199",
-        "https://picsum.photos/200/200",
-        "https://picsum.photos/200/201",
-        "https://picsum.photos/200/202",
-      ],
-    },
-  ];
+  const uid = getUserInfo();
 
-  const [searchKeyword, setSearchKeyword] = useState<string | string[]>([]);
-  const [archiveFolderData, setArchiveFolderData] = useState<FolderData[]>(folderData);
+  const [postForm, setPostForm] = useRecoilState(postFormState)
+  const [searchKeyword, setSearchKeyword] = useState<any>('');
+  const [seletedFolder, setSeletedFolder] = useState<any>(postForm.folder);
+  const [archiveFolderData, setArchiveFolderData] = useState<any>([]);
+
 
   const handleCloseModal = () => {
     closeModal();
-    setPostInfo((Prev) => {
-      const updatedPostInfo = { ...Prev };
-  
-      if (typeof searchKeyword === 'string') {
-        updatedPostInfo.folder = searchKeyword;
-      } else {
-        updatedPostInfo.folder = searchKeyword.join(' / ');
-      }
-      return updatedPostInfo;
-    });
+    setTimeout(() => {
+      setPostForm((Prev) => {
+        const updatedPostInfo = { ...Prev };
+        updatedPostInfo.folder = seletedFolder;
+        return updatedPostInfo;
+      });
+    }, 400)
   }
-  
-  
+
+  const openCreateFolderModal = () => {
+    closeModal && closeModal();
+    setTimeout(() => {
+      setModalIndex && setModalIndex(5)
+    }, 400)
+  }
+
+  const AllFolderData = () => {
+    return ReadField('userId', '==', uid).then(response => setArchiveFolderData(response))
+  }
+
+  useEffect(() => {
+    const fetchData = () => {
+      return ReadField('folderNameKeywords', 'array-contains', searchKeyword);
+    }
+    searchKeyword.length > 0 && fetchData().then(response => setArchiveFolderData(response));
+    searchKeyword.length === 0 && AllFolderData()
+  }, [searchKeyword])
 
   return (
     <>
@@ -100,12 +78,22 @@ export const PostSelectFolderPage: React.FC<SelectFolderProps> = ({ setPostInfo,
         setSearchKeyword={setSearchKeyword}
       />
 
-      <FolderList archiveFolderData={archiveFolderData} setArchiveFolderData={setArchiveFolderData} isAddButton={true} setSearchKeyword={setSearchKeyword} setModalIndex={setModalIndex && setModalIndex}/>
+      <FolderList
+        AllFolderData={AllFolderData}
+        archiveFolderData={archiveFolderData}
+        setArchiveFolderData={setArchiveFolderData}
+        isAddButton={true}
+        seletedFolder={seletedFolder}
+        setSeletedFolder={setSeletedFolder}
+        searchKeyword={searchKeyword}
+        setSearchKeyword={setSearchKeyword}
+        setModalIndex={setModalIndex && setModalIndex}
+        closeModal={closeModal} />
 
       {archiveFolderData.length === 0 &&
         <NonFolderContainer>
           <p className="alert-msg">폴더가 존재하지 않습니다</p>
-          <Button type="button" text={"폴더생성하기"} width={'112px'} height={'41px'} fontSize={'12px'} fontFamily={'var(--font--Bold)'} borderRadius={'30px'} />
+          <Button type="button" text={"폴더생성하기"} width={'112px'} height={'41px'} fontSize={'12px'} fontFamily={'var(--font--Bold)'} borderRadius={'30px'} onClick={openCreateFolderModal} />
         </NonFolderContainer>
       }
 
