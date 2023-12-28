@@ -1,4 +1,10 @@
+import { useNavigate } from 'react-router-dom';
+import { useFirestoreUpdate } from 'hooks/useFirestoreUpdate';
 import { styled } from 'styled-components';
+
+import { arrayUnion } from 'firebase/firestore';
+
+import formatNumber from 'utils/formatNumber';
 
 import tagIcon from '../../assets/icon/icon-tag.svg';
 
@@ -7,24 +13,44 @@ export interface TagItemProps {
 	tagNumber?: number;
 }
 
-export const TagItem: React.FC<TagItemProps> = ({
-	tagTitle,
-	tagNumber = 0,
-}) => {
+export const TagItem: React.FC<TagItemProps> = ({ tagTitle, tagNumber }) => {
+	const token = sessionStorage.getItem('token');
+	const currentUserUid = token ? JSON.parse(token).uid : null;
+	const { UpdateFieldUid } = useFirestoreUpdate('users');
+	const navigate = useNavigate();
+
+	const handleTagClick = async () => {
+		const newHistory = {
+			title: tagTitle,
+			historyCategory: 'tag',
+			tagCount: tagNumber,
+		};
+		try {
+			await UpdateFieldUid(currentUserUid, {
+				searchHistories: arrayUnion(newHistory),
+			});
+			console.log('검색 기록이 업데이트되었습니다');
+		} catch (error) {
+			console.error('검색 기록 업데이트 실패:', error);
+		}
+		navigate('/searchbycategory', { state: tagTitle });
+	};
+
 	return (
-		<Container>
+		<Container onClick={handleTagClick}>
 			<div className='icon-tag'>
 				<img src={tagIcon} alt='' />
 			</div>
 			<div className='tag-info'>
 				<span className='tag-title'>{tagTitle}</span>
-				<span className='tag-number'>{`검색결과 ${tagNumber}+개`}</span>
+				<span className='tag-number'>{`${formatNumber(tagNumber)}개`}</span>
 			</div>
 		</Container>
 	);
 };
 
 const Container = styled.div`
+	cursor: pointer;
 	background-color: #ffffff;
 	display: flex;
 	margin: 10px auto;

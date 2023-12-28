@@ -24,8 +24,7 @@ export const SearchTrendingTagList: React.FC = () => {
 				const taggedPostCount = item?.data?.taggedPostIDs?.length;
 
 				return {
-					tagId: item.id,
-					trendingTag: item.data.tagName,
+					trendingTag: item.id,
 					tagNumber: taggedFolderCount + taggedGroupCount + taggedPostCount,
 				};
 			});

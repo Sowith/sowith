@@ -2,7 +2,6 @@ import { appFireStore } from '../firebase/config';
 import { collection, query, orderBy, where, getDocs, doc, getDoc } from 'firebase/firestore';
 
 export const useFirestoreRead = (collectionName) => {
-
   const ReadAllDocument = async (fieldName: any = false, sortOrder: any = false) => {
 
     const collectionRef = collection(appFireStore, collectionName);
@@ -42,5 +41,5 @@ export const useFirestoreRead = (collectionName) => {
     return result;
   }
 
-  return { ReadAllDocument, ReadField, ReadDocument }
-}
+	return { ReadAllDocument, ReadField, ReadDocument };
+};

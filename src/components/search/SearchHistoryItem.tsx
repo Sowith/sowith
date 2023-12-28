@@ -1,52 +1,65 @@
-import { useState } from 'react';
 import { styled } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import formatNumber from 'utils/formatNumber';
 
 import deleteIcon from '../../assets/icon/icon-close.svg';
 import textHistoryIcon from '../../assets/icon/icon-history_text.svg';
 import userIcon from '../../assets/icon/icon-user.svg';
-import groupIcon from '../../assets/icon/icon-users_group-black.svg';
+// import groupIcon from '../../assets/icon/icon-users_group-black.svg';
 import folderIcon from '../../assets/icon/icon-folder.svg';
 import dotIcon from '../../assets/icon/icon-dot.svg';
 import tagIcon from '../../assets/icon/icon-tag.svg';
-import testImg from '../../assets/testImg/testimg-user.jpg';
 
-// 기능구현 시 하드코딩 되어있는 정보 변경하기
-// todo 다음과 같은 기능 구현:
-// 1. 유저, 폴더, 그룹 검색 결과의 경우 클릭 시 해당 정보가 위치한 페이지로 이동
-// 2. 텍스트 검색 결과 클릭 시 해당 텍스트를 검색 상세 페이지로 전달
-// 3. 태그 검색 결과 해당 태그를 게시글 검색 상세 페이지로 전달
-
-type HistoryCategory = 'text' | 'tag' | 'user' | 'folder' | 'group';
+type HistoryCategory = 'text' | 'tag' | 'profile' | 'folder' | 'group';
 
 export interface HistoryItemProps {
 	historyCategory: HistoryCategory;
 	title: string;
-	relatedPost?: number;
+	tagCount?: number;
 	followerCount?: number;
-	likes?: number;
+	likeCount?: number;
 	folderTag?: string;
 	groupTag?: string;
 	isFollowing?: boolean;
+	historyImg?: string;
+	uid?: string;
 	onDelete?: () => void;
 }
 
 export const HistoryItem: React.FC<HistoryItemProps> = ({
 	historyCategory,
 	title,
-	relatedPost,
+	tagCount,
 	followerCount,
-	likes,
+	likeCount,
 	folderTag,
 	groupTag,
 	isFollowing,
+	historyImg,
+	uid,
 	onDelete,
 }) => {
-	const handleDeleteHistory = () => {
+	const navigate = useNavigate();
+
+	const handleDeleteHistory = (event) => {
+		event.stopPropagation();
 		if (onDelete) onDelete();
 	};
 
+	const handleItemClick = () => {
+		switch (historyCategory) {
+			case 'text':
+			case 'tag':
+				navigate('/searchbycategory', { state: title });
+				break;
+			default:
+				navigate(`/${historyCategory}/view/${uid}`);
+				break;
+		}
+	};
+
 	return (
-		<Container historyCategory={historyCategory}>
+		<Container historyCategory={historyCategory} onClick={handleItemClick}>
 			<div className='icon-history'>
 				<img
 					src={
@@ -54,7 +67,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
 							? textHistoryIcon
 							: historyCategory === 'tag'
 							? tagIcon
-							: testImg
+							: historyImg
 					}
 					alt={title}
 				/>
@@ -65,10 +78,12 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
 					{historyCategory === 'text' && <></>}
 
 					{historyCategory === 'tag' && (
-						<span className='description-tag'>게시물 {relatedPost}+개</span>
+						<span className='description-tag'>{`게시물 ${formatNumber(
+							tagCount
+						)}개`}</span>
 					)}
 
-					{historyCategory === 'user' && (
+					{historyCategory === 'profile' && (
 						<>
 							<img className='icon-category' src={userIcon} alt='' />
 							<span className='user-name'>{title}</span>
@@ -76,7 +91,9 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
 							{isFollowing ? (
 								<span className='user-state'>팔로잉</span>
 							) : (
-								<span className='user-state'>팔로워 {followerCount}명</span>
+								<span className='user-state'>{`팔로워 ${formatNumber(
+									followerCount
+								)}명`}</span>
 							)}
 						</>
 					)}
@@ -84,20 +101,24 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
 					{historyCategory === 'folder' && (
 						<>
 							<img className='icon-category' src={folderIcon} alt='' />
-							<span className='like-count'>좋아요 {likes}</span>
+							<span className='like-count'>{`좋아요 ${formatNumber(
+								likeCount
+							)}개`}</span>
 							<img src={dotIcon} alt='spacing dot' />
 							<span className='folder-tag'>{folderTag}</span>
 						</>
 					)}
 
-					{historyCategory === 'group' && (
+					{/* {historyCategory === 'group' && (
 						<>
 							<img className='icon-category' src={groupIcon} alt='' />
-							<span className='like-count'>좋아요 {likes}</span>
+							<span className='like-count'>{`좋아요 ${formatNumber(
+								likes
+							)}개`}</span>
 							<img src={dotIcon} alt='spacing dot' />
 							<span className='group-tag'>{groupTag}</span>
 						</>
-					)}
+					)} */}
 				</div>
 			</div>
 			<button className='icon-delete' onClick={handleDeleteHistory}>
@@ -108,6 +129,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
 };
 
 const Container = styled.div<{ historyCategory: HistoryCategory }>`
+	cursor: pointer;
 	background-color: #ffffff;
 	display: flex;
 	min-height: 50px;

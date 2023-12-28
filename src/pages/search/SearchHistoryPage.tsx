@@ -25,12 +25,10 @@ export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 	const { deleteSearchHistory } = useDeleteSearchHistory();
 
 	const uid = getUserInfo();
-	// uid는 가져왔고, 이제 이 uid와 일치하는 사용자의 검색 기록을 가져오면 된다.
 
 	useEffect(() => {
 		const fetchUserSearchHistory = async () => {
 			const response = await firestoreReader.ReadDocument(uid);
-			console.log(response);
 
 			if (response && response.data.searchHistories.length > 0) {
 				setSearchHistoryData(response.data.searchHistories || []);
@@ -38,9 +36,6 @@ export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 			} else {
 				setUserSearchHistory(false);
 			}
-
-			console.log(response?.data.searchHistories);
-			console.log(searchHistoryData, userSearchHistory);
 		};
 
 		fetchUserSearchHistory();
@@ -83,13 +78,15 @@ export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 					</SearchStatus>
 
 					<SearchHistoryList>
-						{searchHistoryData.map((data, index) => (
-							<HistoryItem
-								key={index}
-								{...(data as HistoryItemProps)}
-								onDelete={() => handleDeleteHistoryItem(index)}
-							/>
-						))}
+						{searchHistoryData
+							.map((data, index) => (
+								<HistoryItem
+									key={index}
+									{...(data as HistoryItemProps)}
+									onDelete={() => handleDeleteHistoryItem(index)}
+								/>
+							))
+							.reverse()}
 					</SearchHistoryList>
 				</YesSearchHistory>
 			)}

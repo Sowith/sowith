@@ -1,20 +1,23 @@
 import { styled } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 import multiplePhotosIcon from '../../assets/icon/icon-multiple_photos.svg';
 
 export interface PostItemProps {
 	isMultiplePhotos?: boolean;
 	imageUrl: string;
-	postContent?: string;
-	postTag?: [string];
+	postId: string;
 }
 
 export const PostItem: React.FC<PostItemProps> = ({
 	isMultiplePhotos,
 	imageUrl,
+	postId,
 }) => {
+	const navigate = useNavigate();
+
 	const handlePostClick = () => {
-		console.log('게시물이 클릭되었습니다!');
+		navigate(`/post/view/${postId}`);
 	};
 
 	return (

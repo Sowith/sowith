@@ -1,4 +1,5 @@
 import { styled } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark.svg';
 
@@ -9,10 +10,9 @@ export interface FolderDataItem {
 	folderId: string;
 	folderImages: string[];
 	name: string;
-	likeCount: number;
-	like: boolean;
-	bookmark: boolean;
-	tags: string[];
+	likedUsers: string[];
+	bookmarkedUsers: string[];
+	hashtags: string[];
 }
 
 interface FolderItemProps {
@@ -28,38 +28,73 @@ export const SearchTrendingFolderItem: React.FC<FolderItemProps> = ({
 	onBookmarkToggle,
 }) => {
 	const maxTagCount = 3;
+	const navigate = useNavigate();
 
-	const handleLikeClick = () => {
+	const handleFolderClick = () => {
+		navigate(`/folder/view/${data.folderId}`);
+	};
+
+	const getCurrentUserUid = () => {
+		const token = sessionStorage.getItem('token');
+		return token ? JSON.parse(token).uid : null;
+	};
+
+	const isLiked = () => {
+		const currentUserUid = getCurrentUserUid();
+		return data.likedUsers.includes(currentUserUid);
+	};
+
+	const isBookmarked = () => {
+		const currentUserUid = getCurrentUserUid();
+		return data.bookmarkedUsers.includes(currentUserUid);
+	};
+
+	const handleLikeClick = (event) => {
+		event.stopPropagation();
+		const currentUserUid = getCurrentUserUid();
+		if (!currentUserUid) {
+			console.log('좋아요를 누르려면 로그인 하세요');
+			return;
+		}
 		onLikeToggle(data.folderId);
 	};
 
-	const handleBookmarkClick = () => {
+	const handleBookmarkClick = (event) => {
+		event.stopPropagation();
+		const currentUserUid = getCurrentUserUid();
+		if (!currentUserUid) {
+			console.log('북마크를 누르려면 로그인 하세요');
+			return;
+		}
 		onBookmarkToggle(data.folderId);
 	};
 
 	return (
-		<Container style={{ backgroundImage: `url(${data.folderImages[0]})` }}>
+		<Container
+			style={{ backgroundImage: `url(${data.folderImages[0]})` }}
+			onClick={handleFolderClick}
+		>
 			<BlackOverlay />
 			<FolderDescription>
 				<p>{data.name}</p>
 				<FolderTagList>
-					{data.tags.slice(0, maxTagCount).map((tag, index) => (
+					{data.hashtags.slice(0, maxTagCount).map((tag, index) => (
 						<FolderTagItem key={index}>
 							<HashTag># </HashTag>
 							{tag}
 						</FolderTagItem>
 					))}
 
-					{data.tags.length > maxTagCount && (
+					{data.hashtags.length > maxTagCount && (
 						<NumberHiddenFolderTagItem>
-							+{data.tags.length - maxTagCount}
+							+{data.hashtags.length - maxTagCount}
 						</NumberHiddenFolderTagItem>
 					)}
 				</FolderTagList>
 			</FolderDescription>
 			<FolderInfo>
 				<FolderLike>
-					{data.like ? (
+					{isLiked() ? (
 						<img
 							src={heartFilled}
 							alt='Heart Filled'
@@ -72,11 +107,11 @@ export const SearchTrendingFolderItem: React.FC<FolderItemProps> = ({
 							onClick={handleLikeClick}
 						/>
 					)}
-					<span>{data.likeCount}</span>
+					<span>{data.likedUsers.length}</span>
 				</FolderLike>
 				<IconBookmark
-					fill={data.bookmark ? '#FFDF44' : '#C4C4C4'}
-					stroke={data.bookmark ? '#FFDF44' : 'none'}
+					fill={isBookmarked() ? '#FFDF44' : '#C4C4C4'}
+					stroke={isBookmarked() ? '#FFDF44' : 'none'}
 					onClick={handleBookmarkClick}
 				/>
 			</FolderInfo>
