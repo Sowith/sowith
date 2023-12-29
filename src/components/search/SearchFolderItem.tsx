@@ -1,6 +1,7 @@
 import { styled } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useFirestoreUpdate } from 'hooks/useFirestoreUpdate';
+import getUserInfo from 'utils/getUserInfo';
 import { arrayUnion } from 'firebase/firestore';
 import { ReactComponent as IconBookmark } from '../../assets/icon/icon-bookmark.svg';
 
@@ -30,11 +31,10 @@ export const SearchFolderItem: React.FC<FolderItemProps> = ({
 	onBookmarkToggle,
 }) => {
 	const maxTagCount = 3;
-	const token = sessionStorage.getItem('token');
-	const currentUserUid = token ? JSON.parse(token).uid : null;
-	const { UpdateFieldUid } = useFirestoreUpdate('users');
-	const navigate = useNavigate();
 
+	const { UpdateField } = useFirestoreUpdate('users');
+	const navigate = useNavigate();
+	const userInfo = getUserInfo();
 	const handleFolderClick = async () => {
 		const newHistory = {
 			title: data.name,
@@ -44,36 +44,31 @@ export const SearchFolderItem: React.FC<FolderItemProps> = ({
 			likeCount: data.likedUsers.length,
 			uid: data.folderId,
 		};
+
 		try {
-			await UpdateFieldUid(currentUserUid, {
-				searchHistories: arrayUnion(newHistory),
-			});
+			// UpdateField 함수를 사용하여 사용자의 검색 기록을 업데이트합니다.
+			// 예시에서는 'users' 컬렉션의 특정 문서 (여기서는 userInfo를 문서 ID로 사용)를 업데이트합니다.
+			await UpdateField({ searchHistories: arrayUnion(newHistory) }, userInfo);
+
 			console.log('검색 기록이 업데이트되었습니다');
 		} catch (error) {
 			console.error('검색 기록 업데이트 실패:', error);
 		}
+
 		navigate(`/folder/view/${data.folderId}`);
 	};
 
-	const getCurrentUserUid = () => {
-		const token = sessionStorage.getItem('token');
-		return token ? JSON.parse(token).uid : null;
-	};
-
 	const isLiked = () => {
-		const currentUserUid = getCurrentUserUid();
-		return data.likedUsers.includes(currentUserUid);
+		return data.likedUsers.includes(userInfo);
 	};
 
 	const isBookmarked = () => {
-		const currentUserUid = getCurrentUserUid();
-		return data.bookmarkedUsers.includes(currentUserUid);
+		return data.bookmarkedUsers.includes(userInfo);
 	};
 
 	const handleLikeClick = (event) => {
 		event.stopPropagation();
-		const currentUserUid = getCurrentUserUid();
-		if (!currentUserUid) {
+		if (!userInfo) {
 			console.log('좋아요를 누르려면 로그인 하세요');
 			return;
 		}
@@ -82,8 +77,7 @@ export const SearchFolderItem: React.FC<FolderItemProps> = ({
 
 	const handleBookmarkClick = (event) => {
 		event.stopPropagation();
-		const currentUserUid = getCurrentUserUid();
-		if (!currentUserUid) {
+		if (!userInfo) {
 			console.log('북마크를 누르려면 로그인 하세요');
 			return;
 		}
