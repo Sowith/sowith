@@ -40,15 +40,20 @@ export const SearchFolderItem: React.FC<FolderItemProps> = ({
 			title: data.name,
 			historyCategory: 'folder',
 			historyImg: data.folderImages[0],
-			folderTag: data.hashtags[0],
+			folderTag:
+				data.hashtags && data.hashtags.length > 0
+					? data.hashtags[0]
+					: '태그 없음',
 			likeCount: data.likedUsers.length,
 			uid: data.folderId,
 		};
 
 		try {
-			// UpdateField 함수를 사용하여 사용자의 검색 기록을 업데이트합니다.
-			// 예시에서는 'users' 컬렉션의 특정 문서 (여기서는 userInfo를 문서 ID로 사용)를 업데이트합니다.
-			await UpdateField({ searchHistories: arrayUnion(newHistory) }, userInfo);
+			await UpdateField(
+				{ searchHistories: arrayUnion(newHistory) },
+				userInfo,
+				false
+			);
 
 			console.log('검색 기록이 업데이트되었습니다');
 		} catch (error) {

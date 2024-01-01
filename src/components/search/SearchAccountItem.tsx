@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFirestoreUpdate } from 'hooks/useFirestoreUpdate';
+import getUserInfo from 'utils/getUserInfo';
 import styled from 'styled-components';
 
 import formatNumber from 'utils/formatNumber';
@@ -24,9 +25,8 @@ export const AccountItem: React.FC<AccountItemProps> = ({
 	id,
 }) => {
 	let [isFollowing, setIsFollowing] = useState(false);
-	const token = sessionStorage.getItem('token');
-	const currentUserUid = token ? JSON.parse(token).uid : null;
-	const { UpdateFieldUid } = useFirestoreUpdate('users');
+	const userInfo = getUserInfo();
+	const { UpdateField } = useFirestoreUpdate('users');
 	const navigate = useNavigate();
 
 	const handleAccountClick = async () => {
@@ -38,9 +38,13 @@ export const AccountItem: React.FC<AccountItemProps> = ({
 			uid: id,
 		};
 		try {
-			await UpdateFieldUid(currentUserUid, {
-				searchHistories: arrayUnion(newHistory),
-			});
+			await UpdateField(
+				{
+					searchHistories: arrayUnion(newHistory),
+				},
+				userInfo,
+				false
+			);
 			console.log('검색 기록이 업데이트되었습니다');
 		} catch (error) {
 			console.error('검색 기록 업데이트 실패:', error);
@@ -49,8 +53,8 @@ export const AccountItem: React.FC<AccountItemProps> = ({
 	};
 
 	useEffect(() => {
-		setIsFollowing(followers.includes(currentUserUid));
-	}, [followers, currentUserUid]);
+		setIsFollowing(followers.includes(userInfo));
+	}, [followers, userInfo]);
 
 	return (
 		<Container onClick={handleAccountClick}>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFirestoreRead } from 'hooks/useFirestoreRead';
-import { useDeleteSearchHistory } from 'hooks/useDeleteSearchHistory';
+import { useFirestoreUpdate } from 'hooks/useFirestoreUpdate';
 import styled from 'styled-components';
 
 import {
@@ -13,7 +13,7 @@ import getUserInfo from 'utils/getUserInfo';
 
 import soWithLogo from '../../assets/icon/icon-sowith-heart.svg';
 
-interface SearchHistoryProps { }
+interface SearchHistoryProps {}
 
 export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 	const [searchHistoryData, setSearchHistoryData] = useState([]);
@@ -22,36 +22,38 @@ export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 	const navigate = useNavigate();
 
 	const firestoreReader = useFirestoreRead('users');
-	const { deleteSearchHistory } = useDeleteSearchHistory();
+	const { UpdateField } = useFirestoreUpdate('users');
 
-	const uid = getUserInfo();
+	const userInfo = getUserInfo();
+	const fetchUserSearchHistory = async () => {
+		const response = await firestoreReader.ReadDocument(userInfo);
+
+		if (response && response.data.searchHistories.length > 0) {
+			setSearchHistoryData(response.data.searchHistories || []);
+			setUserSearchHistory(true);
+		} else {
+			setUserSearchHistory(false);
+		}
+	};
 
 	useEffect(() => {
-		const fetchUserSearchHistory = async () => {
-			const response = await firestoreReader.ReadDocument(uid);
-
-			if (response && response.data.searchHistories.length > 0) {
-				setSearchHistoryData(response.data.searchHistories || []);
-				setUserSearchHistory(true);
-			} else {
-				setUserSearchHistory(false);
-			}
-		};
-
 		fetchUserSearchHistory();
 	}, [searchHistoryData.length]);
 
 	const handleDeleteHistoryItem = async (index: number) => {
 		if (index >= 0 && index < searchHistoryData.length) {
-			await deleteSearchHistory(uid, index);
-		}
-		const updatedResponse = await firestoreReader.ReadDocument(uid);
+			const updatedSearchHistoryData = [
+				...searchHistoryData.slice(0, index),
+				...searchHistoryData.slice(index + 1),
+			];
 
-		if (updatedResponse) {
-			setSearchHistoryData(updatedResponse.data.searchHistories || []);
-			setUserSearchHistory(true);
-		} else {
-			setUserSearchHistory(false);
+			await UpdateField(
+				{ searchHistories: updatedSearchHistoryData },
+				userInfo,
+				false
+			);
+
+			setSearchHistoryData(updatedSearchHistoryData);
 		}
 	};
 

@@ -54,11 +54,11 @@ export const SearchFolderList: React.FC<SearchFolderListProps> = ({
 				);
 				const newLikedUsers =
 					folder && folder.likedUsers.includes(userInfo)
-						? folder.likedUsers.filter((userId) => userId !== userInfo) // 좋아요 제거
-						: [...(folder?.likedUsers || []), userInfo]; // 좋아요 추가
+						? folder.likedUsers.filter((userId) => userId !== userInfo)
+						: [...(folder?.likedUsers || []), userInfo];
 
 				await UpdateField({ likedUsers: newLikedUsers }, folderId, false);
-				fetchFilteredFolders(); // 데이터를 다시 불러옵니다.
+				fetchFilteredFolders();
 			} catch (error) {
 				console.error('좋아요 업데이트 실패:', error);
 			}
@@ -73,15 +73,15 @@ export const SearchFolderList: React.FC<SearchFolderListProps> = ({
 				);
 				const newBookmarkedUsers =
 					folder && folder.bookmarkedUsers.includes(userInfo)
-						? folder.bookmarkedUsers.filter((userId) => userId !== userInfo) // 북마크 제거
-						: [...(folder?.bookmarkedUsers || []), userInfo]; // 북마크 추가
+						? folder.bookmarkedUsers.filter((userId) => userId !== userInfo)
+						: [...(folder?.bookmarkedUsers || []), userInfo];
 
 				await UpdateField(
 					{ bookmarkedUsers: newBookmarkedUsers },
 					folderId,
 					false
 				);
-				fetchFilteredFolders(); // 데이터를 다시 불러옵니다.
+				fetchFilteredFolders();
 			} catch (error) {
 				console.error('북마크 업데이트 실패:', error);
 			}
