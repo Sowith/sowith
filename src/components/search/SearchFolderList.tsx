@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFirestoreRead } from 'hooks/useFirestoreRead';
 import { useFirestoreUpdate } from 'hooks/useFirestoreUpdate';
+import getUserInfo from 'utils/getUserInfo';
 import { styled } from 'styled-components';
 
 import { SearchFolderItem, FolderDataItem } from './SearchFolderItem';
@@ -15,13 +16,10 @@ export const SearchFolderList: React.FC<SearchFolderListProps> = ({
 	const [archiveFolderData, setArchiveFolderData] = useState<FolderDataItem[]>(
 		[]
 	);
+	const userInfo = getUserInfo();
+	console.log(userInfo);
 
-	const getCurrentUserUid = () => {
-		const token = sessionStorage.getItem('token');
-		return token ? JSON.parse(token).uid : null;
-	};
-
-	const { UpdatePublicField } = useFirestoreUpdate('folders');
+	const { UpdateField } = useFirestoreUpdate('folders');
 
 	const firestoreReader = useFirestoreRead('folders');
 
@@ -49,20 +47,18 @@ export const SearchFolderList: React.FC<SearchFolderListProps> = ({
 	}, [searchKeyword]);
 
 	const handleLikeToggle = async (folderId: string) => {
-		const currentUserUid = getCurrentUserUid();
-
-		if (currentUserUid) {
+		if (userInfo) {
 			try {
-				const action = archiveFolderData.some(
-					(folder) =>
-						folder.folderId === folderId &&
-						folder.likedUsers.includes(currentUserUid)
-				)
-					? { likedUsers: { remove: true } } // 좋아요 제거
-					: { likedUsers: { add: true } }; // 좋아요 추가
+				const folder = archiveFolderData.find(
+					(folder) => folder.folderId === folderId
+				);
+				const newLikedUsers =
+					folder && folder.likedUsers.includes(userInfo)
+						? folder.likedUsers.filter((userId) => userId !== userInfo)
+						: [...(folder?.likedUsers || []), userInfo];
 
-				await UpdatePublicField(folderId, action);
-				fetchFilteredFolders(); // 데이터를 다시 불러옵니다.
+				await UpdateField({ likedUsers: newLikedUsers }, folderId, false);
+				fetchFilteredFolders();
 			} catch (error) {
 				console.error('좋아요 업데이트 실패:', error);
 			}
@@ -70,20 +66,22 @@ export const SearchFolderList: React.FC<SearchFolderListProps> = ({
 	};
 
 	const handleBookmarkToggle = async (folderId: string) => {
-		const currentUserUid = getCurrentUserUid();
-
-		if (currentUserUid) {
+		if (userInfo) {
 			try {
-				const action = archiveFolderData.some(
-					(folder) =>
-						folder.folderId === folderId &&
-						folder.bookmarkedUsers.includes(currentUserUid)
-				)
-					? { bookmarkedUsers: { remove: true } } // 북마크 제거
-					: { bookmarkedUsers: { add: true } }; // 북마크 추가
+				const folder = archiveFolderData.find(
+					(folder) => folder.folderId === folderId
+				);
+				const newBookmarkedUsers =
+					folder && folder.bookmarkedUsers.includes(userInfo)
+						? folder.bookmarkedUsers.filter((userId) => userId !== userInfo)
+						: [...(folder?.bookmarkedUsers || []), userInfo];
 
-				await UpdatePublicField(folderId, action);
-				fetchFilteredFolders(); // 데이터를 다시 불러옵니다.
+				await UpdateField(
+					{ bookmarkedUsers: newBookmarkedUsers },
+					folderId,
+					false
+				);
+				fetchFilteredFolders();
 			} catch (error) {
 				console.error('북마크 업데이트 실패:', error);
 			}

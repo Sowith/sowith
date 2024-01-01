@@ -42,7 +42,11 @@ export const TagList: React.FC<SearchTagListProps> = ({ searchKeyword }) => {
 	return (
 		<TagItemContainer>
 			{archiveTagData.map((tag) => (
-				<TagItem tagTitle={tag.tagTitle} tagNumber={tag.tagNumber} />
+				<TagItem
+					key={tag.tagTitle}
+					tagTitle={tag.tagTitle}
+					tagNumber={tag.tagNumber}
+				/>
 			))}
 		</TagItemContainer>
 	);

@@ -1,3 +1,4 @@
+import getUserInfo from 'utils/getUserInfo';
 import { styled } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,6 +28,7 @@ export const SearchTrendingFolderItem: React.FC<FolderItemProps> = ({
 	onLikeToggle,
 	onBookmarkToggle,
 }) => {
+	const userInfo = getUserInfo();
 	const maxTagCount = 3;
 	const navigate = useNavigate();
 
@@ -34,25 +36,17 @@ export const SearchTrendingFolderItem: React.FC<FolderItemProps> = ({
 		navigate(`/folder/view/${data.folderId}`);
 	};
 
-	const getCurrentUserUid = () => {
-		const token = sessionStorage.getItem('token');
-		return token ? JSON.parse(token).uid : null;
-	};
-
 	const isLiked = () => {
-		const currentUserUid = getCurrentUserUid();
-		return data.likedUsers.includes(currentUserUid);
+		return data.likedUsers.includes(userInfo);
 	};
 
 	const isBookmarked = () => {
-		const currentUserUid = getCurrentUserUid();
-		return data.bookmarkedUsers.includes(currentUserUid);
+		return data.bookmarkedUsers.includes(userInfo);
 	};
 
 	const handleLikeClick = (event) => {
 		event.stopPropagation();
-		const currentUserUid = getCurrentUserUid();
-		if (!currentUserUid) {
+		if (!userInfo) {
 			console.log('좋아요를 누르려면 로그인 하세요');
 			return;
 		}
@@ -61,8 +55,7 @@ export const SearchTrendingFolderItem: React.FC<FolderItemProps> = ({
 
 	const handleBookmarkClick = (event) => {
 		event.stopPropagation();
-		const currentUserUid = getCurrentUserUid();
-		if (!currentUserUid) {
+		if (!userInfo) {
 			console.log('북마크를 누르려면 로그인 하세요');
 			return;
 		}

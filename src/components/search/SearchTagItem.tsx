@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useFirestoreUpdate } from 'hooks/useFirestoreUpdate';
+import getUserInfo from 'utils/getUserInfo';
 import { styled } from 'styled-components';
 
 import { arrayUnion } from 'firebase/firestore';
@@ -14,9 +15,8 @@ export interface TagItemProps {
 }
 
 export const TagItem: React.FC<TagItemProps> = ({ tagTitle, tagNumber }) => {
-	const token = sessionStorage.getItem('token');
-	const currentUserUid = token ? JSON.parse(token).uid : null;
-	const { UpdateFieldUid } = useFirestoreUpdate('users');
+	const userInfo = getUserInfo();
+	const { UpdateField } = useFirestoreUpdate('users');
 	const navigate = useNavigate();
 
 	const handleTagClick = async () => {
@@ -26,9 +26,13 @@ export const TagItem: React.FC<TagItemProps> = ({ tagTitle, tagNumber }) => {
 			tagCount: tagNumber,
 		};
 		try {
-			await UpdateFieldUid(currentUserUid, {
-				searchHistories: arrayUnion(newHistory),
-			});
+			await UpdateField(
+				{
+					searchHistories: arrayUnion(newHistory),
+				},
+				userInfo,
+				false
+			);
 			console.log('검색 기록이 업데이트되었습니다');
 		} catch (error) {
 			console.error('검색 기록 업데이트 실패:', error);

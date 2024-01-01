@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useFirestoreUpdate } from 'hooks/useFirestoreUpdate';
+import getUserInfo from 'utils/getUserInfo';
 import styled from 'styled-components';
 
 import { arrayUnion } from 'firebase/firestore';
@@ -24,9 +25,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 	const currentPath = location.pathname;
 	const [placeholderText, SetPlaceHolderText] = useState('');
 	const [searchKeyword, setSearchKeyword] = useState('');
-	const { UpdateFieldUid } = useFirestoreUpdate('users'); // 검색 기록을 업데이트할 컬렉션명
-	const token = sessionStorage.getItem('token');
-	const currentUserUid = token !== null ? JSON.parse(token).uid : null;
+	const { UpdateField } = useFirestoreUpdate('users');
+	const userInfo = getUserInfo();
 
 	useEffect(() => {
 		if (currentPath === '/profiledetailPage/1') {
@@ -81,9 +81,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
 		// Firestore에 검색 기록 추가
 		try {
-			await UpdateFieldUid(currentUserUid, {
-				searchHistories: arrayUnion(newHistory),
-			});
+			await UpdateField(
+				{
+					searchHistories: arrayUnion(newHistory),
+				},
+				userInfo,
+				false
+			);
 			console.log('검색 기록이 추가되었습니다');
 		} catch (error) {
 			console.error('검색 기록 추가 실패:', error);
