@@ -16,7 +16,10 @@ export const SearchTrendingTagList: React.FC = () => {
 
 	useEffect(() => {
 		const fetchTrendingTags = async () => {
-			const response = await firestoreReader.ReadAllDocument();
+			const response = await firestoreReader.ReadAllDocument(
+				'createdAt',
+				'desc'
+			);
 
 			const tagData: TrendingTagData[] = response.map((item) => {
 				const taggedFolderCount = item?.data?.taggedFolderIDs?.length;
@@ -42,6 +45,7 @@ export const SearchTrendingTagList: React.FC = () => {
 		<Container>
 			{archiveTrendingTagData.map((tag) => (
 				<SearchTrendingTagItem
+					key={tag.trendingTag}
 					trendingTag={tag.trendingTag}
 					tagNumber={tag.tagNumber}
 				/>

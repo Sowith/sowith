@@ -56,7 +56,7 @@ export const AccountList: React.FC<AccountListProps> = ({
 	return (
 		<AccountItemContainer>
 			{archiveUserData.map((item) => (
-				<AccountItem {...item} />
+				<AccountItem key={item.id} {...item} />
 			))}
 		</AccountItemContainer>
 	);
