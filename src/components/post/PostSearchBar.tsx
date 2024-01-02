@@ -16,6 +16,7 @@ interface SearchBarProps {
   setSelectTag?: React.Dispatch<React.SetStateAction<string[]>>;
   searchKeyword?: string | string[];
   setSearchKeyword?: React.Dispatch<React.SetStateAction<string | string[]>>;
+  setIsTrackingLocation?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
@@ -28,6 +29,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   setSelectTag,
   searchKeyword,
   setSearchKeyword,
+  setIsTrackingLocation
 }) => {
 
   const [inputValue, setInputValue] = useState<any>(value);
@@ -53,7 +55,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   const handleDeleteTag = (index: number) => {
-    setSelectTag && setSelectTag((prevData) => prevData.filter((item, i) => i !== index));
+    setSelectTag && setSelectTag((prevData) => prevData.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
@@ -89,7 +91,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         </IconHashTagPosition>
       </InputStyle>
       {id === "locationSearch" && (
-        <IconCurrentLocationPosition>
+        <IconCurrentLocationPosition onClick={() => {
+          setIsTrackingLocation && setIsTrackingLocation(true)
+        }}>
           <img src={IconCurrentLocation} alt="Icon" />
         </IconCurrentLocationPosition>
       )}
@@ -141,4 +145,5 @@ const IconCurrentLocationPosition = styled.div`
   right: 4px;
   top: 50%;
   transform: translateY(-50%);
+  cursor: pointer;
 `;
