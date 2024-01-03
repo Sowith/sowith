@@ -74,7 +74,7 @@ export const PostInputInfoPage: React.FC<PostInputInfoPageProps> = ({ filterStor
           height={"100px"}
         />
         <ReadonlyTextarea
-          value={postForm.location}
+          value={postForm.location.locationName}
           type="text"
           readonly="readonly"
           id="addLocation"
