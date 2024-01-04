@@ -28,9 +28,8 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
         navigator.geolocation.getCurrentPosition(function (position) {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
-
           const coordinate = new kakao.maps.LatLng(lat, lon);
-          resolve({ lat, lon, coordinate });
+          resolve(coordinate);
         });
       } else {
         reject(new Error("현재 위치를 불러올 수 없습니다."));
@@ -78,12 +77,10 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
   });
 
   const fetchLocationListByKeyword = (ps, searchKeyword, options) => new Promise<any>((resolve) => {
-    ps.keywordSearch(searchKeyword, (data, status, _pagination) => {
+    ps.keywordSearch(searchKeyword, (result, status, _pagination) => {
       if (status === kakao.maps.services.Status.OK) {
-        const bounds = new kakao.maps.LatLngBounds();
         const searchResult: any[] = [];
-        for (let i = 0; i < data.length; i++) {
-          const locationData = data[i];
+        result.forEach((locationData) => {
           searchResult.push({
             locationName: locationData.place_name,
             locationCategories: locationData.category_group_name,
@@ -94,8 +91,7 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
               lng: locationData.x,
             },
           });
-          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-        }
+        });
         resolve(searchResult);
       } else {
         console.error("위치정보를 불러올 수 없습니다.");
@@ -107,9 +103,9 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
   useEffect(() => {
     const fetchLocation = async () => {
       const geocoder = new kakao.maps.services.Geocoder();
-
       const ps = new kakao.maps.services.Places();
-      const { coordinate } = await getCurrentCoordinate();
+
+      const coordinate = await getCurrentCoordinate();
 
       const options = {
         location: coordinate,
@@ -129,39 +125,33 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
     }
   }, [searchKeyword]);
 
-
   useEffect(() => {
     const fetchLocation = async () => {
       setSearchKeyword([])
-      const { lat, lon } = await getCurrentCoordinate();
-      const latlng = new kakao.maps.LatLng(lat, lon);
+      const coordinate = await getCurrentCoordinate();
       const geocoder = new kakao.maps.services.Geocoder();
 
-      const searchResult = await getRegionCoordinate(geocoder, latlng);
+      const searchResult = await getRegionCoordinate(geocoder, coordinate);
       const locationList = await fetchLocationListByAddress(geocoder, searchResult && searchResult[0].address_name);
       setLocationItems(locationList);
     }
-    if (!!isTrackingLocation) {
+
+    if (isTrackingLocation) {
       fetchLocation();
       setIsTrackingLocation(false);
     }
   }, [isTrackingLocation]);
-
 
   const handleCloseModal = (locationItem) => {
     closeModal();
     setTimeout(() => {
       setPostForm((Prev) => {
         const updatedPostInfo = { ...Prev };
-        if (!Array.isArray(searchKeyword)) {
-          updatedPostInfo.location = locationItem;
-
-        }
+        updatedPostInfo.location = locationItem;
         return updatedPostInfo;
       });
     }, 400)
   }
-
   return (
     <>
       <SearchBar
