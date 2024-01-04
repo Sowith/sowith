@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
@@ -22,6 +21,7 @@ import { ReadData } from 'components/crud/ReadData';
 import { UpdateData } from 'components/crud/UpdateData';
 import { DeleteData } from 'components/crud/DeleteData';
 import { ChatRoomPage } from 'pages/chat/ChatRoomPage';
+import { MapTest } from 'pages/home/MapTest';
 
 export function App(): JSX.Element {
 	return (
@@ -30,6 +30,7 @@ export function App(): JSX.Element {
 			<BrowserRouter>
 				<MyGlobalStyle />
 				<Routes>
+					<Route path='/map' element={<MapTest />}></Route>
 					<Route path='/' element={<Test />} />
 					<Route path='/home' element={<Home />} />
 					<Route path='/signup' element={<SignUP />} />
