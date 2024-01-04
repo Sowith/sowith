@@ -26,8 +26,8 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-          const lat = position.coords.latitude; // 위도
-          const lon = position.coords.longitude; // 경도
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
 
           const coordinate = new kakao.maps.LatLng(lat, lon);
           resolve({ lat, lon, coordinate });
@@ -47,8 +47,7 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
     }
   }
 
-
-  const coord2RegionCodeAsync = (geocoder, latlng) => new Promise((resolve, reject) => {
+  const getRegionCoordinate = (geocoder, latlng) => new Promise((resolve, reject) => {
     geocoder.coord2RegionCode(latlng.getLng(), latlng.getLat(), function (currentRegion, status) {
       if (status === kakao.maps.services.Status.OK) {
         resolve(currentRegion);
@@ -58,7 +57,7 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
     });
   });
 
-  const addressSearchAsync = (geocoder, searchResult) => new Promise<any>((resolve) => {
+  const fetchLocationListByAddress = (geocoder, searchResult) => new Promise<any>((resolve) => {
     geocoder.addressSearch(searchResult, function (result, status) {
       if (status === kakao.maps.services.Status.OK) {
         const locationList = result.map(locationData => ({
@@ -78,8 +77,7 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
     });
   });
 
-
-  const keywordSearchAsync = (ps, searchKeyword, options) => new Promise<any>((resolve) => {
+  const fetchLocationListByKeyword = (ps, searchKeyword, options) => new Promise<any>((resolve) => {
     ps.keywordSearch(searchKeyword, (data, status, _pagination) => {
       if (status === kakao.maps.services.Status.OK) {
         const bounds = new kakao.maps.LatLngBounds();
@@ -106,7 +104,6 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
     }, options);
   });
 
-
   useEffect(() => {
     const fetchLocation = async () => {
       const geocoder = new kakao.maps.services.Geocoder();
@@ -120,8 +117,8 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
         // sort: kakao.maps.services.SortBy.DISTANCE,
       };
 
-      const addressSearchResult = await addressSearchAsync(geocoder, searchKeyword);
-      const keywordSearchResult = await keywordSearchAsync(ps, searchKeyword, options);
+      const addressSearchResult = await fetchLocationListByAddress(geocoder, searchKeyword);
+      const keywordSearchResult = await fetchLocationListByKeyword(ps, searchKeyword, options);
       setLocationItems([...addressSearchResult, ...keywordSearchResult])
     };
 
@@ -140,8 +137,8 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
       const latlng = new kakao.maps.LatLng(lat, lon);
       const geocoder = new kakao.maps.services.Geocoder();
 
-      const searchResult = await coord2RegionCodeAsync(geocoder, latlng);
-      const locationList = await addressSearchAsync(geocoder, searchResult && searchResult[0].address_name);
+      const searchResult = await getRegionCoordinate(geocoder, latlng);
+      const locationList = await fetchLocationListByAddress(geocoder, searchResult && searchResult[0].address_name);
       setLocationItems(locationList);
     }
     if (!!isTrackingLocation) {
@@ -149,7 +146,6 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
       setIsTrackingLocation(false);
     }
   }, [isTrackingLocation]);
-
 
 
   const handleCloseModal = (locationItem) => {
