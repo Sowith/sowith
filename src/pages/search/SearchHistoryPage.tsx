@@ -62,7 +62,7 @@ export const SearchHistory: React.FC<SearchHistoryProps> = () => {
 	};
 
 	const moveSearchByCategory = (): void => {
-		navigate('/searchbycategory', { state: searchKeyword });
+		navigate('/search/post', { state: searchKeyword });
 	};
 
 	return (
