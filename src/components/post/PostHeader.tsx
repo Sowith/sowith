@@ -70,7 +70,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
     setPostForm({
       picture: [],
       phrase: '',
-      location: '',
+      location: [],
       folder: [],
       hashtag: [],
       usertag: []
@@ -100,12 +100,14 @@ export const Header: React.FC<HeaderProps> = (props) => {
     try {
       const downloadURLs = await Promise.all(uploadPromises);
 
+      const { locationDistance, ...newLocation } = postForm.location;
+
       const postId = await CreateDocument({
         comments: [],
         content: postForm.phrase,
         images: downloadURLs,
         likedUsers: [],
-        location: postForm.location,
+        location: newLocation,
         hashtags: postForm.hashtag,
         tagUsers: postForm.usertag.map(item => item.id),
       });

@@ -5,74 +5,153 @@ import { useRecoilState } from "recoil";
 import postFormState from "recoil/postFormState";
 
 import { SearchBar } from "../../components/post/PostSearchBar";
-import { Button } from "../../components/common/Button"
 
 import IconLocation from "../../assets/icon/icon-location.svg";
 import dotIcon from "../../assets/icon/icon-dot.svg";
+
+declare const kakao: any;
 
 interface SelectLocationProps {
   closeModal: () => void;
 }
 
-interface LocationData {
-  locationName: string,
-  locationCategories: string,
-  locationDistance: string,
-  locationAddress: string
-}
-
-const locationData: LocationData[] = [
-  {
-    locationName: '상도 당근 마켓',
-    locationCategories: "마트",
-    locationDistance: "0.1km",
-    locationAddress: ""
-  },
-  {
-    locationName: '서울',
-    locationCategories: "",
-    locationDistance: "163km",
-    locationAddress: ""
-  },
-  {
-    locationName: '서울 동작구 상도동',
-    locationCategories: "마트",
-    locationDistance: "0.9km",
-    locationAddress: ""
-  },
-  {
-    locationName: '숭실대학교',
-    locationCategories: "학교",
-    locationDistance: "1.3km",
-    locationAddress: "서울시 동작구 상도로 369 숭실대학교"
-  },
-];
-
 export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeModal }) => {
 
-  // const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [postForm, setPostForm] = useRecoilState(postFormState)
-  const [searchKeyword, setSearchKeyword] = useState<any>(postForm.location);
-  const [locationItems, setLocationItems] = useState<LocationData[]>(locationData);
+  const [searchKeyword, setSearchKeyword] = useState<string | string[]>(postForm.location.locationName || "");
+  const [locationItems, setLocationItems] = useState<any>([]);
+  const [isTrackingLocation, setIsTrackingLocation] = useState<boolean>(false);
 
+  const getCurrentCoordinate = async (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const coordinate = new kakao.maps.LatLng(lat, lon);
+          resolve(coordinate);
+        });
+      } else {
+        reject(new Error("현재 위치를 불러올 수 없습니다."));
+      }
+    });
+  };
 
-  const handlePostInfo = (locationName) => {
-    setSearchKeyword(locationName)
+  const formatDistance = (meter) => {
+    const km = meter / 1000;
+    if (km >= 1) {
+      return `${km.toFixed(1)}km`;
+    } else {
+      return `${meter}m`;
+    }
   }
 
-  const handleCloseModal = () => {
+  const getRegionCoordinate = (geocoder, latlng) => new Promise((resolve, reject) => {
+    geocoder.coord2RegionCode(latlng.getLng(), latlng.getLat(), function (currentRegion, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        resolve(currentRegion);
+      } else {
+        reject(status);
+      }
+    });
+  });
+
+  const fetchLocationListByAddress = (geocoder, searchResult) => new Promise<any>((resolve) => {
+    geocoder.addressSearch(searchResult, function (result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        const locationList = result.map(locationData => ({
+          locationName: locationData.address_name,
+          locationCategories: '',
+          locationDistance: '',
+          position: {
+            lat: locationData.y,
+            lng: locationData.x,
+          },
+        }));
+        resolve(locationList);
+      } else {
+        console.error("위치정보를 불러올 수 없습니다.");
+        resolve([]);
+      }
+    });
+  });
+
+  const fetchLocationListByKeyword = (ps, searchKeyword, options) => new Promise<any>((resolve) => {
+    ps.keywordSearch(searchKeyword, (result, status, _pagination) => {
+      if (status === kakao.maps.services.Status.OK) {
+        const searchResult: any[] = [];
+        result.forEach((locationData) => {
+          searchResult.push({
+            locationName: locationData.place_name,
+            locationCategories: locationData.category_group_name,
+            locationDistance: formatDistance(locationData.distance),
+            locationAddress: locationData.address_name,
+            position: {
+              lat: locationData.y,
+              lng: locationData.x,
+            },
+          });
+        });
+        resolve(searchResult);
+      } else {
+        console.error("위치정보를 불러올 수 없습니다.");
+        resolve([]);
+      }
+    }, options);
+  });
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      const geocoder = new kakao.maps.services.Geocoder();
+      const ps = new kakao.maps.services.Places();
+
+      const coordinate = await getCurrentCoordinate();
+
+      const options = {
+        location: coordinate,
+        // radius: 10000,
+        // sort: kakao.maps.services.SortBy.DISTANCE,
+      };
+
+      const addressSearchResult = await fetchLocationListByAddress(geocoder, searchKeyword);
+      const keywordSearchResult = await fetchLocationListByKeyword(ps, searchKeyword, options);
+      setLocationItems([...addressSearchResult, ...keywordSearchResult])
+    };
+
+    if (searchKeyword.length === 0) {
+      setLocationItems([]);
+    } else {
+      fetchLocation();
+    }
+  }, [searchKeyword]);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      setSearchKeyword([])
+      const coordinate = await getCurrentCoordinate();
+      const geocoder = new kakao.maps.services.Geocoder();
+
+      const searchResult = await getRegionCoordinate(geocoder, coordinate);
+      const locationList = await fetchLocationListByAddress(geocoder, searchResult && searchResult[0].address_name);
+      setLocationItems(locationList);
+    }
+
+    if (isTrackingLocation) {
+      fetchLocation();
+      setIsTrackingLocation(false);
+    }
+  }, [isTrackingLocation]);
+
+  const handleCloseModal = (locationItem) => {
     closeModal();
     setTimeout(() => {
       setPostForm((Prev) => {
         const updatedPostInfo = { ...Prev };
-        if (!Array.isArray(searchKeyword)) {
-          updatedPostInfo.location = searchKeyword;
-        }
+        updatedPostInfo.location = locationItem;
         return updatedPostInfo;
       });
     }, 400)
   }
-
   return (
     <>
       <SearchBar
@@ -82,35 +161,28 @@ export const PostSelectLocationPage: React.FC<SelectLocationProps> = ({ closeMod
         placeholder={'위치 검색...'}
         searchKeyword={searchKeyword}
         setSearchKeyword={setSearchKeyword}
+        setIsTrackingLocation={setIsTrackingLocation}
       />
 
       <Container>
         {
           locationItems.map((item, index) => (
-            <LocationItem key={index} onClick={() => handlePostInfo(item.locationName)}>
+            <LocationItem key={index} onClick={() => handleCloseModal(item)}>
               <p className="location-name">{item.locationName}</p>
               <span className="location-categories">{item.locationCategories || ""}</span>
               <LocationDetail>
-                <span className="location-distance">{item.locationDistance}</span>
-                <img src={dotIcon} alt="spacing dot" />
+                {item.locationDistance &&
+                  <>
+                    <span className="location-distance">{item.locationDistance}</span>
+                    <img src={dotIcon} alt="spacing dot" />
+                  </>
+                }
                 <span className="location-address">{item.locationAddress || ""}</span>
               </LocationDetail>
             </LocationItem>
           ))
         }
       </Container>
-      <Button
-        type="button"
-        text={"완료"}
-        width={'90%'}
-        height={'41px'}
-        fontSize={'12px'}
-        margin={'16px 0 16px'}
-        fontFamily={'var(--font--Bold)'}
-        onClick={() => {
-          handleCloseModal()
-        }}
-      />
     </>
   );
 };
@@ -137,6 +209,8 @@ const Container = styled.ul`
 
 const LocationItem = styled.li`
   cursor: pointer;
+  min-height: 57px;
+  box-sizing: border-box;
   padding: 10px 5px;
   border-radius: 5px;
 

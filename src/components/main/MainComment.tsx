@@ -6,7 +6,6 @@ import { useFirestoreUpdate } from "hooks/useFirestoreUpdate";
 import { MainUserItem } from "./MainUserItem"
 import { arrayUnion } from "firebase/firestore";
 import { Timestamp } from 'firebase/firestore';
-import getUserInfo from "utils/getUserInfo";
 
 interface MainCommentProps {
   selectedPostId: string;
@@ -14,7 +13,8 @@ interface MainCommentProps {
 
 export const MainComment: React.FC<MainCommentProps> = ({ selectedPostId }) => {
 
-  const userInfo = getUserInfo();
+  const token = sessionStorage.getItem('token');
+  const userInfo = token !== null ? JSON.parse(token).userInfo : null;
 
   const { UpdateField } = useFirestoreUpdate('posts');
   const useFirestoreReadPosts = useFirestoreRead('posts');

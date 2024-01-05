@@ -15,7 +15,7 @@ const postFormState = atom({
   default: {
     picture: [] as any,
     phrase: "",
-    location: "",
+    location: {} as any,
     folder: [] as any[],
     hashtag: [] as string[],
     usertag: [] as any[]
