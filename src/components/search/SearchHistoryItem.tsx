@@ -50,7 +50,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({
 		switch (historyCategory) {
 			case 'text':
 			case 'tag':
-				navigate('/search/post', { state: title });
+				navigate(`/search/post/${title}`, { state: title });
 				break;
 			default:
 				navigate(`/${historyCategory}/view/${uid}`);

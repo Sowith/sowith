@@ -17,7 +17,6 @@ export const SearchFolderList: React.FC<SearchFolderListProps> = ({
 		[]
 	);
 	const userInfo = getUserInfo();
-	console.log(userInfo);
 
 	const { UpdateField } = useFirestoreUpdate('folders');
 

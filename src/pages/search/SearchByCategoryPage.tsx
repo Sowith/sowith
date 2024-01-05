@@ -6,7 +6,7 @@ import { PostList } from '../../components/search/SearchPostList';
 import { SearchFolderList } from 'components/search/SearchFolderList';
 import { AccountList } from '../../components/search/SearchAccountList';
 import { TagList } from '../../components/search/SearchTagList';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface Category {
 	id: number;
@@ -15,10 +15,9 @@ interface Category {
 }
 
 export const SearchByCategory: FC = () => {
-	const location = useLocation();
+	const { searchKeyword } = useParams();
+	const safeSearchKeyword = searchKeyword || '';
 	const navigate = useNavigate();
-	const searchKeyword: string = location.state;
-	console.log(searchKeyword);
 	const [currentStep, setCurrentStep] = useState<number>(1);
 	const CATEGORIES: Category[] = [
 		{ id: 1, name: '게시글', className: 'post' },
@@ -32,21 +31,23 @@ export const SearchByCategory: FC = () => {
 		const categoryPath = CATEGORIES.find(
 			(category) => category.id === categoryId
 		)?.className;
-		navigate(`/search/${categoryPath}`, { state: searchKeyword });
+		navigate(`/search/${categoryPath}/${safeSearchKeyword}`, {
+			state: safeSearchKeyword,
+		});
 	};
 
 	const renderComponentByCategory = () => {
 		switch (currentStep) {
 			case 1:
-				return <PostList searchKeyword={searchKeyword} />;
+				return <PostList searchKeyword={safeSearchKeyword} />;
 			case 2:
-				return <SearchFolderList searchKeyword={searchKeyword} />;
+				return <SearchFolderList searchKeyword={safeSearchKeyword} />;
 			case 3:
-				return <AccountList searchKeyword={searchKeyword} />;
+				return <AccountList searchKeyword={safeSearchKeyword} />;
 			case 4:
-				return <TagList searchKeyword={searchKeyword} />;
+				return <TagList searchKeyword={safeSearchKeyword} />;
 			default:
-				return <PostList searchKeyword={searchKeyword} />;
+				return <PostList searchKeyword={safeSearchKeyword} />;
 		}
 	};
 
