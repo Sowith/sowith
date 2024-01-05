@@ -6,7 +6,7 @@ import { PostList } from '../../components/search/SearchPostList';
 import { SearchFolderList } from 'components/search/SearchFolderList';
 import { AccountList } from '../../components/search/SearchAccountList';
 import { TagList } from '../../components/search/SearchTagList';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface Category {
 	id: number;
@@ -15,32 +15,39 @@ interface Category {
 }
 
 export const SearchByCategory: FC = () => {
-	const location = useLocation();
-	const searchKeyword: string = location.state;
+	const { searchKeyword } = useParams();
+	const safeSearchKeyword = searchKeyword || '';
+	const navigate = useNavigate();
 	const [currentStep, setCurrentStep] = useState<number>(1);
 	const CATEGORIES: Category[] = [
-		{ id: 1, name: '게시글', className: 'category-post' },
-		{ id: 2, name: '폴더', className: 'category-folder' },
-		{ id: 3, name: '계정', className: 'category-account' },
-		{ id: 4, name: '태그', className: 'category-tag' },
+		{ id: 1, name: '게시글', className: 'post' },
+		{ id: 2, name: '폴더', className: 'folder' },
+		{ id: 3, name: '계정', className: 'account' },
+		{ id: 4, name: '태그', className: 'tag' },
 	];
 
-	const handleButtonClick = (step: number) => {
-		setCurrentStep(step);
+	const handleButtonClick = (categoryId: number) => {
+		setCurrentStep(categoryId);
+		const categoryPath = CATEGORIES.find(
+			(category) => category.id === categoryId
+		)?.className;
+		navigate(`/search/${categoryPath}/${safeSearchKeyword}`, {
+			state: safeSearchKeyword,
+		});
 	};
 
 	const renderComponentByCategory = () => {
 		switch (currentStep) {
 			case 1:
-				return <PostList searchKeyword={searchKeyword} />;
+				return <PostList searchKeyword={safeSearchKeyword} />;
 			case 2:
-				return <SearchFolderList searchKeyword={searchKeyword} />;
+				return <SearchFolderList searchKeyword={safeSearchKeyword} />;
 			case 3:
-				return <AccountList searchKeyword={searchKeyword} />;
+				return <AccountList searchKeyword={safeSearchKeyword} />;
 			case 4:
-				return <TagList searchKeyword={searchKeyword} />;
+				return <TagList searchKeyword={safeSearchKeyword} />;
 			default:
-				return <PostList searchKeyword={searchKeyword} />;
+				return <PostList searchKeyword={safeSearchKeyword} />;
 		}
 	};
 
@@ -53,7 +60,6 @@ export const SearchByCategory: FC = () => {
 					{CATEGORIES.map((category) => (
 						<button
 							key={category.id}
-							className={category.className}
 							onClick={() => handleButtonClick(category.id)}
 						>
 							{category.name}

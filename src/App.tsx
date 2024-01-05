@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
@@ -42,7 +41,10 @@ export function App(): JSX.Element {
 						element={<SearchTrendingFolder />}
 					/>
 					<Route path='/searchhistory' element={<SearchHistory />} />
-					<Route path='/searchbycategory' element={<SearchByCategory />} />
+					<Route
+						path='/search/:category/:searchKeyword'
+						element={<SearchByCategory />}
+					/>
 					<Route path='/profileUpdatePage' element={<ProfileUpdatePage />} />
 					<Route path='/com' element={<SignUpCompletedPage />} />
 					<Route path='/mainpostview' element={<MainPostViewPage />} />
